@@ -8,14 +8,15 @@ server:
     buffer-size:  1024
     direct-buffers: true
 
-
-
 spring:
   application:
     name: cloud-gateway
+  profiles:
+    active: dev
 
   cloud:
     gateway:
       enabled: true
-      routes:
-        -
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5s

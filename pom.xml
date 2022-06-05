@@ -10,17 +10,19 @@
     </parent>
     <modules>
         <module>gateway</module>
+        <module>base</module>
     </modules>
 
-    <groupId>org.lizhao</groupId>
+    <groupId>org.lizhao.cloud</groupId>
     <artifactId>cloud</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cloud</name>
-    <description>my spring cloud</description>
+    <description>my spring cloud cloud根项目 管理依赖</description>
     <packaging>pom</packaging>
 
     <properties>
         <spring-cloud.version>2021.0.3-SNAPSHOT</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -31,6 +33,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

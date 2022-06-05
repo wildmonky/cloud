@@ -1,12 +1,14 @@
 package org.lizhao.cloud.gateway.config;
 
+import org.springframework.context.annotation.Configuration;
+
 /**
- * Description TODO
+ * Description 网关配置类
  *
  * @author lizhao
- * @version 1.0.0
+ * @version 0.0.1-SNAPSHOT
  * @date 2022-06-05 13:30
- * @since jdk-1.8.0
+ * @since 0.0.1-SNAPSHOT
  */
-public class GatewayConfig {
-}
+@Configuration
+public class GatewayConfig {}
