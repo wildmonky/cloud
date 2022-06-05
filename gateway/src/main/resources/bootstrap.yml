@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: gateway-zuul-demo
+  cloud:
+    nacos:
+      config:
+        enabled: false
+        username: lizhao
+        password: 19960214
+        server-addr:  106.52.188.209:8848
+#        file-extension: yml
+        #配置文件前缀，默认spring.application.name
+        #prefix:
