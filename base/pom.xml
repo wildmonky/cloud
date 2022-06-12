@@ -12,4 +12,12 @@
     <artifactId>base</artifactId>
     <description>接口和实体文件</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
 </project>

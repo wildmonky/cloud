@@ -39,6 +39,6 @@ spring:
     #日志文件
     file:
       #指定日志文件 绝对路径，比path的权重更高
-      name: log/demo.log
+      name: log/cloud-gateway.log
       #只可以指定日志文件存放的路径
       path: D://appLogs
