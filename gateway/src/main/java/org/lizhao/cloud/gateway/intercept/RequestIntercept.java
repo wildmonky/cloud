@@ -7,9 +7,11 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Description 计算请求执行时间
@@ -26,11 +28,24 @@ public class RequestIntercept implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        LocalDateTime startTime = LocalDateTime.now();
-        Mono<Void> re = chain.filter(exchange);
-        String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
-        Duration duration = Duration.between(startTime, LocalDateTime.now());
-        log.info("请求路径：" + requestPath + " ，耗时：" + duration.toMillis() + "ms");
-        return re;
+        AtomicReference<LocalDateTime> startTime = new AtomicReference<>(LocalDateTime.now());
+        return  chain.filter(exchange)
+                .doOnRequest( e -> startTime.set(LocalDateTime.now()))
+                .doFinally( e -> {
+                    String requestStatus;
+                    switch(e) {
+                        case ON_COMPLETE:
+                            requestStatus = "成功";
+                            break;
+                        case ON_ERROR:
+                            requestStatus = "一个错误发生了";
+                            break;
+                        default:
+                            requestStatus = "未成功";
+                    }
+                    String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
+                    Duration duration = Duration.between(startTime.get(), LocalDateTime.now());
+                    log.info("请求结果：{}，请求路径：{} ，耗时：{} ms", requestStatus, requestPath, duration);
+        });
     }
 }

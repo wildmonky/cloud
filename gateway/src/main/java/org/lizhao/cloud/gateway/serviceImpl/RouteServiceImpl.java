@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.lizhao.cloud.base.gateway.service.RouteService;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.cloud.gateway.route.RouteDefinitionWriter;
@@ -103,6 +104,7 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public void refresh() {
+        log.info("{} {}","触发路由刷新！！！", this);
         applicationContext.publishEvent(new RefreshRoutesEvent(this));
     }
 
