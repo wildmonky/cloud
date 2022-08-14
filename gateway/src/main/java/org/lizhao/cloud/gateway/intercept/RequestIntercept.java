@@ -7,14 +7,14 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.SignalType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Description 计算请求执行时间
+ * Description 全局请求拦截器
+ *             1、计算请求执行时间
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -45,7 +45,7 @@ public class RequestIntercept implements WebFilter {
                     }
                     String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
                     Duration duration = Duration.between(startTime.get(), LocalDateTime.now());
-                    log.info("请求结果：{}，请求路径：{} ，耗时：{} ms", requestStatus, requestPath, duration);
+                    log.info("请求结果：{}，请求路径：{} ，耗时：{} ms", requestStatus, requestPath, duration.toMillis());
         });
     }
 }

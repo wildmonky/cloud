@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.lizhao.cloud.gateway.advice.model.ResponseResultModel;
 
 
 /**
@@ -24,6 +25,18 @@ public class RequestCostTimeAroundAdvice{
 //    @Around("allControllerMethod()")
     public Object requestTimeCostCalc(ProceedingJoinPoint joinPoint) throws Throwable {
         return joinPoint.proceed();
+    }
+
+//    @Around("allControllerMethod()")
+    public Object responseResultAfterAdvice(ProceedingJoinPoint joinPoint) {
+        Object result;
+        try {
+            result = joinPoint.proceed();
+            return ResponseResultModel.success(result);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return ResponseResultModel.error(throwable.getMessage());
+        }
     }
 
 }

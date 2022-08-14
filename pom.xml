@@ -9,8 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <modules>
-        <module>gateway</module>
         <module>base</module>
+        <module>gateway</module>
+        <module>user</module>
     </modules>
 
     <groupId>org.lizhao.cloud</groupId>

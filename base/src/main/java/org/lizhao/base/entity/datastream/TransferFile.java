@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.AppendInfo;
 
-import java.io.File;
 import java.math.BigInteger;
 
 /**

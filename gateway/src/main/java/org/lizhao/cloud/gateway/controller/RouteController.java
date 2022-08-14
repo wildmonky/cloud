@@ -3,13 +3,11 @@ package org.lizhao.cloud.gateway.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.lizhao.cloud.gateway.serviceImpl.RouteServiceImpl;
-import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -83,6 +81,13 @@ public class RouteController {
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.removeRouteList(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
+    }
+
+    @ApiOperation("查询路由列表")
+    @GetMapping( path = "test", produces = "text/plain" )
+    @ResponseBody
+    public Flux<String> listTest() {
+        return Flux.just("测试成功");
     }
 
 }

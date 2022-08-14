@@ -1,13 +1,3 @@
-server:
-  port: 8081
-
-  undertow: #使用undertow作为服务器中间件，性能更好
-    threads:
-      io: 2 #cpu核心数
-      worker: 16 #io线程*8
-    buffer-size:  1024
-    direct-buffers: true
-
 spring:
   application:
     name: cloud-gateway
