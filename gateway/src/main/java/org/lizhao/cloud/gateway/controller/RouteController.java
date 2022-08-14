@@ -44,6 +44,7 @@ public class RouteController {
      */
     @ApiOperation("查询路由列表")
     @GetMapping( path = "routeList", produces = "application/json" )
+    @ResponseBody
     public Flux<RouteDefinition> routeList(@RequestParam String id,
                                  @RequestParam String source,
                                  @RequestParam String target

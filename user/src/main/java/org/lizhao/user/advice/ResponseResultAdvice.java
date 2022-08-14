@@ -1,6 +1,6 @@
 package org.lizhao.user.advice;
 
-import org.lizhao.base.model.ResponseResultModel;
+import org.lizhao.base.model.ResponseBodyModel;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -30,8 +30,8 @@ public class ResponseResultAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Exception) {
-            return ResponseResultModel.error(body);
+            return ResponseBodyModel.error(body);
         }
-        return ResponseResultModel.success(body);
+        return ResponseBodyModel.success(body);
     }
 }

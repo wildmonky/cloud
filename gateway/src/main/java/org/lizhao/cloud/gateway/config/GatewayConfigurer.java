@@ -11,4 +11,4 @@ import org.springframework.context.annotation.Configuration;
  * @since 0.0.1-SNAPSHOT
  */
 @Configuration
-public class GatewayConfig {}
+public class GatewayConfigurer {}
