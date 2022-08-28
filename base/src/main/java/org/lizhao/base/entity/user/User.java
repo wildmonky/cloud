@@ -3,7 +3,6 @@ package org.lizhao.base.entity.user;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.AppendInfo;
-import sun.plugin2.os.windows.OVERLAPPED;
 
 import java.math.BigInteger;
 
