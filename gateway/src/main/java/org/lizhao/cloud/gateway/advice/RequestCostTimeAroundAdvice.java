@@ -13,6 +13,7 @@ import org.lizhao.base.model.ResponseBodyModel;
  * @since 0.0.1-SNAPSHOT
  */
 //@Aspect
+@Deprecated
 public class RequestCostTimeAroundAdvice{
 
 //    @Pointcut(" within(org.lizhao.cloud.gateway.controller..*) ")

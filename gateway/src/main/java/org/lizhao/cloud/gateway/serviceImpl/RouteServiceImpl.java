@@ -49,13 +49,14 @@ public class RouteServiceImpl implements RouteService {
                     if (ObjectUtils.isNotEmpty(predicates)) {
                         boolean sourceFlag = false;
                         for (PredicateDefinition predicate : predicates) {
-                            if (predicate.getName().equalsIgnoreCase("")) {
+                            if (StringUtils.isBlank(predicate.getName())) {
                                 predicate.getArgs();
                                 sourceFlag = true;
                             }
                         }
+
                         if (!sourceFlag) {
-                            return sourceFlag;
+                            return false;
                         }
                     }
                 }

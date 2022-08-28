@@ -85,14 +85,14 @@ public class RouteController {
     }
 
     @ApiOperation("查询路由列表")
-    @GetMapping(path = "test", produces = "text/plain")
+    @GetMapping(path = "test", produces = "application/json")
     @ResponseBody
     public Mono<String> listTest() {
         return Mono.just("测试成功");
     }
 
     @ApiOperation("查询路由列表")
-    @GetMapping(path = "test1", consumes = "application/json", produces = "text/plain")
+    @GetMapping(path = "test1", consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Flux<String> listTest1() {
         return Flux.just("测试成功");

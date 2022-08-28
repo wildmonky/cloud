@@ -1,6 +1,5 @@
 package org.lizhao.cloud.gateway.handler;
 
-import org.apache.http.entity.ContentType;
 import org.lizhao.base.model.ResponseBodyModel;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
@@ -59,7 +58,6 @@ public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
     @Override
     public Mono<Void> handleResult(ServerWebExchange exchange, HandlerResult result) {
         Object body = result.getReturnValue();
-//        MethodParameter bodyTypeParameter = result.getReturnTypeSource();
         if (body instanceof Mono) {
             body = ((Mono<Object>) body)
                     .map(this::wrapResponseBody)
@@ -74,8 +72,8 @@ public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
         }
 
         //设置响应类型，否则导致 No Encoder for [org.lizhao.base.model.ResponseBodyModel<?>] with preset Content-Type 'null'
-        Optional.ofNullable(result.getReturnTypeSource().getMethodAnnotation(RequestMapping.class)).ifPresent(e -> {
-            exchange.getResponse().getHeaders().addAll("Content-Type", Arrays.asList(e.consumes()));
+        Optional.ofNullable(result.getReturnTypeSource().getMethodAnnotation(RequestMapping.class)).map(RequestMapping::produces).ifPresent(l -> {
+            exchange.getResponse().getHeaders().addAll("Content-Type", Arrays.asList(l));
         });
 
         return writeBody(body, GLOBAL_METHOD_PARAMETER, exchange);
