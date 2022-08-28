@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Api("路由操作")
 @Controller
-@RequestMapping( path = "gateway", consumes = {"application/json", "application/form-data"})
+@RequestMapping(path = "gateway", consumes = {"application/json", "application/form-data"})
 public class RouteController {
 
     @Resource
@@ -43,7 +43,7 @@ public class RouteController {
      * @return reactor.core.publisher.Flux<org.springframework.cloud.gateway.route.Route>
      */
     @ApiOperation("查询路由列表")
-    @GetMapping( path = "routeList", produces = "application/json" )
+    @GetMapping(path = "routeList", produces = "application/json" )
     @ResponseBody
     public Flux<RouteDefinition> routeList(@RequestParam String id,
                                  @RequestParam String source,
@@ -62,7 +62,7 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @ApiOperation("更新、新增路由")
-    @PutMapping( path = "routeList", produces = "text/plain")
+    @PutMapping(path = "routeList", produces = "text/plain")
     public Mono<ServerResponse> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.saveRouteList(routeDefinitionList);
         return ServerResponse.ok().bodyValue("路由保存成功");
@@ -78,16 +78,23 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @ApiOperation("删除路由")
-    @DeleteMapping( path = "routeList", produces = "text/plain")
+    @DeleteMapping(path = "routeList", produces = "text/plain")
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.removeRouteList(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
     }
 
     @ApiOperation("查询路由列表")
-    @GetMapping( path = "test", produces = "text/plain" )
+    @GetMapping(path = "test", produces = "text/plain")
     @ResponseBody
-    public Flux<String> listTest() {
+    public Mono<String> listTest() {
+        return Mono.just("测试成功");
+    }
+
+    @ApiOperation("查询路由列表")
+    @GetMapping(path = "test1", consumes = "application/json", produces = "text/plain")
+    @ResponseBody
+    public Flux<String> listTest1() {
         return Flux.just("测试成功");
     }
 

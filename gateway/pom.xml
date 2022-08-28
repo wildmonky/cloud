@@ -12,7 +12,8 @@
     <artifactId>gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gateway</name>
-    <packaging>pom</packaging>
+<!--为pom时导致application配置文件无法读取-->
+    <packaging>jar</packaging>
     <description>cloud gateway 网关服务</description>
 
     <properties>
@@ -28,6 +29,11 @@
             <groupId>org.lizhao.cloud</groupId>
             <artifactId>base</artifactId>
             <version>${cloud.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
 
         <dependency>
@@ -62,12 +68,12 @@
         <!--cloud服务注册与发现中心 nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-        <!--cloud配置中心 nacos-->
+        <!--cloud服务注册与发现中心 nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
         <!--boot使用@ConfigurationProperties, 可以在编写配置文件时，出现提示，可以去掉本依赖-->
@@ -145,12 +151,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -31,6 +31,7 @@ public class RequestIntercept implements WebFilter {
         AtomicReference<LocalDateTime> startTime = new AtomicReference<>(LocalDateTime.now());
         return  chain.filter(exchange)
                 .doOnRequest( e -> startTime.set(LocalDateTime.now()))
+                .doOnError(Throwable::printStackTrace)
                 .doFinally( e -> {
                     String requestStatus;
                     switch(e) {
