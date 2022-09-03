@@ -32,11 +32,28 @@ spring:
     #      hystrix:
     #        enabled: true
     #
-    datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true
-      username: dev
-      password: 19960214
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: dev
+    password: 19960214
+  redis:
+    host: 106.52.188.209
+    port: 6379
+    client-name: gateway
+    client-type: lettuce
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+      shutdown-timeout: 100ms
+
+  data:
+    redis:
+      repositories:
+        enabled: true
 
 #    flyway:
 #      user: dev
