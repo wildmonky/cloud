@@ -1,13 +1,3 @@
-server:
-  port: 8081
-  #使用undertow作为服务器中间件，较Tomcat高并发时性能更好
-  undertow:
-    threads:
-      io: 2 #cpu核心数
-      worker: 16 #io线程*8
-    buffer-size:  1024
-    direct-buffers: true
-
 spring:
   devtools:
     add-properties: true
@@ -15,18 +5,6 @@ spring:
     activate:
       on-profile:
         - dev
-  cloud:
-    nacos:
-      #nacos 使用nacos配置中心
-      config:
-        enabled: true
-
-      discovery:
-        #nacos 服务注册中心地址
-        server-addr: 106.52.188.209:8848
-        group: demo
-        username: lizhao
-        password: 19960214
     #
     #    circuitbreaker:
     #      hystrix:
@@ -37,6 +15,18 @@ spring:
       url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true
       username: dev
       password: 19960214
+
+  redis:
+    host: 106.52.188.209
+    port: 6379
+    database: 0
+    client-name: cloud-gateway-client
+    client-type: lettuce
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
 
 #    flyway:
 #      user: dev
