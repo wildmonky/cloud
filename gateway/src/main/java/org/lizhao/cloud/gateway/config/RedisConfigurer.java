@@ -1,21 +1,21 @@
 package org.lizhao.cloud.gateway.config;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Component;
 
 /**
- * description redis配置类
+ * Description TODO reids配置类
  *
- * @author LIZHAO
- * @version V1.0
- * @date 2022/8/29 19:22
+ * @author lizhao
+ * @version 0.0.1-SNAPSHOT
+ * @date 2022-09-04 18:00
+ * @since 0.0.1-SNAPSHOT
  */
 @Configuration
 public class RedisConfigurer {

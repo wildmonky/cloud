@@ -5,10 +5,18 @@ spring:
   cloud:
     nacos:
       config:
+        #nacos 使用nacos配置中心
         enabled: false
         username: lizhao
         password: 19960214
         server-addr:  106.52.188.209:8848
-#        file-extension: yml
+        file-extension: yml
         #配置文件前缀，默认spring.application.name
         #prefix:
+      discovery:
+        enabled: false
+        #nacos 服务注册中心地址
+        server-addr: 106.52.188.209:8848
+        group: demo
+        username: lizhao
+        password: 19960214
