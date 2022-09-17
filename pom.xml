@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent pom.xml from repository -->
     </parent>
     <modules>
         <module>base</module>
@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
-        <springfox-swagger.version>3.0.0</springfox-swagger.version>
+        <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
         <apache-commons-pool2.version>2.11.1</apache-commons-pool2.version>
         <apache-commons-lang3.version>3.12.0</apache-commons-lang3.version>
         <google-core-findbugs-annotations.version>3.0.1</google-core-findbugs-annotations.version>
@@ -49,17 +49,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--api 管理-->
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox-swagger.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox-swagger.version}</version>
-                <scope>runtime</scope>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi-ui.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -81,11 +75,11 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java.version}</version>
             </dependency>
-            <dependency>
-                <groupId>redis-clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>4.2.3</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>redis-clients</groupId>-->
+<!--                <artifactId>jedis</artifactId>-->
+<!--                <version>4.2.3</version>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -93,23 +87,23 @@
         <plugins>
         </plugins>
     </build>
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>spring-snapshots</id>-->
-<!--            <name>Spring Snapshots</name>-->
-<!--            <url>https://repo.spring.io/snapshot</url>-->
-<!--            <releases>-->
-<!--                <enabled>false</enabled>-->
-<!--            </releases>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>spring-milestones</id>-->
-<!--            <name>Spring Milestones</name>-->
-<!--            <url>https://repo.spring.io/milestone</url>-->
-<!--            <snapshots>-->
-<!--                <enabled>false</enabled>-->
-<!--            </snapshots>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.config;
+package org.lizhao.cloud.gateway.configurer;
 
 import org.lizhao.cloud.gateway.handler.GlobalResponseBodyHandler;
 import org.springframework.context.annotation.Bean;

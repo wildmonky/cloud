@@ -33,18 +33,6 @@ spring:
       repositories:
         enabled: true
 
-  redis:
-    host: 106.52.188.209
-    port: 6379
-    database: 0
-    client-name: cloud-gateway-client
-    client-type: lettuce
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        max-wait: -1ms
-
 #    flyway:
 #      user: dev
 #      password: 19960214
