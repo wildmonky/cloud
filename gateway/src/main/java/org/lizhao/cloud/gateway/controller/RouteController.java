@@ -1,7 +1,7 @@
 package org.lizhao.cloud.gateway.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.lizhao.cloud.gateway.serviceImpl.RouteServiceImpl;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.http.MediaType;
@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2022-06-05 16:19
  * @since 0.0.1-SNAPSHOT
  */
-@Api("路由操作")
+@Tag(name = "路由操作")
 @Controller
 @RequestMapping(path = "gateway", consumes = {"application/json", "application/form-data"})
 public class RouteController {
@@ -42,7 +42,7 @@ public class RouteController {
      * @param target target springCloud Gateway 路由配置中的目标地址
      * @return reactor.core.publisher.Flux<org.springframework.cloud.gateway.route.Route>
      */
-    @ApiOperation("查询路由列表")
+    @Operation(summary = "查询路由列表")
     @GetMapping(path = "routeList", produces = "application/json" )
     @ResponseBody
     public Flux<RouteDefinition> routeList(@RequestParam String id,
@@ -61,7 +61,7 @@ public class RouteController {
      * @param routeDefinitionList routeDefinitionList
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
-    @ApiOperation("更新、新增路由")
+    @Operation(summary = "更新、新增路由")
     @PutMapping(path = "routeList", produces = "text/plain")
     public Mono<ServerResponse> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.saveRouteList(routeDefinitionList);
@@ -77,21 +77,21 @@ public class RouteController {
      * @param routeDefinitionList routeDefinitionList
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
-    @ApiOperation("删除路由")
+    @Operation(summary = "删除路由")
     @DeleteMapping(path = "routeList", produces = "text/plain")
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.removeRouteList(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
     }
 
-    @ApiOperation("查询路由列表")
+    @Operation(summary = "查询路由列表")
     @GetMapping(path = "test", produces = "application/json")
     @ResponseBody
     public Mono<String> listTest() {
         return Mono.just("测试成功");
     }
 
-    @ApiOperation("查询路由列表")
+    @Operation(summary = "查询路由列表")
     @GetMapping(path = "test1", consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Flux<String> listTest1() {

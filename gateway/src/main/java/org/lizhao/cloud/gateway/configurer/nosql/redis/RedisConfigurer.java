@@ -23,8 +23,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfigurer {
 
     @Bean
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<Object, Object> temp = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> temp = new RedisTemplate<>();
         temp.setConnectionFactory(redisConnectionFactory);
 
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
@@ -33,9 +33,11 @@ public class RedisConfigurer {
         om.activateDefaultTyping(new DefaultBaseTypeLimitingValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
         serializer.setObjectMapper(om);
 
+        //key,vlaue序列化方法
         temp.setKeySerializer(new StringRedisSerializer());
+        temp.setValueSerializer(serializer);
+        //hash时的序列化方法
         temp.setHashKeySerializer(new StringRedisSerializer());
-        temp.setValueSerializer(new StringRedisSerializer());
         temp.setHashValueSerializer(serializer);
         temp.afterPropertiesSet();
         return temp;

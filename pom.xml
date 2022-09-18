@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
-        <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
+        <springdoc-openapi-webflux.version>1.6.11</springdoc-openapi-webflux.version>
         <apache-commons-pool2.version>2.11.1</apache-commons-pool2.version>
         <apache-commons-lang3.version>3.12.0</apache-commons-lang3.version>
         <google-core-findbugs-annotations.version>3.0.1</google-core-findbugs-annotations.version>
@@ -52,8 +52,18 @@
             <!--api 管理-->
             <dependency>
                 <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc-openapi-ui.version}</version>
+                <artifactId>springdoc-openapi-webflux-core</artifactId>
+                <version>${springdoc-openapi-webflux.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-ui</artifactId>
+                <version>${springdoc-openapi-webflux.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-common</artifactId>
+                <version>${springdoc-openapi-webflux.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
