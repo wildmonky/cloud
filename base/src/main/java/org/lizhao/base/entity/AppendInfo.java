@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.user.User;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -26,7 +25,7 @@ public class AppendInfo {
      * 记录创建时使用的账号的Id
      * {@link User#getId()}
      */
-    private BigInteger createUserId;
+    private String createUserId;
 
     /**
      * 记录创建时使用的账号的用户名称 {@link User#getName()}
@@ -41,7 +40,7 @@ public class AppendInfo {
     /**
      * 记录更新时使用账号的Id {@link User#getId()}
      */
-    private BigInteger updateUserId;
+    private String updateUserId;
 
     /**
      * 记录更新时使用账号的用户名称 {@link User#getName()}

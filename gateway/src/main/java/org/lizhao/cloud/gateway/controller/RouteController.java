@@ -62,7 +62,7 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "更新、新增路由")
-    @PutMapping(path = "routeList", produces = "text/plain")
+    @PostMapping(path = "routeList", produces = "text/plain")
     public Mono<ServerResponse> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.saveRouteList(routeDefinitionList);
         return ServerResponse.ok().bodyValue("路由保存成功");
@@ -78,7 +78,7 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "删除路由")
-    @DeleteMapping(path = "routeList", produces = "text/plain")
+    @GetMapping(path = "routeList", produces = "text/plain")
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.removeRouteList(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");

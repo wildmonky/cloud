@@ -1,6 +1,9 @@
 package org.lizhao.cloud.gateway.connect;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * description
@@ -11,6 +14,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RedisUtil {
+
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
+
+    public void save() {
+
+
+
+    }
 
 
 }

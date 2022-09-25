@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.AppendInfo;
 
-import java.math.BigInteger;
-
 /**
  * Description 用户实体类
  *
@@ -23,7 +21,7 @@ public class User extends AppendInfo {
     /**
      * 用户账号主键
      */
-    private BigInteger id;
+    private String id;
 
     /**
      * 用户识别码，可以直接使用Id识别
@@ -39,5 +37,10 @@ public class User extends AppendInfo {
      * 用户登录密码
      */
     private String password;
+
+    /**
+     * 用户状态: 0-初始；1-可用
+     */
+    private Integer status;
 
 }

@@ -2,9 +2,9 @@ package org.lizhao.base.entity.user;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import org.lizhao.base.entity.AppendInfo;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -22,12 +22,12 @@ public class Person extends AppendInfo {
     /**
      * 人员信息主键
      */
-    private BigInteger id;
+    private String id;
 
     /**
      * 人员对应的用户账号Id {@link User#getId()}
      */
-    private BigInteger userId;
+    private String userId;
 
     /**
      * 人员名称（真实姓名）
