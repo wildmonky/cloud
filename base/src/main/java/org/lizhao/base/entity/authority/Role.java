@@ -1,5 +1,6 @@
 package org.lizhao.base.entity.authority;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.AppendInfo;
@@ -14,6 +15,7 @@ import org.lizhao.base.entity.AppendInfo;
  */
 @Getter
 @Setter
+@TableName("role")
 public class Role extends AppendInfo {
 
     /**

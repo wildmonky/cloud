@@ -1,5 +1,7 @@
 package org.lizhao.base.entity.relation;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.AppendInfo;
@@ -16,11 +18,13 @@ import org.lizhao.base.entity.authority.Role;
  */
 @Getter
 @Setter
+@TableName("authority_role_relation")
 public class AuthorityRoleRelation extends AppendInfo {
 
     /**
      * 权限{@link Authority}和角色{@link Role}的关系Id
      */
+    @TableId
     private String id;
 
     /**

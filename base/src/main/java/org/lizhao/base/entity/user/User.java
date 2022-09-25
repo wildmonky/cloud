@@ -1,5 +1,7 @@
 package org.lizhao.base.entity.user;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.AppendInfo;
@@ -16,11 +18,13 @@ import org.lizhao.base.entity.AppendInfo;
  */
 @Getter
 @Setter
+@TableName("user")
 public class User extends AppendInfo {
 
     /**
      * 用户账号主键
      */
+    @TableId
     private String id;
 
     /**

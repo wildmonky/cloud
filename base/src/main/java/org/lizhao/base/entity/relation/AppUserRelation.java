@@ -1,5 +1,7 @@
 package org.lizhao.base.entity.relation;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.App;
@@ -16,11 +18,13 @@ import org.lizhao.base.entity.user.User;
  */
 @Getter
 @Setter
+@TableName("app_user_relation")
 public class AppUserRelation extends AppendInfo {
 
     /**
      * {@link App} 和 {@link User} 关系Id
      */
+    @TableId
     private String id;
 
     /**
