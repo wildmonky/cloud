@@ -34,7 +34,7 @@ public class AppRoleRelation extends AppendInfo {
     private String roleId;
 
     /**
-     * 关系是否有效：true-有效；false|ull-无效
+     * 关系是否有效：true-有效；false|null-无效
      */
     private Boolean valid;
 }
