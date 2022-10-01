@@ -3,8 +3,14 @@ package org.lizhao.base.entity.user;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.AppendInfo;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -17,41 +23,81 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
+@Table
 public class Person extends AppendInfo {
 
     /**
      * 人员信息主键
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
+    @GenericGenerator(name = "snowFlakeIdGenerator", strategy = "org.lizhao.database.jpa.IdentifierGeneratorImpl")
     private String id;
 
     /**
      * 人员对应的用户账号Id {@link User#getId()}
      */
+    @Column
     private String userId;
 
     /**
      * 人员名称（真实姓名）
      */
+    @Column
     private String name;
 
     /**
      * 性别
      */
+    @Column
     private Boolean sex;
 
     /**
      * 年龄
      */
+    @Column
     private Byte age;
 
     /**
      * 出生日期
      */
+    @Column
     private LocalDateTime birthday;
 
     /**
      * 手机号码
      */
+    @Column
     private String mobilePhone;
+
+    /**
+     * 座机号码
+     */
+    @Column
+    private String telPhone;
+
+    /**
+     * 现居住地
+     */
+    @Column
+    private String residence;
+
+    /**
+     * 出生地
+     */
+    @Column
+    private String birthPlace;
+
+    /**
+     * 家乡
+     */
+    @Column
+    private String homeTown;
+
+    /**
+     * 户口所在地
+     */
+    @Column
+    private String censusRegister;
 
 }

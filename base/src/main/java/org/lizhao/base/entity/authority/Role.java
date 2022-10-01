@@ -1,9 +1,15 @@
 package org.lizhao.base.entity.authority;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.AppendInfo;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Description 角色实体 权限集合
@@ -15,21 +21,26 @@ import org.lizhao.base.entity.AppendInfo;
  */
 @Getter
 @Setter
-@TableName("role")
+@Table(name = "role")
 public class Role extends AppendInfo {
 
     /**
      * 角色Id
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
+    @GenericGenerator(name = "snowFlakeIdGenerator", strategy = "org.lizhao.database.jpa.IdentifierGeneratorImpl")
     private String id;
 
     /**
      * 角色名称
      */
+    @Column
     private String name;
 
     /**
      * 角色状态：0-初始；1-可用
      */
+    @Column
     private Integer status;
 }

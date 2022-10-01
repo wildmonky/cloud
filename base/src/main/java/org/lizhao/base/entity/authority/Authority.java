@@ -1,10 +1,15 @@
 package org.lizhao.base.entity.authority;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.AppendInfo;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Description 权限实体
@@ -16,22 +21,26 @@ import org.lizhao.base.entity.AppendInfo;
  */
 @Getter
 @Setter
-@TableName("authority")
+@Table(name = "authority")
 public class Authority extends AppendInfo {
 
     /**
      * 权限Id
      */
-    @TableId
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
+    @GenericGenerator(name = "snowFlakeIdGenerator", strategy = "org.lizhao.database.jpa.IdentifierGeneratorImpl")
     private String id;
 
     /**
      * 权限名称
      */
+    @Column
     private String name;
 
     /**
      * 权限状态：0-初始；1-可用
      */
+    @Column
     private Integer status;
 }

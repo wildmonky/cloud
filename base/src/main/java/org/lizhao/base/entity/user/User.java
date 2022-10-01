@@ -1,10 +1,16 @@
 package org.lizhao.base.entity.user;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.AppendInfo;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Description 用户实体类
@@ -18,33 +24,40 @@ import org.lizhao.base.entity.AppendInfo;
  */
 @Getter
 @Setter
-@TableName("user")
+@Entity
+@Table
 public class User extends AppendInfo {
 
     /**
      * 用户账号主键
      */
-    @TableId
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
+    @GenericGenerator(name = "snowFlakeIdGenerator", strategy = "org.lizhao.database.jpa.IdentifierGeneratorImpl")
     private String id;
 
     /**
      * 用户识别码，可以直接使用Id识别
      */
+    @Column
     private String identity;
 
     /**
      * 用户登录账号
      */
+    @Column
     private String name;
 
     /**
      * 用户登录密码
      */
+    @Column
     private String password;
 
     /**
      * 用户状态: 0-初始；1-可用
      */
+    @Column
     private Integer status;
 
 }

@@ -18,9 +18,13 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.baomidou</groupId>-->
+<!--            <artifactId>mybatis-plus-annotation</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-annotation</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
     </dependencies>
 
