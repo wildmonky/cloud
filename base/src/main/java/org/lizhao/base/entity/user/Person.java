@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table
-public class Person extends AppendInfo {
+public class Person extends CommonAttribute {
 
     /**
      * 人员信息主键

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.App;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.authority.Authority;
 
 import javax.persistence.Column;
@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "app_authority_relation")
-public class AppAuthorityRelation extends AppendInfo {
+public class AppAuthorityRelation extends CommonAttribute {
 
     /**
      * 应用实体{@link App} 和 权限实体{@link Authority} 的关系Id

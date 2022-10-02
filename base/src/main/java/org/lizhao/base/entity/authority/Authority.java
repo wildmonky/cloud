@@ -3,13 +3,9 @@ package org.lizhao.base.entity.authority;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Description 权限实体
@@ -22,7 +18,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "authority")
-public class Authority extends AppendInfo {
+public class Authority extends CommonAttribute {
 
     /**
      * 权限Id

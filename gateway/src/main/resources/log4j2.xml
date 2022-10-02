@@ -40,7 +40,7 @@
             <AppenderRef ref="Console" />
         </Logger>
 
-        <Logger name="org.lizhao.cloud.gateway.listener" additivity="false" level="info">
+        <Logger name="org.lizhao.cloud.gateway.framework.listener" additivity="false" level="info">
             <AppenderRef ref="appSystemLog" />
             <AppenderRef ref="Console" />
         </Logger>

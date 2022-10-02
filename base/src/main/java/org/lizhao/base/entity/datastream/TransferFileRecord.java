@@ -2,7 +2,7 @@ package org.lizhao.base.entity.datastream;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 
 import java.math.BigInteger;
 
@@ -16,7 +16,7 @@ import java.math.BigInteger;
  */
 @Getter
 @Setter
-public class TransferFileRecord extends AppendInfo {
+public class TransferFileRecord extends CommonAttribute {
 
     /**
      * 主键

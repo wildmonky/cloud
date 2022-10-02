@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.App;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.user.User;
 
 import javax.persistence.Column;
@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "app_user_relation")
-public class AppUserRelation extends AppendInfo {
+public class AppUserRelation extends CommonAttribute {
 
     /**
      * {@link App} 和 {@link User} 关系Id

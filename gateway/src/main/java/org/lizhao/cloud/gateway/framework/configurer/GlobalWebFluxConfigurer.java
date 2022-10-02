@@ -1,6 +1,6 @@
-package org.lizhao.cloud.gateway.configurer;
+package org.lizhao.cloud.gateway.framework.configurer;
 
-import org.lizhao.cloud.gateway.handler.GlobalResponseBodyHandler;
+import org.lizhao.cloud.gateway.framework.handler.GlobalResponseBodyHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;

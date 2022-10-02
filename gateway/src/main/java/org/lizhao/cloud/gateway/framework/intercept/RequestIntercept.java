@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.intercept;
+package org.lizhao.cloud.gateway.framework.intercept;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -14,7 +14,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Description 全局请求拦截器
- *             1、计算请求执行时间
+ *             1、计算请求执行时间;
+ *             2、解析Token TODO
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT

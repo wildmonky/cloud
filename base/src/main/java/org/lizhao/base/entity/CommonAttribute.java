@@ -2,11 +2,15 @@ package org.lizhao.base.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.lizhao.base.entity.user.User;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.lizhao.base.entity.user.User;
+import org.lizhao.database.jpa.CommonAttributeAuditEntityListener;
 
 /**
  * Description 追加信息
@@ -22,7 +26,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-public class AppendInfo {
+@EntityListeners(value = CommonAttributeAuditEntityListener.class)
+public abstract class CommonAttribute implements Serializable {
 
     /**
      * 记录创建时使用的账号的Id

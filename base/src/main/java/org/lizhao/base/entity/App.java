@@ -23,7 +23,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table
-public class App extends AppendInfo{
+public class App extends CommonAttribute {
 
     /**
      * 应用Id

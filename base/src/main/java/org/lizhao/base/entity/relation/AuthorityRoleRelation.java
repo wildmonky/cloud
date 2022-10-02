@@ -3,7 +3,7 @@ package org.lizhao.base.entity.relation;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 
@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "authority_role_relation")
-public class AuthorityRoleRelation extends AppendInfo {
+public class AuthorityRoleRelation extends CommonAttribute {
 
     /**
      * 权限{@link Authority}和角色{@link Role}的关系Id

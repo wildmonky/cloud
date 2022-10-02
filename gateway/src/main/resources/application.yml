@@ -18,3 +18,7 @@ spring:
       httpclient:
         connect-timeout: 3000
         response-timeout: 5s
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.configurer.nosql.redis;
+package org.lizhao.cloud.gateway.framework.configurer.nosql.redis;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

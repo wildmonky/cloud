@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.serviceImpl;
+package org.lizhao.cloud.gateway.logic.serviceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;

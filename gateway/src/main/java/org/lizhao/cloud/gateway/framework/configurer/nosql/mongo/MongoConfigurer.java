@@ -1,7 +1,6 @@
-package org.lizhao.cloud.gateway.configurer.nosql.mongo;
+package org.lizhao.cloud.gateway.framework.configurer.nosql.mongo;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 

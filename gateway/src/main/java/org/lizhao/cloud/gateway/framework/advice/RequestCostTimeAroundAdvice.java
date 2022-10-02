@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.advice;
+package org.lizhao.cloud.gateway.framework.advice;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.lizhao.base.model.ResponseBodyModel;
@@ -16,7 +16,7 @@ import org.lizhao.base.model.ResponseBodyModel;
 @Deprecated
 public class RequestCostTimeAroundAdvice{
 
-//    @Pointcut(" within(org.lizhao.cloud.gateway.controller..*) ")
+//    @Pointcut(" within(org.lizhao.cloud.gateway.business.controller..*) ")
     public void allControllerMethod() {}
 
 //    @Around("allControllerMethod()")

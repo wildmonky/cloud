@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.connect;
+package org.lizhao.cloud.gateway.framework.connect;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

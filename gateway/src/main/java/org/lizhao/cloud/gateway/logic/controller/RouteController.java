@@ -1,8 +1,8 @@
-package org.lizhao.cloud.gateway.controller;
+package org.lizhao.cloud.gateway.logic.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.lizhao.cloud.gateway.serviceImpl.RouteServiceImpl;
+import org.lizhao.cloud.gateway.logic.serviceImpl.RouteServiceImpl;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

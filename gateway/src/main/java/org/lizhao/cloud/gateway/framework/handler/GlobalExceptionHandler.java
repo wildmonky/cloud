@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.handler;
+package org.lizhao.cloud.gateway.framework.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.model.ResponseBodyModel;
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-@RestControllerAdvice(basePackages = {"org.lizhao.cloud.gateway.controller"})
+@RestControllerAdvice(basePackages = {"org.lizhao.cloud.gateway.business.controller"})
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)

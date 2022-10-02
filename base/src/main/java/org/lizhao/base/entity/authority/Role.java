@@ -3,7 +3,7 @@ package org.lizhao.base.entity.authority;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "role")
-public class Role extends AppendInfo {
+public class Role extends CommonAttribute {
 
     /**
      * 角色Id

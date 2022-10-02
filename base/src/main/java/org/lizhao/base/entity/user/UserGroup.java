@@ -3,7 +3,7 @@ package org.lizhao.base.entity.user;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.AppendInfo;
+import org.lizhao.base.entity.CommonAttribute;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table
-public class UserGroup extends AppendInfo {
+public class UserGroup extends CommonAttribute {
 
     /**
      * 用户组Id
