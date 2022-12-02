@@ -10,7 +10,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: @maven.spring.env@
 
   cloud:
     gateway:

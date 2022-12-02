@@ -199,24 +199,121 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <maven.spring.env>dev</maven.spring.env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>1.8</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <maven.spring.env>test</maven.spring.env>
+            </properties>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <maven.spring.env>prod</maven.spring.env>
+            </properties>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+        </profile>
+    </profiles>
+
     <build>
+        <finalName>${artifactId}-${version}</finalName>
+        <resources>
+            <!--注意此处必须要配置 才能被访问到 图标  解决经过maven的filter，会破坏font文件的二进制文件格式，导致前台解析出错
+                解决办法：替换资源文件参数时，先将 替换处理后会被破坏的文件排除，在之后再重新获取被排除的文件
+            -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--使用maven属性替换资源文件中的参数-->
+                <filtering>true</filtering>
+                <targetPath>${project.build.outputDirectory}</targetPath>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <excludes>
+                    <exclude>plugins</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>plugins</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <!--使用maven属性替换测试资源文件中的参数-->
+                <filtering>true</filtering>
+                <targetPath>${project.build.testOutputDirectory}</targetPath>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!--Manifest 中 Start-Class，启动类-->
+                    <mainClass>org.lizhao.cloud.gateway.GatewayApplication</mainClass>
+                    <!--打包类型-->
+                    <layout>JAR</layout>
+                    <!--分类器，打包后文件后缀-->
+                    <classifier>spring-boot</classifier>
+                    <!--运行时是否包含测试路径-->
+                    <useTestClasspath>false</useTestClasspath>
+                    <!--根据groupId来排除依赖-->
+                    <excludeGroupIds>org.projectlombok</excludeGroupIds>
+                    <!--根据 groupId-artifactId-version 来排除依赖-->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+<!--                            <version></version>-->
                         </exclude>
-                        <!--排除Tomcat启动配置包-->
+                        <!--排除Tomcat启动配置包，使用undertow作为服务器中间件-->
                         <exclude>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-starter-tomcat</artifactId>
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <!--排除spring-boot-devtools-->
+                            <excludeDevtools>true</excludeDevtools>
+                            <layout>JAR</layout>
+                            <!--是否跳过该goal，也可使用mvn clean package -Dspring-boot.repackage.skip=true来跳过springboot的maven打包插件-->
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
