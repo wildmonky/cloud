@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -17,7 +18,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableJpaAuditing
 //@EnableRedisRepositories
 //@EnableReactiveMongoRepositories
-public class GatewayApplication {
+public class GatewayApplication extends ServiceImpl {
 
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
