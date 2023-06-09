@@ -10,6 +10,7 @@ server:
 
 spring:
   profiles:
+    #起效的配置文件后缀 application-xxx，maven配置
     active: @maven.spring.env@
 
   cloud:

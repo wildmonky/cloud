@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.3</version>
-        <relativePath/> <!-- lookup parent pom.xml from repository -->
-    </parent>
     <modules>
         <module>base</module>
         <module>gateway</module>
@@ -22,13 +16,14 @@
     <packaging>pom</packaging>
 
     <properties>
-        <java.version>1.8</java.version>
+        <cloud.version>0.0.1-SNAPSHOT</cloud.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
-        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
-        <spring-data-jpa.version>2.7.3</spring-data-jpa.version>
-        <springdoc-openapi-webflux.version>1.6.11</springdoc-openapi-webflux.version>
+        <spring-cloud.version>2022.0.3</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.0.4.0</spring-cloud-alibaba.version>
+        <spring-data-jpa.version>3.1.0</spring-data-jpa.version>
+        <springdoc-openapi-webflux.version>1.7.0</springdoc-openapi-webflux.version>
         <apache-commons-pool2.version>2.11.1</apache-commons-pool2.version>
         <apache-commons-lang3.version>3.12.0</apache-commons-lang3.version>
         <google-core-findbugs-annotations.version>3.0.1</google-core-findbugs-annotations.version>
@@ -38,6 +33,13 @@
     </properties>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>3.1.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -111,6 +113,37 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <maven.spring.env>dev</maven.spring.env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>17</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <maven.spring.env>test</maven.spring.env>
+            </properties>
+            <activation>
+                <jdk>17</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <maven.spring.env>prod</maven.spring.env>
+            </properties>
+            <activation>
+                <jdk>17</jdk>
+            </activation>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

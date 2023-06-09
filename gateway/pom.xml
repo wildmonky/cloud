@@ -17,11 +17,8 @@
     <description>cloud gateway 网关服务</description>
 
     <properties>
-        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
-        <cloud.version>0.0.1-SNAPSHOT</cloud.version>
     </properties>
 
     <dependencies>
@@ -198,37 +195,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <maven.spring.env>dev</maven.spring.env>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <jdk>1.8</jdk>
-            </activation>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <maven.spring.env>test</maven.spring.env>
-            </properties>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <maven.spring.env>prod</maven.spring.env>
-            </properties>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-        </profile>
-    </profiles>
 
     <build>
         <finalName>${artifactId}-${version}</finalName>
