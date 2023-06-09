@@ -1,16 +1,10 @@
 package org.lizhao.base.entity.user;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * Description 用户实体类
@@ -25,7 +19,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "user")
 public class User extends CommonAttribute {
 
     /**
@@ -33,7 +27,7 @@ public class User extends CommonAttribute {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
-    @GenericGenerator(name = "snowFlakeIdGenerator", strategy = "org.lizhao.database.jpa.IdentifierGeneratorImpl")
+    @GenericGenerator(name = "snowFlakeIdGenerator", type = org.lizhao.database.jpa.IdentifierGeneratorImpl.class)
     private String id;
 
     /**

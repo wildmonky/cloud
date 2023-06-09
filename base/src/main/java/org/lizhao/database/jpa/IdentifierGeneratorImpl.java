@@ -1,16 +1,16 @@
 package org.lizhao.database.jpa;
 
+import jakarta.annotation.PostConstruct;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.generator.BeforeExecutionGenerator;
+import org.hibernate.generator.Generator;
 import org.hibernate.id.IdentifierGenerator;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 
-import javax.annotation.PostConstruct;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * description jpa id生成规则实现类
@@ -21,22 +21,21 @@ import java.util.function.Supplier;
  */
 public class IdentifierGeneratorImpl implements IdentifierGenerator {
 
-    public final static Map<String, Supplier<Serializable>> GENERATORS = new HashMap<>();
+    public final static List<BeforeExecutionGenerator> GENERATORS = new LinkedList<>();
 
     @PostConstruct
     public void postConstruct() {
-        GENERATORS.put("org.lizhao.base.utils.uniquekey.SnowFlake", SnowFlake::generate);
+        GENERATORS.add(new SnowFlake());
     }
 
     @Override
-    public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+    public Object generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
 
         GenericGenerator genericGenerator = object.getClass().getDeclaredAnnotation(GenericGenerator.class);
-
-        String strategy = genericGenerator.strategy();
-        Supplier<Serializable> generator = GENERATORS.get(strategy);
+        Class<? extends Generator> strategy = genericGenerator.type();
+        BeforeExecutionGenerator generator = GENERATORS.get(0);
         if (generator != null) {
-            return generator.get();
+            return generator.generate(session, object, null, null);
         }
 
         return null;

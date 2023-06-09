@@ -1,17 +1,12 @@
 package org.lizhao.base.entity.relation;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.entity.user.UserGroup;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * Description 用户实体{@link User}和用户组实体{@link UserGroup}的关系实体
@@ -24,7 +19,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Entity
-//@TableName("user_user_group_relation")
+@Table(name = "user_user_group_relation")
 public class UserUserGroupRelation extends CommonAttribute {
 
     /**
@@ -32,7 +27,7 @@ public class UserUserGroupRelation extends CommonAttribute {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
-    @GenericGenerator(name = "snowFlakeIdGenerator", strategy = "org.lizhao.database.jpa.IdentifierGeneratorImpl")
+    @GenericGenerator(name = "snowFlakeIdGenerator", type = org.lizhao.database.jpa.IdentifierGeneratorImpl.class)
     private String id;
 
     /**

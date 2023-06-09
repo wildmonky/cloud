@@ -28,7 +28,7 @@ public class ResponseBodyModel<T> {
     public ResponseBodyModel() {}
 
     public static <T> ResponseBodyModel<T> of(int code, T result) {
-        ResponseBodyModel<T> responseResultModel = new ResponseBodyModel<>();
+        ResponseBodyModel<T> responseResultModel = new ResponseBodyModel<T>();
         responseResultModel.setCode(code);
         responseResultModel.setResult(result);
         return responseResultModel;

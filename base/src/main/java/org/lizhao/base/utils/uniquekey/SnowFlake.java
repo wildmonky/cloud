@@ -2,9 +2,13 @@ package org.lizhao.base.utils.uniquekey;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.generator.BeforeExecutionGenerator;
+import org.hibernate.generator.EventType;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.EnumSet;
+
+import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
 
 /**
  * description  雪花算法
@@ -16,54 +20,33 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-public class SnowFlake {
+public class SnowFlake implements BeforeExecutionGenerator {
 
     /**
      * 生成的唯一键的长度(bit)
      */
     private volatile short length = 64;
-
     /**
      * 时间戳长度
      */
     private volatile short timestampLength = 41;
-
     /**
      * 机器位最大长度
      */
     private volatile short workerIdLength = 10;
-
-
     /**
      * 序列位长度
      */
     private volatile short sequenceLength = 12;
 
 
-
-
-
-
-
-
-
-    /**
-     * 生成key
-     *
-     * @return 一个新的唯一键 64bit
-     */
-    public static Serializable generate() {
-
-        LocalDateTime now = LocalDateTime.now();
-
-
-
-
-
-
-
-
+    @Override
+    public Object generate(SharedSessionContractImplementor session, Object owner, Object currentValue, EventType eventType) {
         return null;
     }
 
+    @Override
+    public EnumSet<EventType> getEventTypes() {
+        return INSERT_ONLY;
+    }
 }
