@@ -27,11 +27,11 @@ public class RedisConfigurer {
         RedisTemplate<String, String> temp = new RedisTemplate<>();
         temp.setConnectionFactory(redisConnectionFactory);
 
-        Jackson2JsonRedisSerializer<String> serializer = new Jackson2JsonRedisSerializer<>(String.class);
+
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.activateDefaultTyping(new DefaultBaseTypeLimitingValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
-        serializer.setObjectMapper(om);
+        Jackson2JsonRedisSerializer<String> serializer = new Jackson2JsonRedisSerializer<>(om, String.class);
 
         //key,vlaue序列化方法
         temp.setKeySerializer(new StringRedisSerializer());

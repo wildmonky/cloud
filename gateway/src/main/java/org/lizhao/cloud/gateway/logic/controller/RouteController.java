@@ -2,6 +2,7 @@ package org.lizhao.cloud.gateway.logic.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.lizhao.cloud.gateway.logic.serviceImpl.RouteServiceImpl;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.http.MediaType;
@@ -11,7 +12,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**

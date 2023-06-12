@@ -1,9 +1,8 @@
 package org.lizhao.cloud.gateway.framework.connect;
 
+import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * description

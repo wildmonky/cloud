@@ -1,13 +1,12 @@
 package org.lizhao.cloud.gateway.framework.configurer;
 
+import jakarta.validation.constraints.NotNull;
 import org.lizhao.cloud.gateway.framework.handler.GlobalResponseBodyHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Description webflux全局配置
