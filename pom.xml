@@ -18,6 +18,10 @@
     <properties>
         <cloud.version>0.0.1-SNAPSHOT</cloud.version>
         <java.version>17</java.version>
+        <!--设置maven source编译使用的jdk，否则刷新依赖时自动设置为1.5-->
+        <maven.compiler.source>17</maven.compiler.source>
+        <!--设置maven target编译使用的jdk，否则刷新依赖时自动设置为1.5-->
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
@@ -32,6 +36,8 @@
         <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
         <spring-boot-maven-plugin>3.1.0</spring-boot-maven-plugin>
         <apache-maven-resources-plugin>2.6</apache-maven-resources-plugin>
+        <spring-boot-starter-log4j2>3.1.0</spring-boot-starter-log4j2>
+        <spring-web.version>6.0.9</spring-web.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -55,6 +61,17 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!--引入log42框架-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-log4j2</artifactId>
+                <version>${spring-boot-starter-log4j2}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-web.version}</version>
             </dependency>
             <!--api 管理-->
             <dependency>

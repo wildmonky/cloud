@@ -17,11 +17,7 @@ public class RedisUtil {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    public void save() {
-
-
-
-    }
+    public void save() {}
 
 
 }

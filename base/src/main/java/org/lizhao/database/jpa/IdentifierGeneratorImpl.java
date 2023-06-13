@@ -2,10 +2,10 @@ package org.lizhao.database.jpa;
 
 import jakarta.annotation.PostConstruct;
 import org.hibernate.HibernateException;
-import org.hibernate.annotations.GenericGenerator;
+//import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
-import org.hibernate.generator.Generator;
+//import org.hibernate.generator.Generator;
 import org.hibernate.id.IdentifierGenerator;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 
@@ -31,8 +31,8 @@ public class IdentifierGeneratorImpl implements IdentifierGenerator {
     @Override
     public Object generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
 
-        GenericGenerator genericGenerator = object.getClass().getDeclaredAnnotation(GenericGenerator.class);
-        Class<? extends Generator> strategy = genericGenerator.type();
+//        GenericGenerator genericGenerator = object.getClass().getDeclaredAnnotation(GenericGenerator.class);
+//        Class<? extends Generator> strategy = genericGenerator.type();
         BeforeExecutionGenerator generator = GENERATORS.get(0);
         if (generator != null) {
             return generator.generate(session, object, null, null);

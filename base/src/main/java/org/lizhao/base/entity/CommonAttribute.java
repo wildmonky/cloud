@@ -16,7 +16,6 @@ import org.lizhao.database.jpa.CommonAttributeAuditEntityListener;
  * Description 追加信息
  * 默认所有实体都要继承
  *
- *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
  * @date 2022-06-18 16:17

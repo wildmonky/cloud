@@ -34,17 +34,11 @@ public class RequestIntercept implements WebFilter {
                 .doOnRequest( e -> startTime.set(LocalDateTime.now()))
                 .doOnError(Throwable::printStackTrace)
                 .doFinally( e -> {
-                    String requestStatus;
-                    switch(e) {
-                        case ON_COMPLETE:
-                            requestStatus = "成功";
-                            break;
-                        case ON_ERROR:
-                            requestStatus = "一个错误发生了";
-                            break;
-                        default:
-                            requestStatus = "未成功";
-                    }
+                    String requestStatus = switch (e) {
+                        case ON_COMPLETE -> "成功";
+                        case ON_ERROR -> "一个错误发生了";
+                        default -> "未成功";
+                    };
                     String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
                     Duration duration = Duration.between(startTime.get(), LocalDateTime.now());
                     log.info("请求结果：{}，请求路径：{} ，耗时：{} ms", requestStatus, requestPath, duration.toMillis());

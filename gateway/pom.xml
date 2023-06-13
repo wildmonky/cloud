@@ -12,7 +12,7 @@
     <artifactId>gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gateway</name>
-<!--为pom时导致application配置文件无法读取-->
+    <!--为pom时导致application配置文件无法读取-->
     <packaging>jar</packaging>
     <description>cloud gateway 网关服务</description>
 
@@ -28,7 +28,7 @@
             <version>${cloud.version}</version>
         </dependency>
 
-<!--     加载bootstrap配置文件-->
+        <!--加载bootstrap配置文件-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-context</artifactId>
@@ -130,11 +130,11 @@
 <!--            <artifactId>spring-boot-starter-security</artifactId>-->
 <!--        </dependency>-->
 
-        <!--引入log42框架-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
+<!--        &lt;!&ndash;引入log42框架&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-log4j2</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.commons</groupId>

@@ -23,10 +23,9 @@ public class CommonAttributeAuditEntityListener {
     @PrePersist
     public void prePersist(Object entity) throws CustomException {
 
-        if (entity instanceof CommonAttribute) {
+        if (entity instanceof CommonAttribute commonAttribute) {
             User currentUser = Optional.ofNullable(UserInfoHolder.getCurrentUser()).orElseThrow(() -> CustomException.NOT_LOGIN);
 
-            CommonAttribute commonAttribute = (CommonAttribute) entity;
             commonAttribute.setCreateUserId(currentUser.getCreateUserId());
             commonAttribute.setCreateUserName(currentUser.getCreateUserName());
             commonAttribute.setCreateTime(LocalDateTime.now());
@@ -37,10 +36,9 @@ public class CommonAttributeAuditEntityListener {
     @PreUpdate
     public void postUpdate(Object entity) throws CustomException {
 
-        if (entity instanceof CommonAttribute) {
+        if (entity instanceof CommonAttribute commonAttribute) {
             User currentUser = Optional.ofNullable(UserInfoHolder.getCurrentUser()).orElseThrow(() -> CustomException.NOT_LOGIN);
 
-            CommonAttribute commonAttribute = (CommonAttribute) entity;
             commonAttribute.setUpdateUserId(currentUser.getCreateUserId());
             commonAttribute.setUpdateUserName(currentUser.getCreateUserName());
             commonAttribute.setUpdateTime(LocalDateTime.now());
