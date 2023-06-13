@@ -1,12 +1,12 @@
 package org.lizhao.database.jpa;
 
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.exception.CustomException;
 import org.lizhao.base.model.UserInfoHolder;
 
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 

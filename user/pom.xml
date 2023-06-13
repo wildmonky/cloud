@@ -6,7 +6,7 @@
         <groupId>org.lizhao.cloud</groupId>
         <artifactId>cloud</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <packaging>jar</packaging>
     <artifactId>user</artifactId>
@@ -51,15 +51,34 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven-plugin}</version>
                 <configuration>
+                    <!--Manifest 中 Start-Class，启动类-->
+                    <mainClass>org.lizhao.cloud.user.UserApplication</mainClass>
+                    <!--打包类型-->
+                    <layout>JAR</layout>
+                    <!--分类器，打包后文件后缀-->
+                    <classifier>spring-boot</classifier>
+                    <!--运行时是否包含测试路径-->
+                    <useTestClasspath>false</useTestClasspath>
+                    <!--根据groupId来排除依赖-->
+                    <excludeGroupIds>org.projectlombok</excludeGroupIds>
+                    <!--根据 groupId-artifactId-version 来排除依赖-->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <!--                            <version></version>-->
+                        </exclude>
+                        <!--排除Tomcat启动配置包，使用undertow作为服务器中间件-->
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-tomcat</artifactId>
                         </exclude>
                     </excludes>
                 </configuration>

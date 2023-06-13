@@ -30,6 +30,8 @@
         <mysql-connector-java.version>8.0.30</mysql-connector-java.version>
         <mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>
         <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
+        <spring-boot-maven-plugin>3.1.0</spring-boot-maven-plugin>
+        <apache-maven-resources-plugin>2.6</apache-maven-resources-plugin>
     </properties>
     <dependencyManagement>
         <dependencies>
