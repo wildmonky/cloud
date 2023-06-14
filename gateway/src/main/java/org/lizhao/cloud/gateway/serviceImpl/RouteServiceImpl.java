@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.logic.serviceImpl;
+package org.lizhao.cloud.gateway.serviceImpl;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

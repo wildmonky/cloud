@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.logic.controller;
+package org.lizhao.cloud.gateway.controller;
 
 import org.springframework.stereotype.Controller;
 

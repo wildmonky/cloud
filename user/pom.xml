@@ -63,7 +63,7 @@
                 <version>${spring-boot-maven-plugin}</version>
                 <configuration>
                     <!--Manifest 中 Start-Class，启动类-->
-                    <mainClass>org.lizhao.cloud.user.UserApplication</mainClass>
+                    <mainClass>org.lizhao.user.UserApplication</mainClass>
                     <!--打包类型-->
                     <layout>JAR</layout>
                     <!--分类器，打包后文件后缀-->
@@ -86,6 +86,23 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <!--绑定当前repackage 到 构建生命周期 阶段 package, 当执行package时触发repackage-->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <!--排除spring-boot-devtools-->
+                            <excludeDevtools>true</excludeDevtools>
+                            <layout>JAR</layout>
+                            <!--是否跳过该goal，也可使用mvn clean package -Dspring-boot.repackage.skip=true来跳过springboot的maven打包插件-->
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

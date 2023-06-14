@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.framework.advice;
+package org.lizhao.cloud.gateway;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.lizhao.base.model.ResponseBodyModel;

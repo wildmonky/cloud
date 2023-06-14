@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.framework.configurer;
+package org.lizhao.cloud.gateway.configurer;
 
 import org.springframework.context.annotation.Configuration;
 

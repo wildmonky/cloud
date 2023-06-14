@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.framework.connect;
+package org.lizhao.cloud.gateway.connect;
 
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;

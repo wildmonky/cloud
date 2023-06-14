@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.model.ResponseBodyModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import reactor.core.publisher.Mono;
 
 /**
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-@RestControllerAdvice(annotations = { Controller.class, RestController.class })
+@ControllerAdvice(annotations = { Controller.class, RestController.class })
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)

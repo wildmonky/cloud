@@ -1,6 +1,7 @@
-package org.lizhao.cloud.gateway.framework.intercept;
+package org.lizhao.base.web.intercept;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 @Order(0)
 @Component
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class RequestIntercept implements WebFilter {
 
     @Override
