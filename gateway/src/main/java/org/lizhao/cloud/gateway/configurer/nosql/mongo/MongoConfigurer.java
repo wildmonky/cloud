@@ -1,9 +1,11 @@
 package org.lizhao.cloud.gateway.configurer.nosql.mongo;
 
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 /**
  * description
@@ -15,8 +17,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Configuration
 public class MongoConfigurer {
 
+    @Resource
+    private MongoDatabaseFactory mongoDatabaseFactory;
+
     @Bean
-    public MongoTemplate mongoTemplate(MongoDatabaseFactory mongoDatabaseFactory) {
+    public MongoTemplate mongoTemplate() {
         return new MongoTemplate(mongoDatabaseFactory);
     }
 

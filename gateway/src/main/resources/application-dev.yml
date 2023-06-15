@@ -18,6 +18,8 @@ spring:
     password: 19960214
   data:
     redis:
+      repositories:
+        enabled: true
       host: localhost
       port: 6379
       client-name: gateway
@@ -29,14 +31,10 @@ spring:
           max-idle: 8
           max-wait: -1ms
         shutdown-timeout: 100ms
-#  data:
-#    redis:
-#      repositories:
-#        enabled: true
-#    mongodb:
-#      host: 127.0.0.1
-#      port: 27017
-#      database: test
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: test
 
 #    flyway:
 #      user: dev
