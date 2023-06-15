@@ -10,6 +10,10 @@
 
     <groupId>org.lizhao.cloud</groupId>
     <artifactId>cloud</artifactId>
+    <!--
+        mvn version:set -DnewVersion=***** 更新父项目 version
+        mvn version:update-child-modules 更新子模块 version
+     -->
     <version>0.0.1-SNAPSHOT</version>
     <name>cloud</name>
     <description>my spring cloud cloud根项目 管理依赖</description>
@@ -133,6 +137,7 @@
         </dependencies>
     </dependencyManagement>
 
+    <!--mvn package -f pom.xml -P dev,!test,!prod 注意使用-P !来禁用配置，否则会覆盖-->
     <profiles>
         <profile>
             <id>dev</id>
