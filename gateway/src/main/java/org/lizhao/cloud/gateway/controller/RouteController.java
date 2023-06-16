@@ -23,8 +23,8 @@ import java.util.List;
  * @since 0.0.1-SNAPSHOT
  */
 @Tag(name = "路由操作")
-@Controller
 @RequestMapping(path = "gateway", consumes = {"application/json", "application/form-data"})
+@Controller
 public class RouteController {
 
     @Resource

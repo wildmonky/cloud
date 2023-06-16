@@ -42,6 +42,7 @@
         <apache-maven-resources-plugin>2.6</apache-maven-resources-plugin>
         <spring-boot-starter-log4j2>3.1.0</spring-boot-starter-log4j2>
         <spring-web.version>6.0.9</spring-web.version>
+        <springfox.version>3.0.0</springfox.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -78,6 +79,11 @@
                 <version>${spring-web.version}</version>
             </dependency>
             <!--api 管理-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-core</artifactId>

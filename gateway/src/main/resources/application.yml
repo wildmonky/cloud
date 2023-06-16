@@ -13,6 +13,11 @@ spring:
     #起效的配置文件后缀 application-xxx，maven配置
     active: @maven.spring.env@
 
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+
   cloud:
     gateway:
       enabled: true

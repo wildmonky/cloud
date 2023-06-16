@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class RouteServiceImpl implements RouteService {
-
     @Resource
     private ApplicationContext applicationContext;
     @Resource
