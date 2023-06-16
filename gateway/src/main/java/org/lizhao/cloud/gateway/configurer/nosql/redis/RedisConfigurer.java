@@ -27,7 +27,6 @@ public class RedisConfigurer {
         RedisTemplate<String, String> temp = new RedisTemplate<>();
         temp.setConnectionFactory(redisConnectionFactory);
 
-
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.activateDefaultTyping(new DefaultBaseTypeLimitingValidator(), ObjectMapper.DefaultTyping.NON_FINAL);

@@ -16,7 +16,6 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableWebFlux
 @EnableAspectJAutoProxy
 @EnableJpaAuditing
-@EnableMongoRepositories
 @EnableRedisRepositories
 @EnableReactiveMongoRepositories
 public class GatewayApplication {

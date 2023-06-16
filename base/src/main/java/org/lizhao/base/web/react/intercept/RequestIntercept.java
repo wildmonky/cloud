@@ -1,4 +1,4 @@
-package org.lizhao.base.web.intercept;
+package org.lizhao.base.web.react.intercept;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
