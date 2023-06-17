@@ -29,7 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
-        <spring-cloud-alibaba.version>2021.0.4.0</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2022.0.0.0-RC1</spring-cloud-alibaba.version>
         <spring-data-jpa.version>3.1.0</spring-data-jpa.version>
         <springdoc-openapi-webflux.version>1.7.0</springdoc-openapi-webflux.version>
         <apache-commons-pool2.version>2.11.1</apache-commons-pool2.version>
