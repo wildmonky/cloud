@@ -8,7 +8,6 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * Description webflux全局配置
@@ -18,7 +17,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
  * @date 2022-08-14 19:11
  * @since 0.0.1-SNAPSHOT
  */
-@EnableOpenApi
 @Configuration
 public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
 
@@ -28,12 +26,12 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
 //        return new GlobalResponseBodyHandler(serverCodecConfigurer.getWriters(), requestedContentTypeResolver);
 //    }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.
-                addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-                .resourceChain(false);
-    }
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.
+//                addResourceHandler("/swagger-ui/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+//                .resourceChain(false);
+//    }
 
 }
