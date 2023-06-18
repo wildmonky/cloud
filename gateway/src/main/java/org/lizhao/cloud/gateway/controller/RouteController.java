@@ -4,7 +4,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import org.lizhao.cloud.gateway.serviceImpl.RouteServiceImpl;
+import org.springframework.cloud.gateway.actuate.AbstractGatewayControllerEndpoint;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
+import org.springframework.cloud.gateway.handler.predicate.RoutePredicateFactory;
 import org.springframework.cloud.gateway.route.RouteDefinition;
+import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
+import org.springframework.cloud.gateway.route.RouteDefinitionWriter;
+import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +30,16 @@ import java.util.List;
  * @since 0.0.1-SNAPSHOT
  */
 @Tag(name = "路由操作")
-@RequestMapping(path = "gateway", consumes = {"application/json", "application/form-data"})
+@RequestMapping(path = "/route", consumes = {"application/json", "application/form-data"})
 @Controller
-public class RouteController {
+public class RouteController extends AbstractGatewayControllerEndpoint {
 
-    @Resource
+//    @Resource
     private RouteServiceImpl routeServiceImpl;
+
+    public RouteController(RouteDefinitionLocator routeDefinitionLocator, List<GlobalFilter> globalFilters, List<GatewayFilterFactory> gatewayFilters, List<RoutePredicateFactory> routePredicates, RouteDefinitionWriter routeDefinitionWriter, RouteLocator routeLocator) {
+        super(routeDefinitionLocator, globalFilters, gatewayFilters, routePredicates, routeDefinitionWriter, routeLocator);
+    }
 
 
     /**
@@ -43,7 +54,7 @@ public class RouteController {
      * @return reactor.core.publisher.Flux<org.springframework.cloud.gateway.route.Route>
      */
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "routeList", produces = "application/json" )
+    @GetMapping(path = "/list", produces = "application/json" )
     @ResponseBody
     public Flux<RouteDefinition> routeList(@RequestParam String id,
                                  @RequestParam String source,
@@ -62,7 +73,7 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "更新、新增路由")
-    @PostMapping(path = "routeList", produces = "text/plain")
+    @PostMapping(path = "save", produces = "text/plain")
     public Mono<ServerResponse> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.saveRouteList(routeDefinitionList);
         return ServerResponse.ok().bodyValue("路由保存成功");
@@ -78,21 +89,21 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "删除路由")
-    @GetMapping(path = "routeList", produces = "text/plain")
+    @GetMapping(path = "/remove", produces = "text/plain")
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.removeRouteList(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
     }
 
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "test", produces = "application/json")
+    @GetMapping(path = "/test", produces = "application/json")
     @ResponseBody
     public Mono<String> listTest() {
         return Mono.just("测试成功");
     }
 
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "test1", consumes = "application/json", produces = "application/json")
+    @GetMapping(path = "/test1", consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Flux<String> listTest1() {
         return Flux.just("测试成功");

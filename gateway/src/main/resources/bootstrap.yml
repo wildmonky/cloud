@@ -15,4 +15,4 @@ spring:
         #prefix:
       discovery:
         enabled: false
-        group: demo
+        group: gateway

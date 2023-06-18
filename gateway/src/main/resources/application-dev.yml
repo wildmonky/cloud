@@ -37,10 +37,11 @@ spring:
 #      password: 19960214
 #      url:
 
-#  logging:
-#    #日志级别
-#    level:
-#      root: info
+#logging:
+##  config: log4j2.xml
+#  #日志级别
+#  level:
+#    root: info
 #    #日志输出格式
 #    pattern:
 #      console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'

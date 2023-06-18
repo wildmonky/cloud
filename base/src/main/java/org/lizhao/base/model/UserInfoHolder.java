@@ -12,14 +12,18 @@ import org.lizhao.base.entity.user.User;
  */
 public class UserInfoHolder {
 
-    private static User loginUser = null;
+    private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
 
     public static User getCurrentUser() {
-        return loginUser;
+        return currentUser.get();
     }
 
     public static void setCurrentUser(User user) {
-        loginUser = user;
+        currentUser.set(user);
+    }
+
+    public static void removeCurrentUser() {
+        currentUser.remove();
     }
 
 }

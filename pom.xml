@@ -20,6 +20,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <log.root>cloud-log</log.root>
         <cloud.version>0.0.1-SNAPSHOT</cloud.version>
         <java.version>17</java.version>
         <!--设置maven source编译使用的jdk，否则刷新依赖时自动设置为1.5-->
@@ -32,6 +33,7 @@
         <spring-cloud-alibaba.version>2022.0.0.0-RC1</spring-cloud-alibaba.version>
         <spring-data-jpa.version>3.1.0</spring-data-jpa.version>
         <springdoc-openapi-webflux.version>1.7.0</springdoc-openapi-webflux.version>
+        <springdoc.version>2.1.0</springdoc.version>
         <apache-commons-pool2.version>2.11.1</apache-commons-pool2.version>
         <apache-commons-lang3.version>3.12.0</apache-commons-lang3.version>
         <google-core-findbugs-annotations.version>3.0.1</google-core-findbugs-annotations.version>
@@ -42,6 +44,7 @@
         <apache-maven-resources-plugin>2.6</apache-maven-resources-plugin>
         <spring-boot-starter-log4j2>3.1.0</spring-boot-starter-log4j2>
         <spring-web.version>6.0.9</spring-web.version>
+        <springboot-r2dbc.version>3.1.0</springboot-r2dbc.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -81,23 +84,13 @@
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-                <version>2.1.0</version>
+                <version>${springdoc.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.springdoc</groupId>-->
-<!--                <artifactId>springdoc-openapi-webflux-core</artifactId>-->
-<!--                <version>${springdoc-openapi-webflux.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.springdoc</groupId>-->
-<!--                <artifactId>springdoc-openapi-webflux-ui</artifactId>-->
-<!--                <version>${springdoc-openapi-webflux.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.springdoc</groupId>-->
-<!--                <artifactId>springdoc-openapi-common</artifactId>-->
-<!--                <version>${springdoc-openapi-webflux.version}</version>-->
-<!--            </dependency>-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+                <version>${springboot-r2dbc.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-pool2</artifactId>

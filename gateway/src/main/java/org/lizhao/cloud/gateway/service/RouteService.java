@@ -1,4 +1,4 @@
-package org.lizhao.cloud.base.gateway.service;
+package org.lizhao.cloud.gateway.service;
 
 /**
  * Description route service 路由服务接口

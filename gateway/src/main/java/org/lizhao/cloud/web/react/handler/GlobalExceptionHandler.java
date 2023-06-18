@@ -1,4 +1,4 @@
-package org.lizhao.base.web.react.handler;
+package org.lizhao.cloud.web.react.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.model.ResponseBodyModel;

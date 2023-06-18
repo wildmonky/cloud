@@ -35,12 +35,12 @@
             <AppenderRef ref="Console" />
         </Root>
 
-        <Logger name="org.lizhao.cloud.gateway" additivity="false" level="info">
+        <Logger name="org.lizhao.user" additivity="false" level="info">
             <AppenderRef ref="appServiceLog" />
             <AppenderRef ref="Console" />
         </Logger>
 
-        <Logger name="org.lizhao.cloud.gateway.listener" additivity="false" level="info">
+        <Logger name="org.lizhao.user" additivity="false" level="info">
             <AppenderRef ref="appSystemLog" />
             <AppenderRef ref="Console" />
         </Logger>

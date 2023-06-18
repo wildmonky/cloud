@@ -1,4 +1,4 @@
-package org.lizhao.base.web.react.handler;
+package org.lizhao.cloud.web.react.handler;
 
 import org.lizhao.base.model.ResponseBodyModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;

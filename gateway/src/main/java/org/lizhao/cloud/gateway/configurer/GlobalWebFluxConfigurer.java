@@ -1,12 +1,6 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import jakarta.validation.constraints.NotNull;
-import org.lizhao.base.web.react.handler.GlobalResponseBodyHandler;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
-import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 /**

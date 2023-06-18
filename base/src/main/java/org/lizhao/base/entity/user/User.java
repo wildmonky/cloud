@@ -1,8 +1,7 @@
 package org.lizhao.base.entity.user;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
 
@@ -18,6 +17,8 @@ import org.lizhao.base.entity.CommonAttribute;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user")
 public class User extends CommonAttribute {
@@ -53,5 +54,9 @@ public class User extends CommonAttribute {
      */
     @Column
     private Integer status;
+
+    public static User of(String id, String identity, String name, String password, int status) {
+        return new User(id, identity, name, password, status);
+    }
 
 }

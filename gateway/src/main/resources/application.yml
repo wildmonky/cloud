@@ -1,17 +1,32 @@
 server:
   port: 8081
-  #使用undertow作为服务器中间件，较Tomcat高并发时性能更好
-  undertow:
-    threads:
-      io: 2 #cpu核心数
-      worker: 16 #io线程*8
-    buffer-size:  1024
-    direct-buffers: true
+  servlet:
+    context-path: /gateway
+  netty:
+    max-keep-alive-requests: 10000
+    connection-timeout: 30
 
 spring:
+  output:
+    ansi:
+      enabled: ALWAYS
   profiles:
     #起效的配置文件后缀 application-xxx，maven配置
     active: @maven.spring.env@
+  cloud:
+    gateway:
+      enabled: true
+      redis:
+        enable: true
+      redis-route-definition-repository:
+        enable: true
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5s
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 springdoc:
   api-docs:
@@ -20,14 +35,3 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger.html
-
-  cloud:
-    gateway:
-      enabled: true
-      httpclient:
-        connect-timeout: 3000
-        response-timeout: 5s
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true

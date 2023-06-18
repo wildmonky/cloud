@@ -1,4 +1,4 @@
 @NonNullApi
-package org.lizhao.base.web.react.intercept;
+package org.lizhao.cloud.web.react.intercept;
 
 import reactor.util.annotation.NonNullApi;
