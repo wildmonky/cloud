@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.serviceImpl;
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,9 +10,8 @@ import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -27,14 +27,14 @@ import java.util.stream.Collectors;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-//@Service
+@Service
 public class RouteServiceImpl implements RouteService {
-//    @Resource
+    @Resource
     private ApplicationEventPublisher applicationEventPublisher;
-//    @Resource
+    @Resource
     private RedisRouteDefinitionRepository redisRouteDefinitionRepository;
 
-    public Flux<RouteDefinition> routeList(String id, String source, String target) {
+    public Flux<RouteDefinition> search(String id, String source, String target) {
         Flux<RouteDefinition> routeDefinitionFlux = redisRouteDefinitionRepository.getRouteDefinitions();
         return routeDefinitionFlux.collectList().flatMapIterable(routeList ->
             routeList.stream().filter(route -> {
@@ -70,7 +70,7 @@ public class RouteServiceImpl implements RouteService {
      * @date 2022/6/5 19:38
      * @param routeDefinitionList  要保存的routeDefinition列表
      */
-    public void saveRouteList(List<RouteDefinition> routeDefinitionList) {
+    public void batchSave(List<RouteDefinition> routeDefinitionList) {
         routeDefinitionList.forEach(routeDefinition -> redisRouteDefinitionRepository.save(Mono.just(routeDefinition)).subscribe());
         this.refresh();
     }
@@ -83,8 +83,9 @@ public class RouteServiceImpl implements RouteService {
      * @date 2022/6/5 19:40
      * @param routeDefinitionList 要删除的routeDefinition列表
      */
-    public void removeRouteList(List<RouteDefinition> routeDefinitionList) {
-        routeDefinitionList.forEach(routeDefinition -> redisRouteDefinitionRepository.delete(Mono.just(routeDefinition.getId())));;
+    public void batchRemove(List<RouteDefinition> routeDefinitionList) {
+        routeDefinitionList.forEach(routeDefinition ->
+                redisRouteDefinitionRepository.delete(Mono.just(routeDefinition.getId())));
         this.refresh();
     }
 
@@ -111,10 +112,7 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public void refresh() {
         log.info("{},{}","触发路由刷新！！！", this);
-        // 获取路由
-        // RoutePredicateHandlerMapping#getHandlerInternal
-
-        // 刷新缓存路由 CachingRouteLocator.onApplicationEvent(RefreshRoutesEvent)}
+        // 刷新缓存路由 CachingRouteLocator#onApplicationEvent(RefreshRoutesEvent)
         applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
     }
 

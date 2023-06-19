@@ -17,9 +17,9 @@ spring:
     gateway:
       enabled: true
       redis:
-        enable: true
+        enabled: true #org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
       redis-route-definition-repository:
-        enable: true
+        enabled: true #org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration##org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
       httpclient:
         connect-timeout: 3000
         response-timeout: 5s

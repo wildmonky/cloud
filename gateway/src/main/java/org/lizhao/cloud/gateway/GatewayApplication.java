@@ -11,7 +11,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableAspectJAutoProxy
 @EnableRedisRepositories
 @EnableReactiveMongoRepositories
-@SpringBootApplication(scanBasePackages = "org.lizhao.cloud")
+@SpringBootApplication(scanBasePackages = {"org.lizhao.cloud"})
 public class GatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);

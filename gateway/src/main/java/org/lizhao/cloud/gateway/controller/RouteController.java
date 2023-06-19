@@ -34,7 +34,7 @@ import java.util.List;
 @Controller
 public class RouteController extends AbstractGatewayControllerEndpoint {
 
-//    @Resource
+    @Resource
     private RouteServiceImpl routeServiceImpl;
 
     public RouteController(RouteDefinitionLocator routeDefinitionLocator, List<GlobalFilter> globalFilters, List<GatewayFilterFactory> gatewayFilters, List<RoutePredicateFactory> routePredicates, RouteDefinitionWriter routeDefinitionWriter, RouteLocator routeLocator) {
@@ -60,7 +60,7 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
                                  @RequestParam String source,
                                  @RequestParam String target
     ) {
-        return routeServiceImpl.routeList(id, source, target);
+        return routeServiceImpl.search(id, source, target);
     }
 
     /**
@@ -75,7 +75,7 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     @Operation(summary = "更新、新增路由")
     @PostMapping(path = "save", produces = "text/plain")
     public Mono<ServerResponse> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
-        routeServiceImpl.saveRouteList(routeDefinitionList);
+        routeServiceImpl.batchSave(routeDefinitionList);
         return ServerResponse.ok().bodyValue("路由保存成功");
     }
 
@@ -91,7 +91,7 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     @Operation(summary = "删除路由")
     @GetMapping(path = "/remove", produces = "text/plain")
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
-        routeServiceImpl.removeRouteList(routeDefinitionList);
+        routeServiceImpl.batchRemove(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
     }
 
