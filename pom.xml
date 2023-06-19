@@ -45,6 +45,7 @@
         <spring-boot-starter-log4j2>3.1.0</spring-boot-starter-log4j2>
         <spring-web.version>6.0.9</spring-web.version>
         <springboot-r2dbc.version>3.1.0</springboot-r2dbc.version>
+        <caffeine.version>3.1.6</caffeine.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -90,6 +91,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-r2dbc</artifactId>
                 <version>${springboot-r2dbc.version}</version>
+            </dependency>
+            <!--缓存管理-->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
