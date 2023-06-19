@@ -64,9 +64,8 @@ public class RequestIntercept implements WebFilter {
                     default -> "未成功";
                 };
                 String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
-                Duration duration = Duration.between(startTime.get(), LocalDateTime.now());
                 User currentUser = UserInfoHolder.getCurrentUser();
-                log.info("请求结果: {}, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestStatus, requestPath, currentUser.getName(), currentUser.getIdentity(), duration.toMillis());
+                log.info("请求结果: {}, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestStatus, requestPath, currentUser.getName(), currentUser.getIdentity(), Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
                 // 移除 用户信息
                 UserInfoHolder.removeCurrentUser();
             });
