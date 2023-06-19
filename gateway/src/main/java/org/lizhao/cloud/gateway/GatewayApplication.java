@@ -7,11 +7,11 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
-@SpringBootApplication
 @EnableWebFlux
 @EnableAspectJAutoProxy
 @EnableRedisRepositories
 @EnableReactiveMongoRepositories
+@SpringBootApplication(scanBasePackages = "org.lizhao.cloud")
 public class GatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
