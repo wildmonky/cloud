@@ -18,8 +18,9 @@ spring:
       host: localhost
       port: 6379
       database: 0
+      password: '123456'
       client-name: gateway
-      client-type: lettuce
+      client-type: LETTUCE
       lettuce:
         pool:
           enabled: true
