@@ -2,6 +2,8 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.support.NameUtils;
 
 import java.util.regex.Pattern;
 
@@ -14,23 +16,23 @@ import java.util.regex.Pattern;
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
-public class HeaderPredicateDefinition {
+public class HeaderPredicateDefinition extends PredicateDefinition {
 
-    private final String name = "Header";
     private final String headerName;
     private final Pattern regex;
 
     public HeaderPredicateDefinition(@NotNull String headerName, @NotNull Pattern regex) {
+        super.setName("Header");
         this.headerName = headerName;
         this.regex = regex;
+        super.getArgs().put(NameUtils.generateName(0), regex.pattern());
     }
     public HeaderPredicateDefinition(@NotNull String headerName, String regex) {
-        this.headerName = headerName;
-        this.regex = Pattern.compile(regex);
+        this(headerName, Pattern.compile(regex));
     }
 
     public String toString() {
-        return this.name + "=" + this.headerName + ", " + this.regex.pattern();
+        return super.getName() + "=" + this.headerName + ", " + this.regex.pattern();
     }
 
 }

@@ -2,10 +2,11 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.springframework.http.HttpMethod;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,19 +19,24 @@ import java.util.stream.Collectors;
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
-public class PathPredicateDefinition {
+public class PathPredicateDefinition extends PredicateDefinition {
 
-    private final String name = "Path";
     private final Set<String> pathMatcherStrSet;
     private final Set<AntPathMatcher> pathMatcherSet;
 
     public PathPredicateDefinition(@NotNull Set<String> pathMatcherSet) {
+        super.setName("Path");
         this.pathMatcherSet = pathMatcherSet.stream().map(e -> new AntPathMatcher(e.toUpperCase())).collect(Collectors.toSet());
         this.pathMatcherStrSet = pathMatcherSet;
+        Map<String, String> args = super.getArgs();
+        int i = 0;
+        for (String pathMatcher : pathMatcherSet) {
+            args.put(NameUtils.generateName(i++), pathMatcher);
+        }
     }
 
     public String toString() {
-        return this.name + "=" + String.join(",", this.pathMatcherStrSet);
+        return super.getName() + "=" + String.join(",", this.pathMatcherStrSet);
     }
 
 }

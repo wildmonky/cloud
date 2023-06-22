@@ -2,10 +2,13 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.support.NameUtils;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description BetweenPredicateDefinition
@@ -16,22 +19,24 @@ import java.util.List;
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
-public class BetweenPredicateDefinition {
+public class BetweenPredicateDefinition extends PredicateDefinition {
 
-    private final String name = "Between";
     private final List<ZonedDateTime> timeList = new ArrayList<>(2);
 
     public BetweenPredicateDefinition(@NotNull ZonedDateTime startTime, @NotNull ZonedDateTime endTime) {
+        super.setName("Between");
         this.timeList.add(startTime);
         this.timeList.add(endTime);
+        Map<String, String> args = super.getArgs();
+        args.put(NameUtils.generateName(0), startTime.toString());
+        args.put(NameUtils.generateName(1), endTime.toString());
     }
     public BetweenPredicateDefinition(String startTime, String endTime) {
-        this.timeList.add(ZonedDateTime.parse(startTime));
-        this.timeList.add(ZonedDateTime.parse(endTime));
+        this(ZonedDateTime.parse(startTime), ZonedDateTime.parse(endTime));
     }
 
     public String toString() {
-        return this.name +
+        return super.getName() +
                 "=" +
                 this.timeList.get(0).toString() +
                 ", " +

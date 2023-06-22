@@ -2,7 +2,10 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.support.NameUtils;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -14,17 +17,22 @@ import java.util.Set;
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
-public class HostPredicateDefinition {
+public class HostPredicateDefinition extends PredicateDefinition {
 
-    private final String name = "Host";
     private final Set<String> hostPatternSet;
 
     public HostPredicateDefinition(@NotNull Set<String> hostPatternSet) {
+        super.setName("Host");
         this.hostPatternSet = hostPatternSet;
+        Map<String, String> args = super.getArgs();
+        int i = 0;
+        for (String host : hostPatternSet) {
+            args.put(NameUtils.generateName(i++), host);
+        }
     }
 
     public String toString() {
-        return this.name + "=" + String.join(",", hostPatternSet);
+        return super.getName() + "=" + String.join(",", hostPatternSet);
     }
 
 }

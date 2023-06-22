@@ -2,31 +2,27 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.cloud.gateway.support.NameUtils;
+
 import java.time.ZonedDateTime;
 
-/**
- * Description BeforePredicateDefinition
- *
- * @author lizhao
- * @version 0.0.1-SNAPSHOT
- * @date 2023-06-21 23:16
- * @since 0.0.1-SNAPSHOT
- */
 @Getter
-public class BeforePredicateDefinition {
+public class BeforePredicateDefinition extends PredicateDefinition {
 
-    private final String name = "Before";
     private final ZonedDateTime time;
 
     public BeforePredicateDefinition(@NotNull ZonedDateTime time) {
+        super.setName("Before");
+        super.getArgs().put(NameUtils.generateName(0), time.toString());
         this.time = time;
     }
     public BeforePredicateDefinition(String time) {
-        this.time = ZonedDateTime.parse(time);
+        this(ZonedDateTime.parse(time));
     }
 
     public String toString() {
-        return this.name + "=" + time.toString();
+        return super.getName() + "=" + time.toString();
     }
 
 }
