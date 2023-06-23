@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 /**
  * Description PathPredicateDefinition
+ * 请求路径（URL）抉择器：符合指定范围内请求URL的请求可通过
+ *                    可同时配置多个请求URL
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -35,7 +37,7 @@ public class PathPredicateDefinition extends PredicateDefinition {
         }
     }
 
-    public String toString() {
+    public String toYml() {
         return super.getName() + "=" + String.join(",", this.pathMatcherStrSet);
     }
 

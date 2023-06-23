@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 /**
  * Description HeaderPredicateDefinition
+ * 请求头抉择器：包含指定的请求头的请求可通过，支持正则表达式
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -31,7 +32,7 @@ public class HeaderPredicateDefinition extends PredicateDefinition {
         this(headerName, Pattern.compile(regex));
     }
 
-    public String toString() {
+    public String toYml() {
         return super.getName() + "=" + this.headerName + ", " + this.regex.pattern();
     }
 

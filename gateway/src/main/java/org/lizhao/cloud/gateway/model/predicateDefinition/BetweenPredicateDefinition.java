@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * Description BetweenPredicateDefinition
+ * 时间区域抉择器：在规定时间区域内接收到的请求可通过
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -35,7 +36,7 @@ public class BetweenPredicateDefinition extends PredicateDefinition {
         this(ZonedDateTime.parse(startTime), ZonedDateTime.parse(endTime));
     }
 
-    public String toString() {
+    public String toYml() {
         return super.getName() +
                 "=" +
                 this.timeList.get(0).toString() +

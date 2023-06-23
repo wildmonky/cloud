@@ -6,6 +6,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 
+/**
+ * Description: WeightPredicateDefinition
+ * 比重抉择器：负载均衡
+ *
+ * - id: weight_high
+ *       uri: https://weighthigh.org
+ *       predicates:
+ *        - Weight=group1, 8
+ * - id: weight_low
+ *       uri: https://weightlow.org
+ *       predicates:
+ *        - Weight=group1, 2
+ * This route would forward ~80% of traffic to weighthigh.org and ~20% of traffic to weighlow.org
+ */
 @Getter
 @Slf4j
 public class WeightPredicateDefinition extends PredicateDefinition {
@@ -27,7 +41,7 @@ public class WeightPredicateDefinition extends PredicateDefinition {
         super.getArgs().put(NameUtils.generateName(1), weightStr);
     }
 
-    public String toString() {
+    public String toYml() {
         return super.getName() + "=" + this.group + "," + this.weight;
     }
 
