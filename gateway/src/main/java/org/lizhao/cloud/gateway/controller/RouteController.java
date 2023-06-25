@@ -96,17 +96,17 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     }
 
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "/test", produces = "application/json")
+    @GetMapping(path = "/test", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
     public Mono<String> listTest() {
         return Mono.just("测试成功");
     }
 
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "/test1", consumes = "application/json", produces = "application/json")
+    @GetMapping(path = "/test1", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
     public Flux<String> listTest1() {
-        return Flux.just("测试成功");
+        return Flux.just("测试成功1", "测试成功2", "测试成功3");
     }
 
 }

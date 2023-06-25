@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.web.reactive.config.EnableWebFlux;
 
-@EnableWebFlux
 @EnableAspectJAutoProxy
 @EnableRedisRepositories
 @EnableReactiveMongoRepositories

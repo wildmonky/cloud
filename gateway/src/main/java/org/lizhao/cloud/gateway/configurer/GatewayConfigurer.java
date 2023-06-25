@@ -1,12 +1,9 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import org.springframework.cloud.gateway.config.PropertiesRouteDefinitionLocator;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Description 网关配置类
@@ -17,4 +14,14 @@ import java.util.concurrent.TimeUnit;
  * @since 0.0.1-SNAPSHOT
  */
 @Configuration
-public class GatewayConfigurer {}
+public class GatewayConfigurer {
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes().route("test", r -> r
+                .path("/gateway/**")
+                .uri("https://www.baidu.com")
+        ).build();
+    }
+
+}
