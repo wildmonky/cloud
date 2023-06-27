@@ -12,7 +12,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Description 路由服务接口实现类
@@ -53,32 +52,30 @@ public class RouteServiceImpl extends RouteService {
     @Resource
     private RedisRouteDefinitionRepository redisRouteDefinitionRepository;
 
-    public Flux<RouteDefinition> search(String id, String source, String target) {
+    public Mono<List<RouteDefinition>> search(String id, String source, String target) {
         Flux<RouteDefinition> routeDefinitionFlux = redisRouteDefinitionRepository.getRouteDefinitions();
-        return routeDefinitionFlux.collectList().flatMapIterable(routeList ->
-            routeList.stream().filter(route -> {
-                if (StringUtils.isNotBlank(id) && !route.getId().equalsIgnoreCase(id)) {
-                    return false;
-                }
-                if (StringUtils.isNotBlank(source)) {
-                    List<PredicateDefinition> predicates = route.getPredicates();
-                    if (ObjectUtils.isNotEmpty(predicates)) {
-                        boolean sourceFlag = false;
-                        for (PredicateDefinition predicate : predicates) {
-                            if (StringUtils.isBlank(predicate.getName())) {
+        return routeDefinitionFlux.filter(route -> {
+            if (StringUtils.isNotBlank(id) && !route.getId().equalsIgnoreCase(id)) {
+                return false;
+            }
+            if (StringUtils.isNotBlank(source)) {
+                List<PredicateDefinition> predicates = route.getPredicates();
+                if (ObjectUtils.isNotEmpty(predicates)) {
+                    boolean sourceFlag = false;
+                    for (PredicateDefinition predicate : predicates) {
+                        if (StringUtils.isBlank(predicate.getName())) {
 //                                predicate.getArgs();
-                                sourceFlag = true;
-                            }
-                        }
-
-                        if (!sourceFlag) {
-                            return false;
+                            sourceFlag = true;
                         }
                     }
+
+                    if (!sourceFlag) {
+                        return false;
+                    }
                 }
-                return !StringUtils.isNotBlank(target) || route.getUri().getPath().contains(target);
-            }).collect(Collectors.toList())
-        );
+            }
+            return !StringUtils.isNotBlank(target) || route.getUri().getPath().contains(target);
+        }).collectList();
     }
 
     /**

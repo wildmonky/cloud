@@ -56,9 +56,9 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     @Operation(summary = "查询路由列表")
     @GetMapping(path = "/list", produces = "application/json" )
     @ResponseBody
-    public Flux<RouteDefinition> routeList(@RequestParam String id,
-                                 @RequestParam String source,
-                                 @RequestParam String target
+    public Mono<List<RouteDefinition>> routeList(@RequestParam(required = false) String id,
+                                 @RequestParam(required = false) String source,
+                                 @RequestParam(required = false) String target
     ) {
         return routeServiceImpl.search(id, source, target);
     }
@@ -96,17 +96,10 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     }
 
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "/test", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(path = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Mono<String> listTest() {
-        return Mono.just("测试成功");
-    }
-
-    @Operation(summary = "查询路由列表")
-    @GetMapping(path = "/test1", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ResponseBody
-    public Flux<String> listTest1() {
-        return Flux.just("测试成功1", "测试成功2", "测试成功3");
+    public String listTest() {
+        return Mono.just("测试成功").block();
     }
 
 }
