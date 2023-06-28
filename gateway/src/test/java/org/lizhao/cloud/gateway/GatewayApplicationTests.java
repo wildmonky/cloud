@@ -26,4 +26,11 @@ class GatewayApplicationTests {
         System.out.println(matcher.matches());
     }
 
+    @Test
+    public void test1() {
+        Pattern pattern = Pattern.compile(".*/test");
+        Matcher matcher = pattern.matcher("/gateway/route/test");
+        System.out.println(matcher.matches());
+    }
+
 }

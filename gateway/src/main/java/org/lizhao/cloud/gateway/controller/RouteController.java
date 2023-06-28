@@ -73,7 +73,7 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "更新、新增路由")
-    @PostMapping(path = "save", produces = "text/plain")
+    @PostMapping(path = "save")
     public Mono<ServerResponse> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.batchSave(routeDefinitionList);
         return ServerResponse.ok().bodyValue("路由保存成功");
