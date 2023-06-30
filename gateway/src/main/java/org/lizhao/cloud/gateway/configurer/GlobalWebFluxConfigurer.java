@@ -1,12 +1,10 @@
 package org.lizhao.cloud.gateway.configurer;
 
+import org.lizhao.cloud.web.react.httpMessageReader.RouteDefinitionHttpMessageReader;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.HttpMessageReader;
-import org.springframework.http.codec.ResourceHttpMessageReader;
 import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-
-import java.util.List;
 
 /**
  * Description webflux全局配置
@@ -25,10 +23,21 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
 //        return new GlobalResponseBodyHandler(serverCodecConfigurer.getWriters(), requestedContentTypeResolver);
 //    }
 
+    /**
+     * 添加自定义类型转换 支持类型:
+     *      1、Decoder, Encoder;
+     *      2、HttpMessageReader, HttpMessageWriter;
+     *      3、
+     *
+     * @see DefaultServerCodecConfigurer
+     * org.springframework.http.codec.support.BaseCodecConfigurer的实现类
+     * 从其getReaders()方法中可以看出自定义的优先级最高 {@link DefaultServerCodecConfigurer#getReaders()}
+     * @param configurer the configurer to customize readers and writers
+     */
     @Override
     public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
-        //TODO 设置自定义 request body 类型转换
-        configurer.getReaders().add(new ResourceHttpMessageReader());
+        //设置自定义request body 类型转换
+        configurer.customCodecs().registerWithDefaultConfig(new RouteDefinitionHttpMessageReader());
         configurer.defaultCodecs().enableLoggingRequestDetails(true);
     }
 

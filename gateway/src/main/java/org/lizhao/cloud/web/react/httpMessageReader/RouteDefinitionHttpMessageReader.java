@@ -6,8 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.LoggingCodecSupport;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.lang.Nullable;
+import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -25,38 +25,45 @@ import java.util.Map;
 public class RouteDefinitionHttpMessageReader extends LoggingCodecSupport
         implements HttpMessageReader<RouteDefinition> {
 
+    private final ResolvableType ROUTE_VALUE_TYPE = ResolvableType.forType(RouteDefinition.class);
+    private final List<MediaType> MEDIA_TYPE_LIST = List.of(MediaType.APPLICATION_JSON);
+
     @Override
     public List<MediaType> getReadableMediaTypes() {
-        return null;
+        return MEDIA_TYPE_LIST;
     }
 
     @Override
-    public List<MediaType> getReadableMediaTypes(ResolvableType elementType) {
-        return HttpMessageReader.super.getReadableMediaTypes(elementType);
-    }
-
-    @Override
-    public boolean canRead(ResolvableType elementType, MediaType mediaType) {
-        return false;
+    public boolean canRead(ResolvableType elementType, @Nullable MediaType mediaType) {
+        if (!supportsMediaType(mediaType)) {
+            return false;
+        }
+        if (RouteDefinition.class.isAssignableFrom(elementType.toClass()) && elementType.hasUnresolvableGenerics()) {
+            return true;
+        }
+        return ROUTE_VALUE_TYPE.isAssignableFrom(elementType);
     }
 
     @Override
     public Flux<RouteDefinition> read(ResolvableType elementType, ReactiveHttpInputMessage message, Map<String, Object> hints) {
-        return null;
+        return Flux.empty();
     }
 
     @Override
     public Mono<RouteDefinition> readMono(ResolvableType elementType, ReactiveHttpInputMessage message, Map<String, Object> hints) {
-        return null;
+        return Mono.empty();
     }
 
-    @Override
-    public Flux<RouteDefinition> read(ResolvableType actualType, ResolvableType elementType, ServerHttpRequest request, ServerHttpResponse response, Map<String, Object> hints) {
-        return HttpMessageReader.super.read(actualType, elementType, request, response, hints);
-    }
+    private boolean supportsMediaType(@Nullable MediaType mediaType) {
+        if (mediaType == null) {
+            return true;
+        }
 
-    @Override
-    public Mono<RouteDefinition> readMono(ResolvableType actualType, ResolvableType elementType, ServerHttpRequest request, ServerHttpResponse response, Map<String, Object> hints) {
-        return HttpMessageReader.super.readMono(actualType, elementType, request, response, hints);
+        for (MediaType supportedMediaType : MEDIA_TYPE_LIST) {
+            if (supportedMediaType.isCompatibleWith(mediaType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
