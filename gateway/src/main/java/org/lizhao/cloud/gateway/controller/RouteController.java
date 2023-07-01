@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -74,9 +75,9 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     @Operation(summary = "更新、新增路由")
     @PostMapping(path = "save")
     @ResponseBody
-    public Mono<String> saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionList) {
-//        routeServiceImpl.batchSave(routeDefinitionList);
-        return Mono.just("路由保存成功");
+    public Flux<RouteDefinition> saveRouteList(@RequestBody Flux<RouteDefinition> routeDefinitionFlux) {
+//        routeServiceImpl.batchSave(routeDefinitionList)
+        return routeDefinitionFlux.doOnNext(System.out::println);
     }
 
     /**

@@ -1,6 +1,6 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import org.lizhao.cloud.web.react.httpMessageReader.RouteDefinitionHttpMessageReader;
+import org.lizhao.cloud.web.react.json.decoder.RouteDefinitionDecoder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
@@ -37,7 +37,7 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
     @Override
     public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
         //设置自定义request body 类型转换
-        configurer.customCodecs().registerWithDefaultConfig(new RouteDefinitionHttpMessageReader());
+        configurer.customCodecs().register(new RouteDefinitionDecoder());
         configurer.defaultCodecs().enableLoggingRequestDetails(true);
     }
 

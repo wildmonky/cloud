@@ -27,18 +27,18 @@ public class WeightPredicateDefinition extends PredicateDefinition {
     private final String group;
     private final String weight;
 
-    public WeightPredicateDefinition(@NotNull String group, String weightStr) {
+    public WeightPredicateDefinition(@NotNull String group, String weight) {
         try{
-            int weight = Integer.parseInt(weightStr);
+            int weightInt = Integer.parseInt(weight);
         }catch (NumberFormatException e) {
-            log.error("weight必须是数字：{}", weightStr);
+            log.error("weight必须是数字：{}", weight);
             e.printStackTrace();
         }
         super.setName("Weight");
         this.group = group;
-        this.weight = weightStr;
+        this.weight = weight;
         super.getArgs().put(NameUtils.generateName(0), group);
-        super.getArgs().put(NameUtils.generateName(1), weightStr);
+        super.getArgs().put(NameUtils.generateName(1), weight);
     }
 
     public String toYml() {

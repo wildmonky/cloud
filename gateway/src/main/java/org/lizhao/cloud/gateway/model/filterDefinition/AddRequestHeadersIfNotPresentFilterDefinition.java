@@ -14,9 +14,9 @@ import java.util.Map;
  * @version V1.0
  * @date 2023/6/23 16:01:30
  */
-public class AddRequestHeaderIfNotPresentFilterDefinition extends FilterDefinition {
+public class AddRequestHeadersIfNotPresentFilterDefinition extends FilterDefinition {
 
-    public AddRequestHeaderIfNotPresentFilterDefinition(@NotNull Map<String, String> headerMap) {
+    public AddRequestHeadersIfNotPresentFilterDefinition(@NotNull Map<String, String> headerMap) {
         super();
         super.setName("AddRequestHeadersIfNotPresent");
         int i = 0;
