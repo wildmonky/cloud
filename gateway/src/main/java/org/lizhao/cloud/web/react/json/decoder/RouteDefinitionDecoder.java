@@ -20,9 +20,10 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Description TODO
@@ -95,7 +96,9 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
             JsonNode nextNode = next.getValue();
 
             switch(fieldName) {
-                case "id", "order" -> routeDefinition.setId(nextNode.asText());
+                case "id" -> routeDefinition.setId(nextNode.asText());
+                case "order" -> routeDefinition.setOrder(nextNode.asInt(0));
+                case "uri" -> routeDefinition.setUri(URI.create(nextNode.asText()));
                 case "predicates" -> routeDefinition.setPredicates(parseDefinition(nextNode, PredicateDefinition.class));
                 case "filters" -> routeDefinition.setFilters(parseDefinition(nextNode, FilterDefinition.class));
                 default -> {}
@@ -116,7 +119,7 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
             if (clazz.equals(PredicateDefinition.class)) {
                 o = parsePredicate(child);
             } else if(clazz.equals(FilterDefinition.class)) {
-                o = parseFilter(jsonNode);
+                o = parseFilter(child);
             } else {
                 throw new RuntimeException("Definition类型异常");
             }
@@ -154,9 +157,20 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
             List<? extends Class<?>> argsTypeList = args.stream().map(Object::getClass).toList();
             Class<?>[] argTypes = argsTypeList.toArray(new Class<?>[0]);
             Class<?> forName = Class.forName(PREDICATE_DEFINITION_PACKAGE + "." + field + "PredicateDefinition");
-            Object o = forName.getDeclaredConstructor(argTypes).newInstance(args.toArray(new Object[0]));
+            Constructor<?>[] constructors = forName.getConstructors();
+            Constructor<?> finalConstructor = Arrays.stream(constructors).filter(constructor -> {
+                Class<?>[] parameterTypes = constructor.getParameterTypes();
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    Class<?> parameterType = parameterTypes[i];
+                    if (!parameterType.isAssignableFrom(argTypes[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }).findFirst().orElseThrow(() -> new RuntimeException("未获取到对应的构造函数"));
+            Object o = finalConstructor.newInstance(args.toArray(new Object[0]));
             return (PredicateDefinition) o;
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+        } catch (ClassNotFoundException | InvocationTargetException |
                  InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -195,12 +209,23 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
                 }
                 default -> throw new RuntimeException(String.format("未知的%1$sFilterDefinition", field));
             }
-            List<? extends Class<?>> argsTypeList = args.stream().map(Object::getClass).toList();
+            List<? extends Class<?>> argsTypeList = args.stream().map(e -> e.getClass().getSuperclass()).toList();
             Class<?>[] argTypes = argsTypeList.toArray(new Class<?>[0]);
             Class<?> forName = Class.forName(FILTER_DEFINITION_PACKAGE + "." + field + "FilterDefinition");
-            Object o = forName.getDeclaredConstructor(argTypes).newInstance(args.toArray(new Object[0]));
+            Constructor<?>[] constructors = forName.getConstructors();
+            Constructor<?> finalConstructor = Arrays.stream(constructors).filter(constructor -> {
+                Class<?>[] parameterTypes = constructor.getParameterTypes();
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    Class<?> parameterType = parameterTypes[i];
+                    if (!parameterType.isAssignableFrom(argTypes[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }).findFirst().orElseThrow(() -> new RuntimeException("未获取到对应的构造函数"));
+            Object o = finalConstructor.newInstance(args.toArray(new Object[0]));
             return (FilterDefinition) o;
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+        } catch (ClassNotFoundException | InvocationTargetException |
                  InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
