@@ -2,7 +2,8 @@ package org.lizhao.cloud.web.react.json.decoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.lizhao.base.utils.reflect.ReflectUtil;
+import org.lizhao.cloud.gateway.configurer.json.deserializer.FilterDefinitionDeserializer;
+import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -20,8 +21,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.*;
 
@@ -40,10 +39,6 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
     public RouteDefinitionDecoder() {
         super(MediaType.APPLICATION_JSON);
     }
-
-    private static final String PREDICATE_DEFINITION_PACKAGE = "org.lizhao.cloud.gateway.model.predicateDefinition";
-
-    private static final String FILTER_DEFINITION_PACKAGE = "org.lizhao.cloud.gateway.model.filterDefinition";
 
     @Override
     public Flux<RouteDefinition> decode(Publisher<DataBuffer> inputStream, ResolvableType elementType, @Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
@@ -129,106 +124,11 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
     }
 
     private PredicateDefinition parsePredicate(JsonNode jsonNode) {
-        String field = ReflectUtil.upperFirstChar(jsonNode.get("name").asText());
-        try {
-            List<String> args = new ArrayList<>();
-            switch (field) {
-                case "After", "Before" -> args.add(jsonNode.get("time").asText());
-                case "Between" -> args.addAll(jsonNode.findValuesAsText("timeList"));
-                case "Header" -> {
-                    args.add(jsonNode.get("headerName").asText());
-                    args.add(jsonNode.get("regex").asText());
-                }
-                case "Host" -> args.addAll(jsonNode.findValuesAsText("hostPatternSet"));
-                case "Method" -> args.addAll(jsonNode.findValuesAsText("httpMethodSet"));
-                case "Path" -> args.addAll(jsonNode.findValuesAsText("pathMatcherSet"));
-                case "Query" -> {
-                    args.add(jsonNode.get("paramName").asText());
-                    args.add(jsonNode.get("paramValue").asText());
-                }
-                case "RemoteAddr" -> args.add(jsonNode.get("remoteAddr").asText());
-                case "XForwardedRemoteAddr" -> args.addAll(jsonNode.findValuesAsText("xForwardedRemoteAddrSet"));
-                case "Weight" -> {
-                    args.add(jsonNode.get("group").asText());
-                    args.add(jsonNode.get("weight").asText());
-                }
-                default -> throw new RuntimeException(String.format("未知的%1$sPredicateDefinition", field));
-            }
-            List<? extends Class<?>> argsTypeList = args.stream().map(Object::getClass).toList();
-            Class<?>[] argTypes = argsTypeList.toArray(new Class<?>[0]);
-            Class<?> forName = Class.forName(PREDICATE_DEFINITION_PACKAGE + "." + field + "PredicateDefinition");
-            Constructor<?>[] constructors = forName.getConstructors();
-            Constructor<?> finalConstructor = Arrays.stream(constructors).filter(constructor -> {
-                Class<?>[] parameterTypes = constructor.getParameterTypes();
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    Class<?> parameterType = parameterTypes[i];
-                    if (!parameterType.isAssignableFrom(argTypes[i])) {
-                        return false;
-                    }
-                }
-                return true;
-            }).findFirst().orElseThrow(() -> new RuntimeException("未获取到对应的构造函数"));
-            Object o = finalConstructor.newInstance(args.toArray(new Object[0]));
-            return (PredicateDefinition) o;
-        } catch (ClassNotFoundException | InvocationTargetException |
-                 InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return PredicateDefinitionDeserializer.parse(jsonNode);
     }
 
     private FilterDefinition parseFilter(JsonNode jsonNode) {
-        String field = ReflectUtil.upperFirstChar(jsonNode.get("name").asText());
-        try {
-            List<Object> args = new ArrayList<>();
-            switch (field) {
-                case "AddRequestHeader", "AddResponseHeader" -> {
-                    args.add(jsonNode.get("headerName").asText());
-                    args.add(jsonNode.get("headerValue").asText());
-                }
-                case "AddRequestHeadersIfNotPresent" -> {
-                    JsonNode node = jsonNode.get("headerMap");
-                    Map<String, String> map = new HashMap<>();
-                    node.fields().forEachRemaining(ite -> {
-                        map.put(ite.getKey(), ite.getValue().asText(""));
-                    });
-                    args.add(map);
-                }
-                case "AddRequestParameter" -> {
-                    args.add(jsonNode.get("paramName").asText());
-                    args.add(jsonNode.get("paramValue").asText());;
-                }
-                case "CircuitBreaker" -> {
-                    args.add(jsonNode.get("circuitBreakerName").asText());
-                    args.add(jsonNode.get("fallBackUri").asText());
-                    JsonNode node = jsonNode.get("statusCodeSet");
-                    Map<String, String> map = new HashMap<>();
-                    node.fields().forEachRemaining(ite -> {
-                        map.put(ite.getKey(), ite.getValue().asText(""));
-                    });
-                    args.add(map);
-                }
-                default -> throw new RuntimeException(String.format("未知的%1$sFilterDefinition", field));
-            }
-            List<? extends Class<?>> argsTypeList = args.stream().map(e -> e.getClass().getSuperclass()).toList();
-            Class<?>[] argTypes = argsTypeList.toArray(new Class<?>[0]);
-            Class<?> forName = Class.forName(FILTER_DEFINITION_PACKAGE + "." + field + "FilterDefinition");
-            Constructor<?>[] constructors = forName.getConstructors();
-            Constructor<?> finalConstructor = Arrays.stream(constructors).filter(constructor -> {
-                Class<?>[] parameterTypes = constructor.getParameterTypes();
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    Class<?> parameterType = parameterTypes[i];
-                    if (!parameterType.isAssignableFrom(argTypes[i])) {
-                        return false;
-                    }
-                }
-                return true;
-            }).findFirst().orElseThrow(() -> new RuntimeException("未获取到对应的构造函数"));
-            Object o = finalConstructor.newInstance(args.toArray(new Object[0]));
-            return (FilterDefinition) o;
-        } catch (ClassNotFoundException | InvocationTargetException |
-                 InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return FilterDefinitionDeserializer.parse(jsonNode);
     }
 
 }

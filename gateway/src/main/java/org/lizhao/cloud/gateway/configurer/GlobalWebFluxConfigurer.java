@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.lizhao.base.utils.reflect.ReflectUtil;
 import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
+import org.lizhao.cloud.web.react.json.decoder.RouteDefinitionDecoder;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -53,15 +54,15 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
     @Override
     public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
         //设置自定义request body 类型转换
-//        configurer.customCodecs().register(new RouteDefinitionDecoder());
+        configurer.customCodecs().register(new RouteDefinitionDecoder());
         configurer.defaultCodecs().enableLoggingRequestDetails(true);
-        configurer.defaultCodecs().configureDefaultCodec(codec -> {
-            if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
-                SimpleModule simpleModule = new SimpleModule();
-                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
-                abstractJackson2Decoder.getObjectMapper().registerModule(simpleModule);
-            }
-        });
+//        configurer.defaultCodecs().configureDefaultCodec(codec -> {
+//            if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
+//                SimpleModule simpleModule = new SimpleModule();
+//                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
+//                abstractJackson2Decoder.getObjectMapper().registerModule(simpleModule);
+//            }
+//        });
     }
 
 }

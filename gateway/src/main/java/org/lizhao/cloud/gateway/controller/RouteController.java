@@ -75,9 +75,8 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     @Operation(summary = "更新、新增路由")
     @PostMapping(path = "save")
     @ResponseBody
-    public Flux<RouteDefinition> saveRouteList(@RequestBody Flux<RouteDefinition> routeDefinitionFlux) {
-//        routeServiceImpl.batchSave(routeDefinitionList)
-        return routeDefinitionFlux.doOnNext(System.out::println);
+    public void saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionFlux) {
+        routeServiceImpl.batchSave(routeDefinitionFlux);
     }
 
     /**

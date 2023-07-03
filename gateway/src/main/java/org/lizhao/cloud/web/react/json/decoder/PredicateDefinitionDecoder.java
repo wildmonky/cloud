@@ -3,6 +3,7 @@ package org.lizhao.cloud.web.react.json.decoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.lizhao.base.utils.reflect.ReflectUtil;
+import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.core.ResolvableType;
@@ -38,26 +39,8 @@ public class PredicateDefinitionDecoder extends AbstractDecoder<PredicateDefinit
             dataBufferFlux.handle((dataBuffer, sink) -> {
                 try {
                     JsonNode node = mapper.readTree(dataBuffer.asInputStream());
-                    Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, JsonNode> next = iterator.next();
-                        String field = ReflectUtil.upperFirstChar(next.getValue().asText());
-                        JsonNode nextValue = next.getValue();
-                        Class<?> forName = Class.forName(field + "PredicateDefinition");
-                        Object o = new Object();
-                        switch (field) {
-                            case "After", "Before" ->
-                                    o = forName.getDeclaredConstructor(String.class).newInstance(nextValue.asText());
-                            case "Between" -> {
-                                List<String> timeList = nextValue.findValuesAsText("timeList");
-                                o = forName.getDeclaredConstructor(String.class, String.class).newInstance(timeList.get(0), timeList.get(1));
-                            }
-                            default -> {}
-                        }
-                        sink.next((PredicateDefinition) o);
-                    }
-                } catch (IOException | ClassNotFoundException | InvocationTargetException | InstantiationException |
-                         IllegalAccessException | NoSuchMethodException e) {
+                    sink.next(PredicateDefinitionDeserializer.parse(node));
+                } catch (IOException e) {
                     sink.error(new RuntimeException(e));
                 }
             })
