@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.lang3.StringUtils;
 import org.lizhao.base.utils.reflect.ReflectUtil;
 import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
 import org.lizhao.cloud.web.react.json.decoder.RouteDefinitionDecoder;
@@ -17,6 +19,10 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,15 +60,15 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
     @Override
     public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
         //设置自定义request body 类型转换
-        configurer.customCodecs().register(new RouteDefinitionDecoder());
+//        configurer.customCodecs().register(new RouteDefinitionDecoder());
         configurer.defaultCodecs().enableLoggingRequestDetails(true);
-//        configurer.defaultCodecs().configureDefaultCodec(codec -> {
-//            if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
-//                SimpleModule simpleModule = new SimpleModule();
-//                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
-//                abstractJackson2Decoder.getObjectMapper().registerModule(simpleModule);
-//            }
-//        });
+        configurer.defaultCodecs().configureDefaultCodec(codec -> {
+            if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
+                JavaTimeModule javaTimeModule = new JavaTimeModule();
+                javaTimeModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
+                abstractJackson2Decoder.getObjectMapper().registerModule(javaTimeModule);;
+            }
+        });
     }
 
 }

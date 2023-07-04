@@ -30,8 +30,7 @@ public class AfterPredicateDefinition extends PredicateDefinition {
         this(ZonedDateTime.parse(time));
     }
 
-    @Override
-    public String toString() {
+    public String toYml() {
         return super.getName() + "=" + time.toString();
     }
 
