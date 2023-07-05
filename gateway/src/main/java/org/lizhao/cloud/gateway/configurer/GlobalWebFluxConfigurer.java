@@ -1,31 +1,15 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.lang3.StringUtils;
-import org.lizhao.base.utils.reflect.ReflectUtil;
+import org.lizhao.cloud.gateway.configurer.json.deserializer.FilterDefinitionDeserializer;
 import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
-import org.lizhao.cloud.web.react.json.decoder.RouteDefinitionDecoder;
+import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.AbstractJackson2Decoder;
 import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Description webflux全局配置
@@ -50,7 +34,6 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
      * 添加自定义类型转换 支持类型:
      *      1、Decoder, Encoder;
      *      2、HttpMessageReader, HttpMessageWriter;
-     *      3、
      *
      * @see DefaultServerCodecConfigurer
      * org.springframework.http.codec.support.BaseCodecConfigurer的实现类
@@ -64,9 +47,10 @@ public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
         configurer.defaultCodecs().enableLoggingRequestDetails(true);
         configurer.defaultCodecs().configureDefaultCodec(codec -> {
             if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
-                JavaTimeModule javaTimeModule = new JavaTimeModule();
-                javaTimeModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
-                abstractJackson2Decoder.getObjectMapper().registerModule(javaTimeModule);;
+                SimpleModule simpleModule = new SimpleModule();
+                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
+                simpleModule.addDeserializer(FilterDefinition.class, new FilterDefinitionDeserializer());
+                abstractJackson2Decoder.getObjectMapper().registerModule(simpleModule);
             }
         });
     }

@@ -3,7 +3,6 @@ package org.lizhao.cloud.gateway.configurer.nosql.redis;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.DefaultBaseTypeLimitingValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -23,13 +22,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfigurer {
 
     @Bean
-    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory, ObjectMapper om) {
         RedisTemplate<String, String> temp = new RedisTemplate<>();
         temp.setConnectionFactory(redisConnectionFactory);
 
-        ObjectMapper om = new ObjectMapper();
+//        ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.activateDefaultTyping(new DefaultBaseTypeLimitingValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
+//        om.activateDefaultTyping(new DefaultBaseTypeLimitingValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
         Jackson2JsonRedisSerializer<String> serializer = new Jackson2JsonRedisSerializer<>(om, String.class);
 
         //key,vlaue序列化方法

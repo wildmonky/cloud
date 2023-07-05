@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.model.filterDefinition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Getter
 public class AddRequestHeadersIfNotPresentFilterDefinition extends FilterDefinition {
 
+    @JsonIgnore
     private final Map<String, String> headerMaps;
 
     public AddRequestHeadersIfNotPresentFilterDefinition(@NotNull Map<String, String> headerMap) {

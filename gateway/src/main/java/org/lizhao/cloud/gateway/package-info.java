@@ -7,6 +7,11 @@
  * 所以在刷新路由时，就是先修改路由定义即RouteDefinition再发布RefreshRoutesEvent，触发路由缓存刷新。
  * 但是当网关多实例时，其他网关就不会刷新了，这是可以使用MessageQueue来进行事件的发布，从而使变更后的路由再其他网关生效。
  *
+ * 路由存储
+ * 1、内存 InMemory
+ * 2、redis {@link org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration#reactiveRedisRouteDefinitionTemplate}
+ *
+ *
  * @see org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping
  * @see org.springframework.cloud.gateway.route.CachingRouteLocator
  * @see org.springframework.cloud.gateway.event.RefreshRoutesEvent

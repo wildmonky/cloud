@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.model.predicateDefinition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -19,6 +20,7 @@ import java.time.ZonedDateTime;
 @Getter
 public class BeforePredicateDefinition extends PredicateDefinition {
 
+    @JsonIgnore
     private final ZonedDateTime time;
 
     public BeforePredicateDefinition(@NotNull ZonedDateTime time) {
