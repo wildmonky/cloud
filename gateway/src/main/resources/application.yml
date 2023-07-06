@@ -6,6 +6,24 @@ server:
     max-keep-alive-requests: 10000
     connection-timeout: 30
 
+management:
+  endpoint:
+    mappings:
+      enabled: true
+    gateway: #endpoint id
+      enabled: true # 开启对应的endpoint
+    health:
+      show-details: always
+  endpoints: # 管理终端配置 不开放给外部使用（仅供内部人员或运维人员） spring EndPoint
+    web:
+      cors:
+        allowed-origins:
+          - 127.0.0.1
+      base-path: /actuator # 上下文路径
+      exposure:
+        include:
+         - 'gateway' # 暴露所有的endPoint
+
 spring:
   output:
     ansi:

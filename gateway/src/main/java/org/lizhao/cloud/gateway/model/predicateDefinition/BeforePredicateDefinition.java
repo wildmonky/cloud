@@ -2,7 +2,7 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import org.lizhao.base.exception.CustomException;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 
@@ -17,7 +17,6 @@ import java.time.ZonedDateTime;
  * @date 2023-06-21 23:16
  * @since 0.0.1-SNAPSHOT
  */
-@Getter
 public class BeforePredicateDefinition extends PredicateDefinition {
 
     @JsonIgnore
@@ -30,6 +29,10 @@ public class BeforePredicateDefinition extends PredicateDefinition {
     }
     public BeforePredicateDefinition(String time) {
         this(ZonedDateTime.parse(time));
+    }
+
+    public ZonedDateTime getTime() {
+        return ZonedDateTime.parse(super.getArgs().values().stream().findFirst().orElseThrow(CustomException::new));
     }
 
     public String toYml() {

@@ -1,8 +1,6 @@
 package org.lizhao.base.exception;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import org.lizhao.base.enums.ExceptionEnum;
 
 /**
@@ -14,8 +12,7 @@ import org.lizhao.base.enums.ExceptionEnum;
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
-@Setter
-public class CustomException extends Exception{
+public class CustomException extends RuntimeException{
 
     public static CustomException NOT_LOGIN = new CustomException(ExceptionEnum.NOT_LOGIN.getCode(), ExceptionEnum.NOT_LOGIN.getMessage());
 
@@ -45,6 +42,11 @@ public class CustomException extends Exception{
 
     public CustomException(long code, String message) {
         super(message);
+        this.code = code;
+    }
+
+    public CustomException(long code, String message, Throwable throwable) {
+        super(message, throwable);
         this.code = code;
     }
 
