@@ -68,7 +68,7 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
      * @since 0.0.1-SNAPSHOT
      * @author lizhao
      * @date 2022/6/12 18:24
-     * @param routeDefinitionList routeDefinitionList
+     * @param routeDefinitionFlux routeDefinitionList
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "更新、新增路由")
