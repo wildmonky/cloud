@@ -29,19 +29,40 @@
             </Policies>
             <DefaultRolloverStrategy max="1" />
         </RollingFile>
+
+        <RollingFile name="nettyAccessLog"
+                     fileName="${APP_LOG_ROOT}/${APP_NAME}/netty_access.log"
+                     filePattern="${APP_LOG_ROOT}/${APP_NAME}/netty_access-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
+
+        <!--异步appender-->
+        <Async name="AsyncAppender" includeLocation="true">
+            <AppenderRef ref="nettyAccessLog"/>
+        </Async>
     </Appenders>
     <Loggers>
-        <Root level="debug">
+        <Root level="info">
             <AppenderRef ref="Console" />
         </Root>
 
-        <Logger name="org.lizhao.cloud.gateway" additivity="false" level="info">
+        <!-- Log4j 3.0将移除packages配置属性，导致不能使用包路径命名 Logger。启动时，看到报错信息：WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release -->
+        <Logger name="org.lizhao.cloud.gateway" additivity="true" level="info">
             <AppenderRef ref="appServiceLog" />
-            <AppenderRef ref="Console" />
         </Logger>
 
-        <Logger name="org.lizhao.cloud.gateway.listener" additivity="false" level="info">
+        <!-- Log4j 3.0将移除packages配置属性，导致不能使用包路径命名 Logger。启动时，看到报错信息：WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release -->
+        <Logger name="org.lizhao.cloud.gateway.listener" additivity="true" level="info">
             <AppenderRef ref="appSystemLog" />
+        </Logger>
+
+        <!-- netty 访问日志 需要在启动时添加jvm参数 -Dreactor.netty.http.server.accessLogEnabled=true -->
+        <Logger name="reactor.netty.http.server.AccessLog" includeLocation="true" level="info" additivity="false">
+            <AppenderRef ref="AsyncAppender"/>
             <AppenderRef ref="Console" />
         </Logger>
     </Loggers>

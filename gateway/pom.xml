@@ -256,6 +256,16 @@
         </testResources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+<!--                <version>3.10.1</version>-->
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot-maven-plugin}</version>
@@ -300,6 +310,19 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- aot 本地编译 需要安装对应java版本的Graalvm -->
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.9.23</version>
+                <configuration>
+                    <imageName>gateway-image</imageName>
+                    <buildArgs>
+                        <!-- 开发时可使用，加快构建速度，部署时需要去掉 -->
+                        <buildArg>-Ob</buildArg>
+                    </buildArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

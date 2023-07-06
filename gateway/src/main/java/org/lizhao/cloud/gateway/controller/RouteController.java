@@ -4,14 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import org.lizhao.cloud.gateway.serviceImpl.RouteServiceImpl;
-import org.springframework.cloud.gateway.actuate.AbstractGatewayControllerEndpoint;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
-import org.springframework.cloud.gateway.handler.predicate.RoutePredicateFactory;
 import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
-import org.springframework.cloud.gateway.route.RouteDefinitionWriter;
-import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +24,10 @@ import java.util.List;
 @Tag(name = "路由操作")
 @RequestMapping(path = "/route", consumes = {"application/json", "application/form-data"})
 @Controller
-public class RouteController extends AbstractGatewayControllerEndpoint {
+public class RouteController {
 
     @Resource
     private RouteServiceImpl routeServiceImpl;
-
-    public RouteController(RouteDefinitionLocator routeDefinitionLocator, List<GlobalFilter> globalFilters, List<GatewayFilterFactory> gatewayFilters, List<RoutePredicateFactory> routePredicates, RouteDefinitionWriter routeDefinitionWriter, RouteLocator routeLocator) {
-        super(routeDefinitionLocator, globalFilters, gatewayFilters, routePredicates, routeDefinitionWriter, routeLocator);
-    }
-
 
     /**
      * Description 查询路由列表
@@ -55,10 +43,7 @@ public class RouteController extends AbstractGatewayControllerEndpoint {
     @Operation(summary = "查询路由列表")
     @GetMapping(path = "/list", produces = "application/json" )
     @ResponseBody
-    public Mono<List<RouteDefinition>> routeList(@RequestParam(required = false) String id,
-                                 @RequestParam(required = false) String source,
-                                 @RequestParam(required = false) String target
-    ) {
+    public Mono<List<RouteDefinition>> routeList(String id, String source, String target) {
         return routeServiceImpl.search(id, source, target);
     }
 

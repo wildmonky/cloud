@@ -1,8 +1,5 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -16,12 +13,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayConfigurer {
 
-    @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes().route("test", r -> r
-                .path("/gateway/**")
-                .uri("https://www.baidu.com")
-        ).build();
-    }
+//    /**
+//     * Fluent Java API 定义路由
+//     *
+//     * @param builder
+//     * @return 路由定位
+//     */
+//    @Bean
+//    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+//        return builder.routes().route("test", r -> r
+//                .path("/gateway/**")
+//                .uri("https://www.baidu.com")
+//        ).build();
+//    }
 
 }
