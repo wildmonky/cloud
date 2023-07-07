@@ -1,3 +1,4 @@
+# 注意将配置文件中的localhost改为宿主机ip，否则会指向容器
 # 基础镜像，openjkd使用17版本
 FROM openjdk:17
 # 作者
@@ -10,5 +11,5 @@ VOLUME /tmp
 ADD target/gateway-0.0.1-SNAPSHOT-spring-boot.jar gateway.jar
 # 启动容器时的进程
 ENTRYPOINT ["java","-jar","/gateway.jar"]
-# 暴露18000端口
-EXPOSE 18000
+# 暴露容器的8081端口， 但未绑定至宿主机端口， 需在配置文件（Configurations）中配置
+EXPOSE 8081

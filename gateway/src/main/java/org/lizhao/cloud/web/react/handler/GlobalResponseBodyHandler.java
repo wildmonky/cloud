@@ -1,7 +1,6 @@
 package org.lizhao.cloud.web.react.handler;
 
 import org.lizhao.base.model.ResponseBodyModel;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -27,7 +26,6 @@ import java.util.Optional;
  * @date 2022-08-14 19:09
  * @since 0.0.1-SNAPSHOT
  */
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
 
     private static MethodParameter GLOBAL_METHOD_PARAMETER;

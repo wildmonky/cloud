@@ -1,14 +1,18 @@
 package org.lizhao.cloud.gateway.configurer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import jakarta.validation.constraints.NotNull;
 import org.lizhao.cloud.gateway.configurer.json.deserializer.FilterDefinitionDeserializer;
 import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
+import org.lizhao.cloud.web.react.handler.GlobalResponseBodyHandler;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.AbstractJackson2Decoder;
 import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
+import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 /**
@@ -22,13 +26,11 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @Configuration
 public class GlobalWebFluxConfigurer implements WebFluxConfigurer {
 
-
-
-//    @Bean
-//    public GlobalResponseBodyHandler responseWrapper(@NotNull ServerCodecConfigurer serverCodecConfigurer,
-//                                                     RequestedContentTypeResolver requestedContentTypeResolver) {
-//        return new GlobalResponseBodyHandler(serverCodecConfigurer.getWriters(), requestedContentTypeResolver);
-//    }
+    @Bean
+    public GlobalResponseBodyHandler responseWrapper(@NotNull ServerCodecConfigurer serverCodecConfigurer,
+                                                     RequestedContentTypeResolver requestedContentTypeResolver) {
+        return new GlobalResponseBodyHandler(serverCodecConfigurer.getWriters(), requestedContentTypeResolver);
+    }
 
     /**
      * 添加自定义类型转换 支持类型:
