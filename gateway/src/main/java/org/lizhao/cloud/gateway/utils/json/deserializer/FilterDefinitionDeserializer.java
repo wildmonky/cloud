@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.configurer.json.deserializer;
+package org.lizhao.cloud.gateway.utils.json.deserializer;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

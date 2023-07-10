@@ -2,8 +2,8 @@ package org.lizhao.cloud.gateway.configurer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import jakarta.validation.constraints.NotNull;
-import org.lizhao.cloud.gateway.configurer.json.deserializer.FilterDefinitionDeserializer;
-import org.lizhao.cloud.gateway.configurer.json.deserializer.PredicateDefinitionDeserializer;
+import org.lizhao.cloud.gateway.utils.json.deserializer.FilterDefinitionDeserializer;
+import org.lizhao.cloud.gateway.utils.json.deserializer.PredicateDefinitionDeserializer;
 import org.lizhao.cloud.web.react.handler.GlobalResponseBodyHandler;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;

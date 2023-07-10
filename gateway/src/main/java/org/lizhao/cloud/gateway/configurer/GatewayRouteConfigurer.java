@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 0.0.1-SNAPSHOT
  */
 @Configuration
-public class GatewayConfigurer {
+public class GatewayRouteConfigurer {
 
 //    /**
 //     * Fluent Java API 定义路由

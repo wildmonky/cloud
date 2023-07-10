@@ -2,13 +2,11 @@ package org.lizhao.cloud.gateway.model.predicateDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 import org.lizhao.base.exception.CustomException;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
 
 /**
  * Description AfterPredicateDefinition
