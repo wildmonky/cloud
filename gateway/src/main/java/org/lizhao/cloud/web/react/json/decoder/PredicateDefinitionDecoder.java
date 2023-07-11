@@ -29,7 +29,7 @@ public class PredicateDefinitionDecoder extends AbstractDecoder<PredicateDefinit
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public Flux<PredicateDefinition> decode(Publisher<DataBuffer> inputStream, ResolvableType elementType, MimeType mimeType, Map<String, Object> hints) {
+    public Flux<PredicateDefinition> decode(Publisher<DataBuffer> inputStream, ResolvableType elementType, @Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
         Flux<DataBuffer> dataBufferFlux = Flux.from(inputStream);
         return Flux.deferContextual(contextView ->
             dataBufferFlux.handle((dataBuffer, sink) -> {

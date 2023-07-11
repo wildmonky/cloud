@@ -11,6 +11,10 @@ spring:
     #      hystrix:
     #        enabled: true
     #
+  r2dbc:
+    url: http://localhost:5432
+    name:
+    password: 19960214
   data:
     redis:
       repositories:
