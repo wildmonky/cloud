@@ -50,7 +50,7 @@ public class User extends CommonAttribute {
     private String password;
 
     /**
-     * 用户状态: 0-初始；1-可用
+     * 用户状态: 0-初始; 1-可用; 2-禁用
      */
     @Column
     private Integer status;

@@ -12,8 +12,8 @@ spring:
     #        enabled: true
     #
   r2dbc:
-    url: http://localhost:5432
-    name:
+    url: r2dbc:postgresql://postgres@localhost:5432/reactive
+    username: postgres
     password: 19960214
   data:
     redis:

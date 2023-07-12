@@ -35,7 +35,7 @@ public class UserGroup extends CommonAttribute {
     private String name;
 
     /**
-     * 用户组状态：0-初始;1-可用
+     * 用户组状态：0-初始;1-可用;2-禁用
      */
     @Column
     private Integer status;
