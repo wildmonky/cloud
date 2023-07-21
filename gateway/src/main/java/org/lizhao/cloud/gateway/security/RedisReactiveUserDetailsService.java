@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.security;
 
+import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -16,15 +17,12 @@ import reactor.core.publisher.Mono;
  */
 public class RedisReactiveUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
 
-    private ReactiveRedisTemplate<String, UserDetails> reactiveRedisTemplate;
+    private final ReactiveRedisTemplate<String, String> reactiveStringRedisTemplate;
 
-    private DbReactiveUserDetailsService dbReactiveUserDetailsService;
+    private final Gson gson = new Gson();
 
-    public RedisReactiveUserDetailsService(
-            ReactiveRedisTemplate<String, UserDetails> reactiveRedisTemplate,
-            DbReactiveUserDetailsService dbReactiveUserDetailsService) {
-        this.dbReactiveUserDetailsService = dbReactiveUserDetailsService;
-        this.reactiveRedisTemplate = reactiveRedisTemplate;
+    public RedisReactiveUserDetailsService(ReactiveRedisTemplate<String, String> reactiveStringRedisTemplate) {
+        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
     }
 
     @Override
@@ -34,6 +32,11 @@ public class RedisReactiveUserDetailsService implements ReactiveUserDetailsServi
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return null;
+        return reactiveStringRedisTemplate.hasKey(username).flatMap(flag -> {
+            if (flag) {
+                return reactiveStringRedisTemplate.opsForValue().get(username).map(str -> gson.fromJson(str, UserDetails.class));
+            }
+            return Mono.empty();
+        });
     }
 }

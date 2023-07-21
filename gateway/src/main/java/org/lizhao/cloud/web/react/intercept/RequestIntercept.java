@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -54,7 +55,7 @@ public class RequestIntercept implements WebFilter {
         } else {
             result = chain.filter(exchange);
         }
-        return result.doFirst(() -> UserInfoHolder.setCurrentUser(User.of("1", "1", "1", "1", 1)))
+        return result.doFirst(() -> UserInfoHolder.setCurrentUser(User.of("1", "1", "1", "1", Collections.emptySet(),1)))
 //            .doOnRequest(e -> startTime.set(LocalDateTime.now()))
             .doOnError(Throwable::printStackTrace)
             .doFinally(e -> {
@@ -65,7 +66,7 @@ public class RequestIntercept implements WebFilter {
                 };
                 String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
                 User currentUser = UserInfoHolder.getCurrentUser();
-                log.info("请求结果: {}, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestStatus, requestPath, currentUser.getName(), currentUser.getIdentity(), Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
+                log.info("请求结果: {}, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestStatus, requestPath, currentUser.getUsername(), currentUser.getIdentity(), Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
                 // 移除 用户信息
                 UserInfoHolder.removeCurrentUser();
             });

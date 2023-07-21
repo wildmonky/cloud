@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Description 权限实体
@@ -16,8 +17,9 @@ import org.lizhao.base.entity.CommonAttribute;
  */
 @Getter
 @Setter
+@Entity
 @Table(name = "authority")
-public class Authority extends CommonAttribute {
+public class Authority extends CommonAttribute implements GrantedAuthority {
 
     /**
      * 权限Id
@@ -31,11 +33,21 @@ public class Authority extends CommonAttribute {
      * 权限名称
      */
     @Column
-    private String name;
+    private String authority;
 
     /**
      * 权限状态：0-初始；1-可用
      */
     @Column
     private Integer status;
+
+    /**
+     * 备注
+     */
+    private String comment;
+
+    @Override
+    public String getAuthority() {
+        return null;
+    }
 }

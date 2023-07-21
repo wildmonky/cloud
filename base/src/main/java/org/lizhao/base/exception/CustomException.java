@@ -50,4 +50,8 @@ public class CustomException extends RuntimeException{
         this.code = code;
     }
 
+    public CustomException(String message, Object... args) {
+        super(String.format(message.replace("{}", "%s"), args));
+    }
+
 }

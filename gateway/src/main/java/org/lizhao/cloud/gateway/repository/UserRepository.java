@@ -1,7 +1,9 @@
 package org.lizhao.cloud.gateway.repository;
 
 import org.lizhao.base.entity.user.User;
+import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 
 /**
  * Description User repository
@@ -11,5 +13,5 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
  * @date 2023-07-12 22:55
  * @since jdk-1.8.0
  */
-public interface UserRepository extends ReactiveCrudRepository<User, String> {
+public interface UserRepository extends ReactiveCrudRepository<User, String>, ReactiveSortingRepository<User, String>, ReactiveQueryByExampleExecutor<User> {
 }

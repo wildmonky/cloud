@@ -1,6 +1,8 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import org.lizhao.cloud.gateway.security.DbReactiveUserDetailsService;
+import org.lizhao.cloud.gateway.repository.UserRepository;
+import org.lizhao.cloud.gateway.security.ComposeReactiveUserDetailsService;
+import org.lizhao.cloud.gateway.security.DBReactiveUserDetailsService;
 import org.lizhao.cloud.gateway.security.RedisReactiveUserDetailsService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -9,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -25,17 +26,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class GatewaySecurityConfigurer {
 
     @Bean
-    public DbReactiveUserDetailsService reactiveUserDetailsService(SecurityProperties properties,
-                                                                   ObjectProvider<PasswordEncoder> passwordEncoder) {
-        return new DbReactiveUserDetailsService(properties, passwordEncoder);
+    public DBReactiveUserDetailsService reactiveDBUserDetailsService(SecurityProperties properties,
+                                                                   ObjectProvider<PasswordEncoder> passwordEncoder,
+                                                                   UserRepository repository) {
+        return new DBReactiveUserDetailsService(properties, passwordEncoder, repository);
+    }
+
+    @Bean
+    public RedisReactiveUserDetailsService reactiveRedisUserDetailsService(ReactiveRedisTemplate<String, String> reactiveStringRedisTemplate) {
+        return new RedisReactiveUserDetailsService(reactiveStringRedisTemplate);
     }
 
     @Bean
     @Primary
-    public RedisReactiveUserDetailsService reactiveUserDetailsService(
-            ReactiveRedisTemplate<String, UserDetails> reactiveRedisTemplate,
-            DbReactiveUserDetailsService dbReactiveUserDetailsService) {
-        return new RedisReactiveUserDetailsService(reactiveRedisTemplate, dbReactiveUserDetailsService);
+    public ComposeReactiveUserDetailsService reactiveUserDetailsService(DBReactiveUserDetailsService dbReactiveUserDetailsService,
+                                                                        RedisReactiveUserDetailsService redisReactiveUserDetailsService) {
+        return new ComposeReactiveUserDetailsService(dbReactiveUserDetailsService, redisReactiveUserDetailsService);
     }
 
 }

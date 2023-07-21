@@ -1,11 +1,13 @@
 package org.lizhao.cloud.gateway.security;
 
+import org.lizhao.base.entity.user.User;
+import org.lizhao.cloud.gateway.repository.UserRepository;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
@@ -18,28 +20,30 @@ import reactor.core.publisher.Mono;
  * @date 2023-07-10 22:15
  * @since 0.0.1-SNAPSHOT
  */
-public class DbReactiveUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
+public class DBReactiveUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
+
+    private UserRepository repository;
 
     private SecurityProperties securityProperties;
 
     private ObjectProvider<PasswordEncoder> passwordEncoderObjectProvider;
 
-    public DbReactiveUserDetailsService(SecurityProperties properties, ObjectProvider<PasswordEncoder> passwordEncoder) {
+    public DBReactiveUserDetailsService(SecurityProperties properties, ObjectProvider<PasswordEncoder> passwordEncoder, UserRepository repository) {
+        this.repository = repository;
         this.securityProperties = properties;
         this.passwordEncoderObjectProvider = passwordEncoder;
     }
 
     @Override
     public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
-        return Mono.just(User.withUserDetails(user).passwordEncoder(password -> {
-            PasswordEncoder passwordEncoder = this.passwordEncoderObjectProvider.getIfAvailable();
-            return passwordEncoder == null ? password : passwordEncoder.encode(password);
-        }).password(newPassword).build());
+        return null;
     }
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return null;
+        User user = new User();
+        user.setUsername(username);
+        return repository.findOne(Example.of(user)).map(e -> e);
     }
 
 }
