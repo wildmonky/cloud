@@ -1,6 +1,6 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import org.lizhao.cloud.gateway.repository.UserRepository;
+import org.lizhao.cloud.gateway.repository.UserInfoRepository;
 import org.lizhao.cloud.gateway.security.ComposeReactiveUserDetailsService;
 import org.lizhao.cloud.gateway.security.DBReactiveUserDetailsService;
 import org.lizhao.cloud.gateway.security.RedisReactiveUserDetailsService;
@@ -28,7 +28,7 @@ public class GatewaySecurityConfigurer {
     @Bean
     public DBReactiveUserDetailsService reactiveDBUserDetailsService(SecurityProperties properties,
                                                                    ObjectProvider<PasswordEncoder> passwordEncoder,
-                                                                   UserRepository repository) {
+                                                                   UserInfoRepository repository) {
         return new DBReactiveUserDetailsService(properties, passwordEncoder, repository);
     }
 

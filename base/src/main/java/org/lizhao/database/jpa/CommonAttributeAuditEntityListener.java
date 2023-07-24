@@ -3,7 +3,7 @@ package org.lizhao.database.jpa;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import org.lizhao.base.entity.CommonAttribute;
-import org.lizhao.base.entity.user.User;
+import org.lizhao.base.entity.user.UserInfo;
 import org.lizhao.base.exception.CustomException;
 import org.lizhao.base.model.UserInfoHolder;
 
@@ -24,7 +24,7 @@ public class CommonAttributeAuditEntityListener {
     public void prePersist(Object entity) throws CustomException {
 
         if (entity instanceof CommonAttribute commonAttribute) {
-            User currentUser = Optional.ofNullable(UserInfoHolder.getCurrentUser()).orElseThrow(() -> CustomException.NOT_LOGIN);
+            UserInfo currentUser = Optional.ofNullable(UserInfoHolder.getCurrentUser()).orElseThrow(() -> CustomException.NOT_LOGIN);
 
             commonAttribute.setCreateUserId(currentUser.getCreateUserId());
             commonAttribute.setCreateUserName(currentUser.getCreateUserName());
@@ -37,7 +37,7 @@ public class CommonAttributeAuditEntityListener {
     public void postUpdate(Object entity) throws CustomException {
 
         if (entity instanceof CommonAttribute commonAttribute) {
-            User currentUser = Optional.ofNullable(UserInfoHolder.getCurrentUser()).orElseThrow(() -> CustomException.NOT_LOGIN);
+            UserInfo currentUser = Optional.ofNullable(UserInfoHolder.getCurrentUser()).orElseThrow(() -> CustomException.NOT_LOGIN);
 
             commonAttribute.setUpdateUserId(currentUser.getCreateUserId());
             commonAttribute.setUpdateUserName(currentUser.getCreateUserName());

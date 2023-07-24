@@ -4,6 +4,7 @@ import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import reactor.core.publisher.Mono;
 
@@ -27,7 +28,10 @@ public class RedisReactiveUserDetailsService implements ReactiveUserDetailsServi
 
     @Override
     public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
-        return null;
+        UserDetails userDetails = User.withUserDetails(user)
+                .password(newPassword)
+                .build();
+        return reactiveStringRedisTemplate.opsForValue().getAndSet("sda", gson.toJson(userDetails)).map(e -> gson.fromJson(e, UserDetails.class));
     }
 
     @Override

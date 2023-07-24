@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
-import org.lizhao.base.entity.user.User;
+import org.lizhao.base.entity.user.UserInfo;
 import org.lizhao.base.entity.user.UserGroup;
 
 /**
- * Description 用户实体{@link User}和用户组实体{@link UserGroup}的关系实体
+ * Description 用户实体{@link UserInfo}和用户组实体{@link UserGroup}的关系实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT

@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//@SpringBootTest
+@SpringBootTest
 class GatewayApplicationTests {
 
-//    @Resource
+    @Resource
     private RouteController routeController;
 
     @Test

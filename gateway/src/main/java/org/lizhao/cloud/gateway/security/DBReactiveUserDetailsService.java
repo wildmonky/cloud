@@ -1,13 +1,14 @@
 package org.lizhao.cloud.gateway.security;
 
-import org.lizhao.base.entity.user.User;
-import org.lizhao.cloud.gateway.repository.UserRepository;
+import org.lizhao.base.entity.user.UserInfo;
+import org.lizhao.cloud.gateway.repository.UserInfoRepository;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
@@ -22,13 +23,13 @@ import reactor.core.publisher.Mono;
  */
 public class DBReactiveUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
 
-    private UserRepository repository;
+    private final UserInfoRepository repository;
 
-    private SecurityProperties securityProperties;
+    private final SecurityProperties securityProperties;
 
-    private ObjectProvider<PasswordEncoder> passwordEncoderObjectProvider;
+    private final ObjectProvider<PasswordEncoder> passwordEncoderObjectProvider;
 
-    public DBReactiveUserDetailsService(SecurityProperties properties, ObjectProvider<PasswordEncoder> passwordEncoder, UserRepository repository) {
+    public DBReactiveUserDetailsService(SecurityProperties properties, ObjectProvider<PasswordEncoder> passwordEncoder, UserInfoRepository repository) {
         this.repository = repository;
         this.securityProperties = properties;
         this.passwordEncoderObjectProvider = passwordEncoder;
@@ -36,12 +37,15 @@ public class DBReactiveUserDetailsService implements ReactiveUserDetailsService,
 
     @Override
     public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
-        return null;
+        UserDetails userDetails = User.withUserDetails(user)
+                .password(newPassword)
+                .build();
+        return repository.save((UserInfo) userDetails).map(e -> e);
     }
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        User user = new User();
+        UserInfo user = new UserInfo();
         user.setUsername(username);
         return repository.findOne(Example.of(user)).map(e -> e);
     }

@@ -24,8 +24,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
-public class User extends CommonAttribute implements UserDetails {
+@Table(name = "user_info")
+public class UserInfo extends CommonAttribute implements UserDetails {
 
     /**
      * 用户账号主键
@@ -62,8 +62,8 @@ public class User extends CommonAttribute implements UserDetails {
     @Column
     private Integer status;
 
-    public static User of(String id, String identity, String name, String password, Set<Authority> authorities, int status) {
-        return new User(id, identity, name, password, authorities, status);
+    public static UserInfo of(String id, String identity, String name, String password, Set<Authority> authorities, int status) {
+        return new UserInfo(id, identity, name, password, authorities, status);
     }
 
     public String getId() {
@@ -130,4 +130,5 @@ public class User extends CommonAttribute implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

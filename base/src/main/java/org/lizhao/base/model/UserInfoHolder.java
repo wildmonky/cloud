@@ -1,6 +1,6 @@
 package org.lizhao.base.model;
 
-import org.lizhao.base.entity.user.User;
+import org.lizhao.base.entity.user.UserInfo;
 
 /**
  * Description 当前登录用户信息持有者
@@ -12,13 +12,13 @@ import org.lizhao.base.entity.user.User;
  */
 public class UserInfoHolder {
 
-    private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
+    private static final ThreadLocal<UserInfo> currentUser = new ThreadLocal<>();
 
-    public static User getCurrentUser() {
+    public static UserInfo getCurrentUser() {
         return currentUser.get();
     }
 
-    public static void setCurrentUser(User user) {
+    public static void setCurrentUser(UserInfo user) {
         currentUser.set(user);
     }
 

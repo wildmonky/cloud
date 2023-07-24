@@ -40,7 +40,13 @@ public class ComposeReactiveUserDetailsService implements ReactiveUserDetailsSer
 
     @Override
     public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
-        return null;
+        if (redisReactiveUserDetailsService != null && dbReactiveUserDetailsService == null) {
+            return redisReactiveUserDetailsService.updatePassword(user, newPassword);
+        }
+        if (redisReactiveUserDetailsService != null) {
+            return redisReactiveUserDetailsService.updatePassword(user, newPassword).switchIfEmpty(dbReactiveUserDetailsService.updatePassword(user, newPassword));
+        }
+        return dbReactiveUserDetailsService.updatePassword(user, newPassword);
     }
 
 }

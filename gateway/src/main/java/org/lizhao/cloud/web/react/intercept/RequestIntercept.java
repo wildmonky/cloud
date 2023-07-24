@@ -2,7 +2,7 @@ package org.lizhao.cloud.web.react.intercept;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.lizhao.base.entity.user.User;
+import org.lizhao.base.entity.user.UserInfo;
 import org.lizhao.base.model.UserInfoHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -55,7 +55,7 @@ public class RequestIntercept implements WebFilter {
         } else {
             result = chain.filter(exchange);
         }
-        return result.doFirst(() -> UserInfoHolder.setCurrentUser(User.of("1", "1", "1", "1", Collections.emptySet(),1)))
+        return result.doFirst(() -> UserInfoHolder.setCurrentUser(UserInfo.of("1", "1", "1", "1", Collections.emptySet(),1)))
 //            .doOnRequest(e -> startTime.set(LocalDateTime.now()))
             .doOnError(Throwable::printStackTrace)
             .doFinally(e -> {
@@ -65,7 +65,7 @@ public class RequestIntercept implements WebFilter {
                     default -> "未成功";
                 };
                 String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
-                User currentUser = UserInfoHolder.getCurrentUser();
+                UserInfo currentUser = UserInfoHolder.getCurrentUser();
                 log.info("请求结果: {}, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestStatus, requestPath, currentUser.getUsername(), currentUser.getIdentity(), Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
                 // 移除 用户信息
                 UserInfoHolder.removeCurrentUser();

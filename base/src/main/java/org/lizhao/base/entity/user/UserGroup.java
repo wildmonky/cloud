@@ -31,14 +31,11 @@ public class UserGroup extends CommonAttribute {
     /**
      * 用户组名称
      */
-    @Column
     private String name;
 
     /**
      * 用户组状态：0-初始;1-可用;2-禁用
      */
-    @Column
     private Integer status;
-
 
 }

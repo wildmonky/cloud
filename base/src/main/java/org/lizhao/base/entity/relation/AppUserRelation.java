@@ -6,10 +6,10 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.App;
 import org.lizhao.base.entity.CommonAttribute;
-import org.lizhao.base.entity.user.User;
+import org.lizhao.base.entity.user.UserInfo;
 
 /**
- * Description 应用实体{@link App}和 用户实体{@link User}的关系实体
+ * Description 应用实体{@link App}和 用户实体{@link UserInfo}的关系实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -22,7 +22,7 @@ import org.lizhao.base.entity.user.User;
 public class AppUserRelation extends CommonAttribute {
 
     /**
-     * {@link App} 和 {@link User} 关系Id
+     * {@link App} 和 {@link UserInfo} 关系Id
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
@@ -36,7 +36,7 @@ public class AppUserRelation extends CommonAttribute {
     private String appId;
 
     /**
-     * 用户Id {@link User#getId()}
+     * 用户Id {@link UserInfo#getId()}
      */
     @Column
     private String userId;
