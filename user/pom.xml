@@ -60,7 +60,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot-maven-plugin}</version>
                 <configuration>
                     <!--Manifest 中 Start-Class，启动类-->
                     <mainClass>org.lizhao.user.UserApplication</mainClass>
