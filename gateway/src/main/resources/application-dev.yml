@@ -12,7 +12,7 @@ spring:
     #        enabled: true
     #
   r2dbc:
-    url: r2dbc:postgresql://gateway:19960214@localhost:5432/gateway
+    url: r2dbc:postgresql://gateway:19960214@106.52.188.209:5432/gateway
 #    username: gateway
 #    password: 19960214
     pool:
@@ -42,6 +42,10 @@ spring:
       database: gateway
       username: lizhao
       password: 19960214
+# json web token 密钥 org.lizhao.base.utils.JwtUtils
+web:
+  jwt:
+    key: 0F2F50B9C91B608842353348223BB61DC6D378564F66162E1D6B233307E467DF
 
 #    flyway:
 #      user: dev

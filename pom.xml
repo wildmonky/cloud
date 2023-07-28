@@ -42,6 +42,7 @@
 
         <google-core-findbugs-annotations.version>3.0.1</google-core-findbugs-annotations.version>
 
+        <jjwt.version>0.11.5</jjwt.version>
 <!--        <mysql-connector-java.version>8.0.30</mysql-connector-java.version>-->
 <!--        <mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>-->
 <!--        <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>-->
@@ -72,6 +73,25 @@
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${google-core-findbugs-annotations.version}</version>
+            </dependency>
+
+            <!--JAVA JSON WEB TOKEN-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
             </dependency>
 <!--            <dependency>-->
 <!--                <groupId>mysql</groupId>-->
