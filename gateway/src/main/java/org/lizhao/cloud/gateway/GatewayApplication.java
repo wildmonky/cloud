@@ -7,9 +7,11 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 
 @EnableWebFluxSecurity
+@EnableKafka
 @EnableAspectJAutoProxy
 @EnableRedisRepositories
 @EnableReactiveMongoRepositories

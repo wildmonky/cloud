@@ -4,9 +4,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.lizhao.cloud.gateway.service.RouteService;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.*;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,6 @@ import java.util.List;
 
 /**
  * Description 路由服务接口实现类
- *
  * routerDefinition json
  * {
  *     id:

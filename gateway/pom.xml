@@ -140,6 +140,17 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <!--spring amqp(Advanced Message Queuing Protocol)-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
@@ -217,7 +228,8 @@
                 <directory>src/main/resources</directory>
                 <!--使用maven属性替换资源文件中的参数-->
                 <filtering>true</filtering>
-                <targetPath>${project.build.outputDirectory}</targetPath>
+                <!--资源文件打包到了父项目下。。。。-->
+<!--                <targetPath>${project.build.outputDirectory}</targetPath>-->
                 <includes>
                     <include>**/*.xml</include>
                     <include>**/*.yml</include>
@@ -240,7 +252,7 @@
                 <directory>src/test/resources</directory>
                 <!--使用maven属性替换测试资源文件中的参数-->
                 <filtering>true</filtering>
-                <targetPath>${project.build.testOutputDirectory}</targetPath>
+<!--                <targetPath>${project.build.testOutputDirectory}</targetPath>-->
                 <includes>
                     <include>**/*.yml</include>
                     <include>**/*.properties</include>

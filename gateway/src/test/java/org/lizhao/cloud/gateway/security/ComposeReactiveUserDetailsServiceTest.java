@@ -6,8 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class ComposeReactiveUserDetailsServiceTest {
 
