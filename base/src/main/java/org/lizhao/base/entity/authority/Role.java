@@ -27,6 +27,11 @@ public class Role extends CommonAttribute {
     @GenericGenerator(name = "snowFlakeIdGenerator", type = org.lizhao.database.jpa.IdentifierGeneratorImpl.class)
     private String id;
 
+    /*
+     * 父级角色Id
+     */
+    private String parentId;
+
     /**
      * 角色名称
      */
@@ -34,7 +39,7 @@ public class Role extends CommonAttribute {
     private String name;
 
     /**
-     * 角色状态：0-初始；1-可用
+     * 角色状态：0-初始；1-可用；2-停用
      */
     @Column
     private Integer status;

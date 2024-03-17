@@ -1,6 +1,6 @@
 package org.lizhao.cloud.gateway.security;
 
-import org.lizhao.base.entity.user.UserInfo;
+import org.lizhao.base.entity.user.User;
 import org.lizhao.cloud.gateway.repository.UserInfoRepository;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -8,7 +8,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
@@ -37,15 +36,15 @@ public class DBReactiveUserDetailsService implements ReactiveUserDetailsService,
 
     @Override
     public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
-        UserDetails userDetails = User.withUserDetails(user)
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUserDetails(user)
                 .password(newPassword)
                 .build();
-        return repository.save((UserInfo) userDetails).map(e -> e);
+        return repository.save((User) userDetails).map(e -> e);
     }
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        UserInfo user = new UserInfo();
+        User user = new User();
         user.setUsername(username);
         return repository.findOne(Example.of(user)).map(e -> e);
     }

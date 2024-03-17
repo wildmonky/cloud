@@ -69,13 +69,6 @@ spring:
     listener:
       type: single
       ack-mode: manual
-  r2dbc:
-    url: r2dbc:postgresql://gateway:19960214@106.52.188.209:5432/gateway
-#    username: gateway
-#    password: 19960214
-    pool:
-      enabled: true
-      initial-size: 10
   data:
     redis:
       repositories:
@@ -100,6 +93,18 @@ spring:
       database: gateway
       username: gateway
       password: 19960214
+  r2dbc:
+    url: r2dbc:postgresql://gateway:19960214@106.52.188.209:5432/gateway
+    #    username: gateway
+    #    password: 19960214
+    pool:
+      validation-query:
+      enabled: true
+      initial-size: 10
+  # 多数据源配置
+#  datasource:
+
+
 # json web token 密钥 org.lizhao.base.utils.JwtUtils
 web:
   jwt:

@@ -4,25 +4,26 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.App;
-import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.authority.Role;
+import org.lizhao.base.entity.user.User;
 
 /**
- * Description 应用实体{@link App} 和 角色实体{@link Role} 的关系实体
+ * Description 用户和角色关系实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
- * @date 2022-09-25 17:31
+ * @date 2024-03-17 20:29
  * @since 0.0.1-SNAPSHOT
  */
+
 @Getter
 @Setter
-@Table(name = "app_role_relation")
-public class AppRoleRelation extends CommonAttribute {
+@Entity
+@Table(name = "user_role_relation")
+public class UserRoleRelation {
 
     /**
-     * 应用实体{@link App} 和 角色实体{@link Role} 的关系Id
+     * 用户{@link User}和用户组 {@link Role} 关系Id
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
@@ -30,20 +31,21 @@ public class AppRoleRelation extends CommonAttribute {
     private String id;
 
     /**
-     * 应用Id {@link App#getId()}
+     * 用户Id {@link User}
      */
     @Column
-    private String appId;
+    private String userId;
 
     /**
-     * 角色Id {@link Role#getId()}
+     * 用户组Id {@link Role}
      */
     @Column
     private String roleId;
 
     /**
-     * 关系是否有效：true-有效；false|null-无效
+     * 关系是否有效：true-起效；false|null-无效
      */
     @Column
     private Boolean valid;
+
 }

@@ -10,7 +10,7 @@ spring:
       password: 19960214 # nacos中注册的用户lizhao的密码
       config:
         enabled: false
-        namespace: dev
+        namespace: dev # nacos中的namespace-id
         group: gateway
         file-extension: yml
         #配置文件前缀，默认spring.application.name

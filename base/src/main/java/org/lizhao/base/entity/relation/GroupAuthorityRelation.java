@@ -4,24 +4,24 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.App;
-import org.lizhao.base.entity.user.UserGroup;
+import org.lizhao.base.entity.authority.Authority;
+import org.lizhao.base.entity.user.Group;
 
 /**
- * Description 应用实体{@link App} 和 用户组实体{@link UserGroup} 的关系实体
+ * Description 组和权限关系的实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
- * @date 2022-09-25 16:36
+ * @date 2024-03-17 20:24
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
 @Setter
-@Table(name = "app_user_group_relation")
-public class AppUserGroupRelation {
+@Table(name = "group_authority_relation")
+public class GroupAuthorityRelation {
 
     /**
-     * {@link App} 和 {@link UserGroup} 的关系Id
+     * 用户组 {@link Group}和权限{@link Authority}关系Id
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
@@ -29,21 +29,22 @@ public class AppUserGroupRelation {
     private String id;
 
     /**
-     * 应用Id {@link App#getId()}
+     * 用户Id {@link Group}
      */
     @Column
-    private String appId;
+    private String groupId;
 
     /**
-     * 用户组Id {@link UserGroup#getId()}
+     * 用户组Id {@link Authority}
      */
     @Column
-    private String userGroupId;
+    private String authorityId;
 
     /**
-     * 关系是否有效：true-有效;false|null-无效
+     * 关系是否有效：true-起效；false|null-无效
      */
     @Column
     private Boolean valid;
+
 
 }

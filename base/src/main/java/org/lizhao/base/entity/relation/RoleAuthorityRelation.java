@@ -4,25 +4,25 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.App;
 import org.lizhao.base.entity.CommonAttribute;
-import org.lizhao.base.entity.user.UserInfo;
+import org.lizhao.base.entity.authority.Authority;
+import org.lizhao.base.entity.authority.Role;
 
 /**
- * Description 应用实体{@link App}和 用户实体{@link UserInfo}的关系实体
+ * Description 权限实体{@link Authority}和角色实体{@link Role}的关系实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
- * @date 2022-09-25 16:29
+ * @date 2022-09-25 16:51
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
 @Setter
-@Table(name = "app_user_relation")
-public class AppUserRelation extends CommonAttribute {
+@Table(name = "role_authority_relation")
+public class RoleAuthorityRelation extends CommonAttribute {
 
     /**
-     * {@link App} 和 {@link UserInfo} 关系Id
+     * 权限{@link Authority}和角色{@link Role}的关系Id
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
@@ -30,16 +30,16 @@ public class AppUserRelation extends CommonAttribute {
     private String id;
 
     /**
-     * 应用Id {@link App#getId()}
+     * 角色Id {@link Role#getId()}
      */
     @Column
-    private String appId;
+    private String roleId;
 
     /**
-     * 用户Id {@link UserInfo#getId()}
+     * 权限Id {@link Authority#getId()}
      */
     @Column
-    private String userId;
+    private String authorityId;
 
     /**
      * 关系是否有效：true-有效；false|null-无效

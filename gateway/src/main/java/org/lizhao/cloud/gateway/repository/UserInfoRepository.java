@@ -1,6 +1,6 @@
 package org.lizhao.cloud.gateway.repository;
 
-import org.lizhao.base.entity.user.UserInfo;
+import org.lizhao.base.entity.user.User;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 /**
@@ -11,5 +11,5 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
  * @date 2023-07-12 22:55
  * @since jdk-1.8.0
  */
-public interface UserInfoRepository extends R2dbcRepository<UserInfo, String> {
+public interface UserInfoRepository extends R2dbcRepository<User, String> {
 }

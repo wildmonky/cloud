@@ -4,26 +4,25 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.CommonAttribute;
-import org.lizhao.base.entity.user.UserInfo;
-import org.lizhao.base.entity.user.UserGroup;
+import org.lizhao.base.entity.authority.Authority;
+import org.lizhao.base.entity.user.User;
 
 /**
- * Description 用户实体{@link UserInfo}和用户组实体{@link UserGroup}的关系实体
+ * Description 用户-权限关系实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
- * @date 2022-09-25 16:46
+ * @date 2024-03-17 20:24
  * @since 0.0.1-SNAPSHOT
  */
+
 @Getter
 @Setter
-@Entity
-@Table(name = "user_user_group_relation")
-public class UserUserGroupRelation extends CommonAttribute {
+@Table(name = "user_authority_relation")
+public class UserAuthorityRelation {
 
     /**
-     * 用户{@link User}和用户组 {@link UserGroup} 关系Id
+     * 用户{@link User}和用户组 {@link Authority} 关系Id
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
@@ -37,14 +36,15 @@ public class UserUserGroupRelation extends CommonAttribute {
     private String userId;
 
     /**
-     * 用户组Id {@link UserGroup}
+     * 用户组Id {@link Authority}
      */
     @Column
-    private String userGroupId;
+    private String authorityId;
 
     /**
      * 关系是否有效：true-起效；false|null-无效
      */
     @Column
     private Boolean valid;
+
 }

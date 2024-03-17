@@ -24,11 +24,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_info")
-public class UserInfo extends CommonAttribute implements UserDetails {
+@Table(name = "user")
+public class User extends CommonAttribute implements UserDetails {
 
     /**
-     * 用户账号主键
+     * 用户账号主键，系统内唯一标识码
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
@@ -36,16 +36,16 @@ public class UserInfo extends CommonAttribute implements UserDetails {
     private String id;
 
     /**
-     * 用户识别码，可以直接使用Id识别
+     * 用户手机号码，对外用户唯一识别码
      */
     @Column
-    private String identity;
+    private String phone;
 
     /**
      * 用户登录账号
      */
     @Column
-    private String username;
+    private String name;
 
     /**
      * 用户登录密码
@@ -62,8 +62,8 @@ public class UserInfo extends CommonAttribute implements UserDetails {
     @Column
     private Integer status;
 
-    public static UserInfo of(String id, String identity, String name, String password, Set<Authority> authorities, int status) {
-        return new UserInfo(id, identity, name, password, authorities, status);
+    public static User of(String id, String phone, String name, String password, Set<Authority> authorities, int status) {
+        return new User(id, phone, name, password, authorities, status);
     }
 
     public String getId() {
@@ -74,18 +74,18 @@ public class UserInfo extends CommonAttribute implements UserDetails {
     }
 
     public String getIdentity() {
-        return identity;
+        return phone;
     }
-    public void setIdentity(String identity) {
-        this.identity = identity;
+    public void setIdentity(String phone) {
+        this.phone = phone;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return name;
     }
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String name) {
+        this.name = name;
     }
 
     @Override

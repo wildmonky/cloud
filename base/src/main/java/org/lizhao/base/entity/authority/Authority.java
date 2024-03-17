@@ -29,14 +29,19 @@ public class Authority extends CommonAttribute implements GrantedAuthority {
     @GenericGenerator(name = "snowFlakeIdGenerator", type = org.lizhao.database.jpa.IdentifierGeneratorImpl.class)
     private String id;
 
+    /*
+     * 父级权限Id
+     */
+    private String parentId;
+
     /**
      * 权限名称
      */
     @Column
-    private String authority;
+    private String name;
 
     /**
-     * 权限状态：0-初始；1-可用
+     * 权限状态：0-初始；1-可用; 2-停用
      */
     @Column
     private Integer status;

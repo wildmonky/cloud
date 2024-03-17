@@ -17,8 +17,8 @@ import org.lizhao.base.entity.CommonAttribute;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_group")
-public class UserGroup extends CommonAttribute {
+@Table(name = "group")
+public class Group extends CommonAttribute {
 
     /**
      * 用户组Id
@@ -27,6 +27,11 @@ public class UserGroup extends CommonAttribute {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "snowFlakeIdGenerator")
     @GenericGenerator(name = "snowFlakeIdGenerator", type = org.lizhao.database.jpa.IdentifierGeneratorImpl.class)
     private String id;
+
+    /**
+     * 父级组Id
+     */
+    private String parentId;
 
     /**
      * 用户组名称
