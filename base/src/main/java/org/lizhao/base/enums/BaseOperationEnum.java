@@ -33,5 +33,4 @@ public enum BaseOperationEnum {
         this.operationName = operationName;
     }
 
-
 }

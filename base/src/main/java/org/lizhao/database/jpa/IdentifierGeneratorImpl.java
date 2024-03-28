@@ -25,7 +25,7 @@ public class IdentifierGeneratorImpl implements IdentifierGenerator {
 
     @PostConstruct
     public void postConstruct() {
-        GENERATORS.add(new SnowFlake());
+        GENERATORS.add(new SnowFlake(1L, 1L, 1L));
     }
 
     @Override

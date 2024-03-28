@@ -57,7 +57,7 @@ public class RouteController {
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "更新、新增路由")
-    @PostMapping(path = "save")
+    @PostMapping(path = "/save")
     @ResponseBody
     public void saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionFlux) {
         routeServiceImpl.batchSave(routeDefinitionFlux);

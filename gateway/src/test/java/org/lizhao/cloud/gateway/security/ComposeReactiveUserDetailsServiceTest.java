@@ -2,6 +2,7 @@ package org.lizhao.cloud.gateway.security;
 
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
+import org.lizhao.cloud.gateway.security.userdetailsservice.DelegateReactiveUserDetailsService;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
@@ -10,7 +11,7 @@ import java.lang.reflect.Field;
 class ComposeReactiveUserDetailsServiceTest {
 
     @Resource
-    private ComposeReactiveUserDetailsService composeReactiveUserDetailsService;
+    private DelegateReactiveUserDetailsService composeReactiveUserDetailsService;
 
     @Test
     void findByUsername() {

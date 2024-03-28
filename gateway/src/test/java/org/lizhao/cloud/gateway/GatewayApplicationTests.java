@@ -10,6 +10,8 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
@@ -18,12 +20,13 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class GatewayApplicationTests {
 
+    public void tt() {
+    }
     @Resource
     private RouteController routeController;
     @Value("${web.jwt.key}")
@@ -37,25 +40,11 @@ class GatewayApplicationTests {
         System.out.println(routeController.listTest());
     }
 
-    @Test
-    public void test() {
-        Pattern pattern = Pattern.compile(".*/test");
-        Matcher matcher = pattern.matcher("/gateway/route/test");
-        System.out.println(matcher.matches());
-    }
-
-    @Test
-    public void test1() {
-        Pattern pattern = Pattern.compile(".*/test");
-        Matcher matcher = pattern.matcher("/gateway/route/test");
-        System.out.println(matcher.matches());
-    }
-
     /**
      * JwtUtils 测试
      */
     @Test
-    public void test2() {
+    public void jwsTest() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("lizhao", "19960214");
         String jws = JwtUtils.generate(jwtKey, map, Date.valueOf(LocalDateTime.now().plusDays(1).toLocalDate()));
@@ -75,12 +64,13 @@ class GatewayApplicationTests {
     }
 
     @Resource
-    private KafkaTemplate<String, String> tt;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Test
     public void kafkaProducerTest() {
         try {
-            SendResult<String, String> sendResult = tt.send("gateway",0, "test", "springboot test").get();
+            SendResult<String, String> sendResult = kafkaTemplate.send("gateway",0, "test", "springboot test").get();
+
             System.out.println(sendResult.toString());
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
@@ -89,13 +79,21 @@ class GatewayApplicationTests {
 
 //    @Test
 //    public void kafkaConsumerTest() {
-//        TopicPartitionOffset gateway = new TopicPartitionOffset("gateway", 0, 0L);
 //
-//        tt.setConsumerFactory(consumerFactory);
 //        ConsumerRecords<String, String> consumerRecord = tt.receive(Collections.singleton(gateway));
 //        for (TopicPartition partition : consumerRecord.partitions()) {
 //            System.out.println(partition.);
 //        }
 //    }
+
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Test
+    public void redisTest() {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        ops.set("gateway:test", "hhhh", 6000, TimeUnit.SECONDS);
+//        ops.set("ok", "ok");
+    }
 
 }

@@ -11,7 +11,7 @@
 
 ![Alt](./pic/DispatcherHandler(handlerMapping).png)
 
-<img src="./pic/DispatcherHandler#handle.png">
+<img src="./pic/DispatcherHandler(handle).png">
 
 # 路由存储
 * <b>redis</b><br/>

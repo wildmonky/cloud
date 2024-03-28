@@ -11,64 +11,16 @@ spring:
     #      hystrix:
     #        enabled: true
     #
-  # MQ
-  rabbitmq:
-    host: 106.52.188.209
-    port: 5672
-    virtual-host: gateway
-    username: gateway
-    password: 19960214
-  kafka:
+#  # MQ
+#  rabbitmq:
+#    host: 106.52.188.209
+#    port: 5672
+#    virtual-host: gateway
+#    username: gateway
+#    password: 19960214
+  kafka: # 其他配置在 application.yml
     bootstrap-servers:
       - 106.52.188.209:9092
-    client-id: ${spring.application.name}
-    template:
-      # 开启事务
-      transaction-id-prefix: kafkaTx-
-      # 默认topic
-      default-topic: gateway
-#    admin:
-#      security:
-#        protocol: PLAINTEXT
-    producer:
-      security:
-        protocol: PLAINTEXT
-      # 开启事务，必须在开启了事务的方法中发送，否则报错
-      # transaction-id-prefix: kafkaProducerTx-
-      # 发生错误后，消息重发的次数，开启事务必须设置大于0。
-      retries: 3
-      # acks=0 ： 生产者在成功写入消息之前不会等待任何来自服务器的响应。
-      # acks=1 ： 只要集群的首领节点收到消息，生产者就会收到一个来自服务器成功响应。
-      # acks=all ：只有当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
-      # 开启事务时，必须设置为all
-      acks: all
-      # 当有多个消息需要被发送到同一个分区时，生产者会把它们放在同一个批次里。该参数指定了一个批次可以使用的内存大小，按照字节数计算。
-      batch-size: 16384
-      # 生产者内存缓冲区的大小。
-      buffer-memory: 1024000
-      # 键的序列化方式
-      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      # 值的序列化方式（建议使用Json，这种序列化方式可以无需额外配置传输实体类）
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      security:
-        # PLAINTEXT 无安全协议， 无账号密码
-        protocol: PLAINTEXT
-      group-id: gateway
-      # 当offset不存在与消费者中时，offset策略
-      # earliest 使用最早的offset，会获取以往的信息
-      # latest 使用最近的offset，只会获取以后的最新消息
-      # none 直接抛出异常
-      auto-offset-reset: earliest
-      # 自动提交 已消费信息的offset
-      enable-auto-commit: false
-      # 键的序列化方式
-      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      # 值的序列化方式（建议使用Json，这种序列化方式可以无需额外配置传输实体类）
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    listener:
-      type: single
-      ack-mode: manual
   data:
     redis:
       repositories:
@@ -87,23 +39,33 @@ spring:
           max-idle: 8
           max-wait: -1ms
         shutdown-timeout: 100ms
-    mongodb:
-      host: 106.52.188.209
-      port: 27017
-      database: gateway
-      username: gateway
-      password: 19960214
   r2dbc:
-    url: r2dbc:postgresql://gateway:19960214@106.52.188.209:5432/gateway
     #    username: gateway
     #    password: 19960214
+    url: r2dbc:postgresql://gateway_dev_01:19960214@106.52.188.209:5432/gateway
+    properties:
+      currentSchema: gateway_dev # 设置 schema
     pool:
-      validation-query:
+      validation-query: select 1=1 from "user"
       enabled: true
       initial-size: 10
+# r2dbc 不支持jpa
+#  jpa:
+#    database: PostgreSQL
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    hibernate:
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#      ddl-auto: update # DDL 级别 (create, create-drop, validate, update) none
+#    properties:
+#      hibernate:
+#        auto_quote_keyword: true
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        default_schema: dev
+#    show-sql: true
   # 多数据源配置
 #  datasource:
-
+#    driver-class-name: org.postgresql.Driver
 
 # json web token 密钥 org.lizhao.base.utils.JwtUtils
 web:

@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import org.lizhao.base.entity.user.User;
 import org.lizhao.database.jpa.CommonAttributeAuditEntityListener;
 
 /**
@@ -20,23 +19,21 @@ import org.lizhao.database.jpa.CommonAttributeAuditEntityListener;
  * @version 0.0.1-SNAPSHOT
  * @date 2022-06-18 16:17
  * @since 0.0.1-SNAPSHOT
- * @see org.lizhao.base.entity.user.User
  */
 @Getter
 @Setter
 @MappedSuperclass
-@EntityListeners(value = CommonAttributeAuditEntityListener.class)
+//@EntityListeners(value = CommonAttributeAuditEntityListener.class)
 public abstract class CommonAttribute implements Serializable {
 
     /**
      * 记录创建时使用的账号的Id
-     * {@link User#getId()}
      */
     @Column
     private String createUseId;
 
     /**
-     * 记录创建时使用的账号的用户名称 {@link User#getUsername()}
+     * 记录创建时使用的账号的用户名称
      */
     @Column
     private String createUseName;
@@ -48,13 +45,13 @@ public abstract class CommonAttribute implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 记录更新时使用账号的Id {@link User#getId()}
+     * 记录更新时使用账号的Id
      */
     @Column
     private String updateUseId;
 
     /**
-     * 记录更新时使用账号的用户名称 {@link User#getUsername()}
+     * 记录更新时使用账号的用户名称
      */
     @Column
     private String updateUseName;

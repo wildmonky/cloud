@@ -2,8 +2,8 @@ package org.lizhao.cloud.web.react.intercept;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.lizhao.base.entity.user.User;
-import org.lizhao.base.model.UserHolder;
+import org.lizhao.cloud.gateway.model.GatewayUser;
+import org.lizhao.cloud.gateway.model.UserHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -55,20 +54,20 @@ public class RequestIntercept implements WebFilter {
         } else {
             result = chain.filter(exchange);
         }
-        return result.doFirst(() -> UserHolder.setCurrentUser(User.of("1", "1", "1", "1", Collections.emptySet(),1)))
-//            .doOnRequest(e -> startTime.set(LocalDateTime.now()))
-            .doOnError(Throwable::printStackTrace)
-            .doFinally(e -> {
-                String requestStatus = switch (e) {
-                    case ON_COMPLETE -> "成功";
-                    case ON_ERROR -> "一个错误发生了";
-                    default -> "未成功";
-                };
-                String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
-                User currentUser = UserHolder.getCurrentUser();
-                log.info("请求结果: {}, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestStatus, requestPath, currentUser.getUsername(), currentUser.getIdentity(), Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
-                // 移除 用户信息
-                UserHolder.removeCurrentUser();
-            });
+        return result
+//                .doFirst(() -> UserHolder.setCurrentUser(new GatewayUser("1", "1", Collections.emptySet()))) // 内置测试用户
+//                .doOnRequest(e -> startTime.set(LocalDateTime.now()))
+                .doOnError(throwable -> {
+                    String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
+                    log.info("请求结果: 失败, 请求路径: {}, 耗时: {} ms", requestPath, Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
+                    log.error("请求异常", throwable);
+                }).doOnSuccess(e -> {
+//                    String requestPath = exchange.getRequest().getPath().pathWithinApplication().value();
+//                    GatewayUser currentUser = (GatewayUser)UserHolder.getCurrentUser();
+//                    log.info("请求结果: 成功, 请求路径: {}, 用户: {}({}), 耗时: {} ms", requestPath, currentUser.getUsername(), currentUser.getPhone(), Duration.between(startTime.get(), LocalDateTime.now()).toMillis());
+                }).doFinally(e -> {
+                    // 请求处理完成移除用户信息
+                    UserHolder.removeCurrentUser();
+                });
     }
 }
