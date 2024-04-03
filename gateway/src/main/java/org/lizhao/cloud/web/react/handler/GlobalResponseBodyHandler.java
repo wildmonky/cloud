@@ -1,10 +1,12 @@
 package org.lizhao.cloud.web.react.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.model.ResponseBodyModel;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.codec.HttpMessageWriter;
+import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.HandlerResult;
@@ -26,6 +28,7 @@ import java.util.Optional;
  * @date 2022-08-14 19:09
  * @since 0.0.1-SNAPSHOT
  */
+@Slf4j
 public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
 
     private static MethodParameter GLOBAL_METHOD_PARAMETER;
@@ -60,34 +63,38 @@ public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
         Object body = result.getReturnValue();
         if (body instanceof Mono) {
             body = ((Mono<Object>) body)
-                    .map(this::wrapResponseBody)
+                    .map(o -> wrapResponseBody(o, exchange))
                     .defaultIfEmpty(ResponseBodyModel.success(null));
         }else if (body instanceof Flux) {
             body = ((Flux<Object>) body)
                     .collectList()
-                    .map(this::wrapResponseBody)
+                    .map(o -> wrapResponseBody(o, exchange))
                     .defaultIfEmpty(ResponseBodyModel.success(null));
         }else {
-            body = wrapResponseBody(result);
+            body = wrapResponseBody(result, exchange);
         }
 
         //设置响应类型，否则导致 No Encoder for [org.lizhao.base.model.ResponseBodyModel<?>] with preset Content-Type 'null'
         Optional.ofNullable(result.getReturnTypeSource().getMethodAnnotation(RequestMapping.class)).map(RequestMapping::produces).ifPresent(l -> {
-            exchange.getResponse().getHeaders().addAll("Content-Type", Arrays.asList(l));
+            try {
+                exchange.getResponse().getHeaders().addAll("Content-Type", Arrays.asList(l));
+            } catch(UnsupportedOperationException e) {
+                log.info("ReadOnlyHeaders can not add");
+            }
         });
 
         return writeBody(body, GLOBAL_METHOD_PARAMETER, exchange);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> ResponseBodyModel<T> wrapResponseBody(T result) {
+    private <T> ResponseBodyModel<T> wrapResponseBody(T result, ServerWebExchange exchange) {
         if (result instanceof ResponseBodyModel) {
             return (ResponseBodyModel<T>) result;
         }else{
-            if (result instanceof Exception) {
-                return ResponseBodyModel.error(result);
-            }
-            return ResponseBodyModel.success(result);
+            ResponseBodyModel<T> model = result instanceof Exception ? ResponseBodyModel.error(result) : ResponseBodyModel.success(result);
+//            CsrfToken csrfToken = exchange.getAttribute("xorCsrfToken");
+//            model.withCsrf(csrfToken == null ? "" : csrfToken.getToken());
+            return model;
         }
     }
 

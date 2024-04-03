@@ -59,6 +59,13 @@
 <!--            <version>${mybatis-plus-boot-starter.version}</version>-->
 <!--        </dependency>-->
 
+        <!--boot使用@ConfigurationProperties, mvn install后可以在编写配置文件时，出现提示，可以去掉本依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

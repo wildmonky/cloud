@@ -1,14 +1,14 @@
 package org.lizhao.cloud.gateway.security.authentication.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Description TODO
+ * Description 认证失败处理器-打印日志并重定向
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -24,6 +24,7 @@ public class LogAndRedirectAuthenticationFailureHandler extends RedirectServerAu
      */
     public LogAndRedirectAuthenticationFailureHandler(String location) {
         super(location);
+        super.setRedirectStrategy(new XMLHttpRequestRedirectStrategy());
     }
 
     @Override

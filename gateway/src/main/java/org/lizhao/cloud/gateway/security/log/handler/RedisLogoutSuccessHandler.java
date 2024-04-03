@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Description TODO
+ * Description 登出成功处理器
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT

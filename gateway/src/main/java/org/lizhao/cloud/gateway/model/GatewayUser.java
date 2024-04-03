@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 /**
- * Description TODO
+ * Description 自定义用户类
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -21,6 +21,8 @@ public class GatewayUser extends User {
     private String id;
 
     private String phone;
+
+    private String token;
 
     public GatewayUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);

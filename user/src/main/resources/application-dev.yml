@@ -23,7 +23,6 @@ spring:
       database: gateway
       username: gateway
       password: 19960214
-
 #    flyway:
 #      user: dev
 #      password: 19960214

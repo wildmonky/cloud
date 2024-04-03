@@ -25,6 +25,11 @@ public class ResponseBodyModel<T> {
      */
     private T result;
 
+    /**
+     * csrf request header 应配置值
+     */
+    private String csrfHeaderToken;
+
     public ResponseBodyModel() {}
 
     public static <T> ResponseBodyModel<T> of(int code, T result) {
@@ -40,6 +45,10 @@ public class ResponseBodyModel<T> {
 
     public static <T> ResponseBodyModel<T> error(T result) {
         return of(0, result);
+    }
+
+    public void withCsrf(String csrfHeaderToken) {
+        this.csrfHeaderToken = csrfHeaderToken;
     }
 
 }

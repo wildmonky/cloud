@@ -36,7 +36,7 @@ import java.util.Objects;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-public class DBReactiveUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
+public class DBReactiveUserDetailsServiceImpl implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
 
     private final SecurityProperties securityProperties;
     /**
@@ -58,16 +58,16 @@ public class DBReactiveUserDetailsService implements ReactiveUserDetailsService,
 
 
 
-    public DBReactiveUserDetailsService(SecurityProperties properties, ObjectProvider<PasswordEncoder> passwordEncoder,
-                                        UserRepository userRepository,
-                                        RoleRepository roleRepository,
-                                        GroupRepository groupRepository,
-                                        AuthorityRepository authorityRepository,
-                                        GroupUserRelationRepository groupUserRelationRepository,
-                                        GroupAuthorityRelationRepository groupAuthorityRelationRepository,
-                                        UserRoleRelationRepository userRoleRelationRepository,
-                                        UserAuthorityRelationRepository userAuthorityRelationRepository,
-                                        RoleAuthorityRelationRepository roleAuthorityRelationRepository
+    public DBReactiveUserDetailsServiceImpl(SecurityProperties properties, ObjectProvider<PasswordEncoder> passwordEncoder,
+                                            UserRepository userRepository,
+                                            RoleRepository roleRepository,
+                                            GroupRepository groupRepository,
+                                            AuthorityRepository authorityRepository,
+                                            GroupUserRelationRepository groupUserRelationRepository,
+                                            GroupAuthorityRelationRepository groupAuthorityRelationRepository,
+                                            UserRoleRelationRepository userRoleRelationRepository,
+                                            UserAuthorityRelationRepository userAuthorityRelationRepository,
+                                            RoleAuthorityRelationRepository roleAuthorityRelationRepository
 
     ) {
         this.securityProperties = properties;

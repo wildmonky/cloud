@@ -1,6 +1,18 @@
 # swagger 访问地址
     /swagger.html ===> /webjars/swagger-ui/index.html
 
+# 流程：
+# DispatcherHandler(WebHandler实现类) 
+# ===> getHandler 通过 HandlerMapping 匹配到对应的 Handler
+# ===> handlerRequest 通过HandlerAdapter使用匹配到的Handler处理请求
+# ===> handlerResult
+
+# Handler
+Spring Security 则使用 WebFilter
+Spring Gateway 的各种 Route Handle 中，就定义了各种 GlobalFilter
+
+security(WebFilter) ===> security(Dispatcher) ===> Gateway(Route Handler) ===> Gateway(GlobalFilter)
+
 # DispatcherHandler
 ***完整路径：org.springframework.web.reactive.DispatcherHandler 主要的request分发器。在其handler()方法中可以追踪到request到底是被哪个HandlerMapping处理的。***
 
@@ -12,6 +24,8 @@
 ![Alt](./pic/DispatcherHandler(handlerMapping).png)
 
 <img src="./pic/DispatcherHandler(handle).png">
+
+# Handler
 
 # 路由存储
 * <b>redis</b><br/>

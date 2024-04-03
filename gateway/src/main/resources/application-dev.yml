@@ -69,8 +69,23 @@ spring:
 
 # json web token 密钥 org.lizhao.base.utils.JwtUtils
 web:
-  jwt:
-    key: 0F2F50B9C91B608842353348223BB61DC6D378564F66162E1D6B233307E467DF
+  security:
+    jwt:
+      key: 0F2F50B9C91B608842353348223BB61DC6D378564F66162E1D6B233307E467DF
+      max-age: 1800
+    url:
+      index-path: /
+      login-path: /login
+      logout-path: /logout
+      register-path: /register
+      error-path: /error
+      exclude-path:
+        - /static/**
+        - /*.ico
+    auth:
+      cookie-name: TOKEN
+      header-name: TOKEN
+      success-url: /
 
 #    flyway:
 #      user: dev

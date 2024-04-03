@@ -24,23 +24,23 @@ management:
       base-path: /actuator # 上下文路径
       exposure:
         include:
-         - 'gateway' # 暴露所有的endPoint
+         - gateway # 暴露所有的endPoint
 
 spring:
   web:
     resources:
       static-locations:
-        - "classpath:/templates/"
-        - "classpath:/META-INF/resources/"
-        - "classpath:/resources/"
-        - "classpath:/static/"
-        - "classpath:/public/"
+        - classpath:/templates/
+        - classpath:/META-INF/resources/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/public/
   webflux:
     # 根据 pattern 转换 request path 获取资源路径，
-    # 如http://localhost:8081/static/test.txt转换后会去获取test.txt(在默认的路径下去获取)
+    # 如配置为 /static/** 在访问http://localhost:8081/static/test.txt时转换后会去获取test.txt(在默认的路径下去获取)
     # META-INF/resources/ resources/ static/ public/
     # org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration#addResourceHandlers
-    static-path-pattern: /**
+    static-path-pattern: /static/**
     webjars-path-pattern: /webjars/**
   profiles:
     #起效的配置文件后缀 application-xxx，maven配置

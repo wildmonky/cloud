@@ -1,11 +1,7 @@
 package org.lizhao.cloud.gateway.connect.kafka;
 
-import jakarta.annotation.Resource;
-import org.lizhao.cloud.gateway.security.userdetailsservice.RedisReactiveUserDetailsService;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Component;
 
 /**
  * Description Kafka consumer
@@ -15,11 +11,11 @@ import org.springframework.stereotype.Component;
  * @date 2024-03-16 16:35
  * @since 0.0.1-SNAPSHOT
  */
-@Component
+//@Component
 public class KafkaConsumeListener {
 
-    @Resource
-    private RedisReactiveUserDetailsService redisReactiveUserDetailsService;
+//    @Resource
+    private RedisSecurityContextRepository redisSecurityContextRepository;
 
     /**
      * 消费 密码 修改消息：
@@ -28,16 +24,16 @@ public class KafkaConsumeListener {
      * @param content
      * @param acknowledgment
      */
-    @KafkaListener(topics = "gateway",
-            id = "gateway-security",
-            groupId = "password-update"
-    )
+//    @KafkaListener(topics = "gateway",
+//            id = "gateway-security",
+//            groupId = "password-update"
+//    )
     public void passwordUpdate(String content, Acknowledgment acknowledgment) {
         // 用户密码更新消息前缀
         String passwordUpdatePrefix = "password-update:";
         if (content.startsWith(passwordUpdatePrefix)) {
-            String username = content.substring(content.indexOf(passwordUpdatePrefix));
-            redisReactiveUserDetailsService.remove(User.builder().username(username).build())
+            String token = content.substring(content.indexOf(passwordUpdatePrefix));
+            redisSecurityContextRepository.remove(token)
                     .doOnNext(f -> {
                         if (f) {
                             acknowledgment.acknowledge();

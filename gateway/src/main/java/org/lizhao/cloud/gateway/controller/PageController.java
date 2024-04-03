@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PageController {
 
+    @Operation(summary = "首页")
+    @GetMapping("/")
+    public String index() {
+        return "/public/index";
+    }
+
     @Operation(summary = "注册页")
     @GetMapping("/register")
     public String register() {
@@ -29,10 +35,10 @@ public class PageController {
         return "/public/login" + (status != null ? "?" + status : "");
     }
 
-    @Operation(summary = "首页")
-    @GetMapping("/")
-    public String index() {
-        return "/public/index";
+    @Operation(summary = "错误页")
+    @GetMapping("/error")
+    public String error() {
+        return "/public/error";
     }
 
 }

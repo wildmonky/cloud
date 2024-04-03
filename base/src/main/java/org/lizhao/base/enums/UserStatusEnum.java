@@ -3,7 +3,7 @@ package org.lizhao.base.enums;
 import lombok.Getter;
 
 /**
- * Description TODO
+ * Description 用户状态枚举类
  *
  * @author lizhao
  * @version 1.0.0

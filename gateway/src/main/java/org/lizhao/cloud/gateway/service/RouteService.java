@@ -1,6 +1,5 @@
 package org.lizhao.cloud.gateway.service;
 
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
@@ -10,6 +9,7 @@ import org.springframework.cloud.gateway.route.RedisRouteDefinitionRepository;
 import org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 
 /**
  * Description route service 路由服务接口
@@ -32,9 +32,8 @@ import org.springframework.context.ApplicationEventPublisher;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-public abstract class RouteService {
+public abstract class RouteService implements ApplicationEventPublisherAware {
 
-    @Resource
     private ApplicationEventPublisher applicationEventPublisher;
 
     /**
@@ -50,4 +49,8 @@ public abstract class RouteService {
         applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
     }
 
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 }

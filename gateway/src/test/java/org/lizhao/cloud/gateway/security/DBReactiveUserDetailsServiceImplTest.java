@@ -3,7 +3,7 @@ package org.lizhao.cloud.gateway.security;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.lizhao.cloud.gateway.model.GatewayUser;
-import org.lizhao.cloud.gateway.security.userdetailsservice.DBReactiveUserDetailsService;
+import org.lizhao.cloud.gateway.security.userdetailsservice.DBReactiveUserDetailsServiceImpl;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.test.StepVerifier;
 
@@ -11,17 +11,17 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 
 @SpringBootTest
-class DBReactiveUserDetailsServiceTest {
+class DBReactiveUserDetailsServiceImplTest {
 
     @Resource
-    private DBReactiveUserDetailsService dbReactiveUserDetailsService;
+    private DBReactiveUserDetailsServiceImpl dbReactiveUserDetailsServiceImpl;
 
     @Test
     void updatePassword() {
         GatewayUser gatewayUser = new GatewayUser("lizhao", "19960214", Collections.emptyList());
         gatewayUser.setPhone("18666496619");
         gatewayUser.setId("28785986637824");
-        dbReactiveUserDetailsService.updatePassword(gatewayUser,"123456")
+        dbReactiveUserDetailsServiceImpl.updatePassword(gatewayUser,"123456")
                 .as(StepVerifier::create)
                 .consumeNextWith(u -> System.out.println(u.getPassword()))
                 .verifyComplete();
@@ -29,7 +29,7 @@ class DBReactiveUserDetailsServiceTest {
 
     @Test
     void findByUsername() {
-        dbReactiveUserDetailsService.findByUsername("lizhao")
+        dbReactiveUserDetailsServiceImpl.findByUsername("lizhao")
                 .as(StepVerifier::create)
                 .consumeNextWith(user ->{
                     GatewayUser e = (GatewayUser) user;

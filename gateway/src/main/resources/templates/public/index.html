@@ -3,8 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <meta name="description" content="在线用户">
+    <!--引入vue3-->
+    <script src="/static/vue/vue@3.4.21.global.js"></script>
+    <!--引入vuetify@3.5.13，依赖vue3-->
+    <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
+    <!--axios http-->
+    <script src="/static/config/axiosConfig.js" type="module"></script>
 </head>
 <body>
-
+    <div id="app">
+        <n-button
+                :loading = "loading"
+                @click="flush"
+                name="left-size"
+                type="info"
+                style="margin-bottom: 12px"
+        >
+            刷新
+        </n-button>
+        <n-data-table
+                :columns="columns"
+                :data="tableData"
+                :pagination="pagination"
+                :bordered="false"
+        ></n-data-table>
+    </div>
 </body>
+<script>
+    const { createApp, ref, h } = Vue;
+    // 可配置为全局式  创建分离式的api, 不再受限与<n-xxx-provider/>标签, 要在setup()外
+    const { NButton, createDiscreteApi, DataTableColumns } = naive;
+
+    const { message } = createDiscreteApi(['message']);
+    // const { useMessage } = naive;
+
+    const createColumns = ({
+        offline
+    }) => {
+        return [
+            {
+                title: '用户名',
+                key: 'username'
+            },{
+                title: '操作',
+                key: 'operation',
+                render: (row) => {
+                    return h(
+                        NButton, {
+                            // strong: true,
+                            // tertiary: true,
+                            size: 'small',
+                            type: 'error',
+                            onClick: () => offline(row.token)
+                        },
+                        { default: () => '下线' }
+                    )
+                }
+            }
+        ]
+    };
+    const flush = function() {
+        this.loading = true;
+        axios.post("/user/online")
+            .then(res => this.tableData = res)
+            .finally(() => this.loading = false);
+    }
+    const app = createApp({
+        setup() {
+            // 入口函数
+            // 配和 <n-message-provider/> 标签使用
+            // const message = useMessage();
+        },
+        data() {
+            return {
+                loading: ref(false),
+                pagination: false,
+                columns: createColumns({
+                    offline(token) {
+                        axios.post('/user/offline', token, {
+                            headers: {
+                                "Content-Type": "text/plain"
+                            }
+                        }).then(res => console.info(res))
+                            .catch(err => console.error(err))
+                            .finally(() => flush());
+                    }
+                }),
+                tableData: [
+                    { 'username': 'lizhao' },
+                    { 'username': 'test' }
+                ]
+            }
+        },
+        methods: {
+            flush() {
+                this.loading = true;
+                axios.post("/user/online")
+                    .then(res => this.tableData = res)
+                    .finally(() => this.loading = false);
+            }
+            // offline1(token) {
+            //     axios.post('/user/offline', token, {
+            //         headers: {
+            //             "Content-Type": "text/plain"
+            //         }
+            //     }).then(res => console.info(res))
+            //         .catch(err => console.error(err))
+            //         .finally(() => this.flush());
+            // }
+        },
+        mounted() {
+            window.onload = () => {
+                this.flush();
+            }
+        }
+    }).use(naive).mount('#app');
+</script>
+<style>
+    #app {
+        width: 600px;
+        height: 400px;
+        position: absolute;
+        left: calc(50% - 300px);
+        top: calc(50% - 200px);
+    }
+</style>
 </html>

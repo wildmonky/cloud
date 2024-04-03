@@ -21,13 +21,13 @@ import java.util.Objects;
  * @date 2023/7/21 14:49:32
  */
 @Slf4j
-public class DelegateReactiveUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
+public class DelegateReactiveUserDetailsServiceImpl implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
 
     private final List<ReactiveUserDetailsService> reactiveUserDetailsServices = new ArrayList<>();
 
     private final List<ReactiveUserDetailsPasswordService> reactiveUserDetailsPasswordServices = new ArrayList<>();
 
-    public DelegateReactiveUserDetailsService(ReactiveUserDetailsService... reactiveUserDetailsServices) {
+    public DelegateReactiveUserDetailsServiceImpl(ReactiveUserDetailsService... reactiveUserDetailsServices) {
 
         List<ReactiveUserDetailsService> userDetailsServices = Arrays.stream(reactiveUserDetailsServices).filter(Objects::nonNull).toList();
         if (userDetailsServices.size() == 0) {

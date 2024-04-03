@@ -1,18 +1,16 @@
 package org.lizhao.cloud.gateway.security.log.handler;
 
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.lizhao.cloud.gateway.security.security.context.RedisSecurityContextImpl;
-import org.lizhao.cloud.gateway.security.security.context.repository.RedisSecurityContextRepository;
+import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
+import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.web.server.WebFilterExchange;
 import  org.springframework.security.web.server.authentication.logout.ServerLogoutHandler;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Description TODO
+ * Description 登出处理器
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -20,11 +18,13 @@ import reactor.core.publisher.Mono;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-@Component
 public class RedisLogoutHandler implements ServerLogoutHandler {
 
-    @Resource
-    private RedisSecurityContextRepository repository;
+    private final RedisSecurityContextRepository repository;
+
+    public RedisLogoutHandler(RedisSecurityContextRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * 登出 清除 redis 中的 token
@@ -34,18 +34,20 @@ public class RedisLogoutHandler implements ServerLogoutHandler {
      */
     @Override
     public Mono<Void> logout(WebFilterExchange exchange, Authentication authentication) {
-        return ReactiveSecurityContextHolder.getContext()
-                .switchIfEmpty(Mono.error(new Throwable("securityContext为空")))
-                .map(securityContext -> {
-                    assert securityContext instanceof RedisSecurityContextImpl;
-                    return ((RedisSecurityContextImpl) securityContext).getToken();
-                }).flatMap(token -> repository.remove(token))
-                .flatMap(flag -> {
-                    if (!flag) {
-                        log.info("用户{}登出失败", authentication.getName());
+        assert authentication instanceof TokenAuthenticationToken;
+        TokenAuthenticationToken authenticationToken = (TokenAuthenticationToken) authentication;
+        return Mono.just(authenticationToken.getToken())
+                // 删除 AuthCookie
+                .flatMap(repository::remove)
+                .doOnNext(flag -> {
+                    if (flag) {
+                        log.info("用户{}登出成功", authentication.getName());
+                    } else {
+                        log.error("用户{}登出失败", authentication.getName());
                     }
-                    return Mono.empty();
-                });
+                    // TODO  测试是否能获取SecurityContext
+                })
+                .then().contextWrite(ReactiveSecurityContextHolder.clearContext()).then();
     }
 
 }

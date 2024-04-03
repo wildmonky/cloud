@@ -3,7 +3,6 @@ package org.lizhao.cloud.gateway.security.authentication.handler;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
@@ -24,29 +23,21 @@ import java.net.URI;
 @Getter
 public class CookieTokenRedirectAuthenticationSuccessHandler extends RedirectServerAuthenticationSuccessHandler {
 
-    private String tokenName;
     public CookieTokenRedirectAuthenticationSuccessHandler() {
         super();
     }
 
-    public static CookieTokenRedirectAuthenticationSuccessHandler create(String tokenName, String redirectUrl) {
+    public static CookieTokenRedirectAuthenticationSuccessHandler create(String redirectUrl) {
         CookieTokenRedirectAuthenticationSuccessHandler handler = new CookieTokenRedirectAuthenticationSuccessHandler();
         handler.setLocation(URI.create(redirectUrl));
-        handler.setTokenName(tokenName);
         return handler;
     }
 
     @Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
         log.info("用户验证成功");
-        webFilterExchange.getExchange()
-                .getResponse()
-                .getCookies()
-                .set(this.tokenName,
-                        ResponseCookie.from(this.tokenName, "").build()
-                );
+        // 登录成功后要生成csrf token
         return super.onAuthenticationSuccess(webFilterExchange, authentication);
     }
-
 
 }

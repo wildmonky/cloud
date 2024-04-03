@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class GatewayApplicationTests {
-
     public void tt() {
     }
     @Resource

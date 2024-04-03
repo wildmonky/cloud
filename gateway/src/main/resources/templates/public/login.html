@@ -3,10 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>登录页面</title>
+    <!--引入vue3-->
+    <script src="/static/vue/vue@3.4.21.global.js"></script>
+    <!--引入vuetify@3.5.13，依赖vue3-->
+    <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
+    <!--axios http-->
+    <!--    <script src="/static/axios@1.6.8.js"></script>-->
+    <script src="/static/config/axiosConfig.js" type="module"></script>
 </head>
 <body>
-<div>
-
+<div id="app">
+    <n-form
+            ref="formRef"
+            :label-width="60"
+            :model="user"
+            :rules="rules"
+            label-placement="left"
+            require-mark-placement="right-hanging"
+            style="width: 300px;height:200px;position: absolute;left:calc(50% - 150px);top: calc(50% - 100px)"
+    >
+        <n-form-item label="账号" path="username">
+            <n-input v-model:value="user.username" placeholder="请输入账号" />
+        </n-form-item>
+        <n-form-item label="密码" path="password">
+            <n-input v-model:value="user.password" placeholder="请输入密码" />
+        </n-form-item>
+<!--        <n-form-item>-->
+            <div style="display: flex; justify-content: flex-end">
+                <n-button type="success" attr-type="button" @click="login">
+                    验证
+                </n-button>
+            </div>
+<!--        </n-form-item>-->
+    </n-form>
 </div>
+<script>
+    const { createApp, ref } = Vue;
+    // 可配置为全局式  创建分离式的api, 不再受限与<n-xxx-provider/>标签, 要在setup()外
+    const {  createDiscreteApi } = naive;
+    const { message } = createDiscreteApi(['message']);
+    // const { useMessage } = naive;
+    const app = createApp({
+        setup() {
+            // 入口函数
+            // 配和 <n-message-provider/> 标签使用
+            // const message = useMessage();
+        },
+        data() {
+            return {
+                user: ref({
+                    username : ref(''),
+                    password: ref('')
+                }),
+                size: ref("medium"),
+                rules: {
+                    username: {
+                        required: true,
+                        message: '请输入账号',
+                        trigger: 'blur'
+                    },
+                    password: {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: ['input', 'blur']
+                    }
+                }
+            }
+        },
+        methods: {
+            login() { // 为了实现页面的重定向，使用 Form 发送请求
+                let form = document.createElement("form");
+                let usernameInput = document.createElement("input");
+                usernameInput.name = "username";
+                usernameInput.value = this.user.username;
+                let passwordInput = document.createElement("input");
+                passwordInput.name = "password";
+                passwordInput.value = this.user.password;
+                // _csrf header
+                let csrf = document.createElement("input");
+                csrf.name = '[[${xorCsrfToken.parameterName}]]';
+                csrf.value = '[[${xorCsrfToken.token}]]';
+                csrf.style.display = 'none';
+                form.appendChild(csrf);
+                form.appendChild(usernameInput);
+                form.appendChild(passwordInput);
+                document.body.appendChild(form)
+                form.method = 'post';
+                form.action = '/login';
+                form.submit();
+                document.body.removeChild(form);
+            }
+        },
+        mounted() {}
+    }).use(naive).mount('#app');
+</script>
 </body>
+<style type="text/css">
+    #app{
+        width: 600px;
+        height: 400px;
+        position: absolute;
+        left: calc(50% - 300px);
+        top: calc(50% - 200px);
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    }
+</style>
 </html>

@@ -3,6 +3,7 @@ package org.lizhao.cloud.web.react.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.model.ResponseBodyModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,11 +19,11 @@ import reactor.core.publisher.Mono;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-@ControllerAdvice(annotations = { Controller.class, RestController.class })
+//@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+//@ControllerAdvice(annotations = { Controller.class, RestController.class })
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+//    @ExceptionHandler(Exception.class)
     public Mono<ResponseBodyModel<?>> exceptionHandler(Exception e) {
         log.error("捕获到异常{}, {}", e.getMessage(), e.getStackTrace());
         return Mono.just(ResponseBodyModel.error(e.getMessage()));
