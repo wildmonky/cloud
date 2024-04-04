@@ -7,8 +7,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
 
+/**
+ * @author lizhao
+ */
 @ConfigurationPropertiesScan(basePackages = {"org.lizhao.cloud.gateway.configurer.properties"})
-@EnableKafka
+//@EnableKafka
 @EnableAspectJAutoProxy
 @EnableRedisRepositories
 //@EnableReactiveMongoRepositories

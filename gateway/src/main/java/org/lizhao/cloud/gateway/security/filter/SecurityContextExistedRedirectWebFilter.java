@@ -3,7 +3,6 @@ package org.lizhao.cloud.gateway.security.filter;
 import org.lizhao.cloud.gateway.configurer.properties.SecurityProperties;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -18,7 +17,6 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Objects;
 
 /**
  * Description 避免重复登录

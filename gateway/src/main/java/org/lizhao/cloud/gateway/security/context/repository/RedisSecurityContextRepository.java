@@ -1,13 +1,11 @@
 package org.lizhao.cloud.gateway.security.context.repository;
 
-import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.lizhao.base.utils.JwtUtils;
 import org.lizhao.cloud.gateway.configurer.properties.SecurityProperties;
 import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseCookie;

@@ -54,7 +54,6 @@ public class RouteController {
      * @author lizhao
      * @date 2022/6/12 18:24
      * @param routeDefinitionFlux routeDefinitionList
-     * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "更新、新增路由")
     @PostMapping(path = "/save")
@@ -77,13 +76,6 @@ public class RouteController {
     public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
         routeServiceImpl.batchRemove(routeDefinitionList);
         return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
-    }
-
-    @Operation(summary = "查询路由列表")
-    @GetMapping(path = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public String listTest() {
-        return Mono.just("测试成功").block();
     }
 
 }

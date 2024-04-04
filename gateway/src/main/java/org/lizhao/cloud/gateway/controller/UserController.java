@@ -3,8 +3,6 @@ package org.lizhao.cloud.gateway.controller;
 import jakarta.annotation.Resource;
 import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.lizhao.cloud.gateway.serviceImpl.UserServiceImpl;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

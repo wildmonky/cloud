@@ -33,7 +33,7 @@
 <script>
     const { createApp, ref, h } = Vue;
     // 可配置为全局式  创建分离式的api, 不再受限与<n-xxx-provider/>标签, 要在setup()外
-    const { NButton, createDiscreteApi, DataTableColumns } = naive;
+    const { NButton, NTag, createDiscreteApi } = naive;
 
     const { message } = createDiscreteApi(['message']);
     // const { useMessage } = naive;
@@ -44,7 +44,22 @@
         return [
             {
                 title: '用户名',
-                key: 'username'
+                key: 'username',
+                render: (row) => {
+                    let array = new Array(2);
+                    array.push(row.username);
+                    if(row.token === Cookies.get('TOKEN')) {
+                        array.push(h(
+                            NTag, {
+                                size: 'small',
+                                type: 'success',
+                                round: true
+                            },
+                            {default: () => 'current'}
+                        ))
+                    }
+                    return array;
+                }
             },{
                 title: '操作',
                 key: 'operation',
@@ -91,8 +106,8 @@
                     }
                 }),
                 tableData: [
-                    { 'username': 'lizhao' },
-                    { 'username': 'test' }
+                    // { 'username': 'lizhao' },
+                    // { 'username': 'test' }
                 ]
             }
         },
@@ -103,15 +118,6 @@
                     .then(res => this.tableData = res)
                     .finally(() => this.loading = false);
             }
-            // offline1(token) {
-            //     axios.post('/user/offline', token, {
-            //         headers: {
-            //             "Content-Type": "text/plain"
-            //         }
-            //     }).then(res => console.info(res))
-            //         .catch(err => console.error(err))
-            //         .finally(() => this.flush());
-            // }
         },
         mounted() {
             window.onload = () => {

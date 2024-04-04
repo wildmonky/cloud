@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jws;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.lizhao.base.utils.JwtUtils;
-import org.lizhao.cloud.gateway.controller.RouteController;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,20 +23,12 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class GatewayApplicationTests {
-    public void tt() {
-    }
-    @Resource
-    private RouteController routeController;
+
     @Value("${web.jwt.key}")
     private byte[] jwtKey;
 
     @Resource
     private AmqpTemplate amqpTemplate;
-
-    @Test
-    void contextLoads() {
-        System.out.println(routeController.listTest());
-    }
 
     /**
      * JwtUtils 测试

@@ -10,7 +10,7 @@ import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContext
 import org.lizhao.cloud.gateway.security.userdetailsservice.DBReactiveUserDetailsServiceImpl;
 import org.lizhao.cloud.gateway.security.authentication.handler.LogAndRedirectAuthenticationFailureHandler;
 import org.lizhao.cloud.gateway.security.authentication.handler.CookieTokenRedirectAuthenticationSuccessHandler;
-import org.lizhao.cloud.gateway.security.csrf.CsrfServerAccessDeinedHandler;
+import org.lizhao.cloud.gateway.security.csrf.CsrfServerAccessDeniedHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutSuccessHandler;
 import org.lizhao.cloud.gateway.security.userdetailsservice.DelegateReactiveUserDetailsServiceImpl;
@@ -165,7 +165,7 @@ public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
 //                .httpBasic(Customizer.withDefaults())
                 // 允许跨域请求
                 .cors(corsSpec -> corsSpec.configurationSource(new UrlBasedCorsConfigurationSource()))
-                .csrf(csrfSpec -> csrfSpec.accessDeniedHandler(new CsrfServerAccessDeinedHandler())
+                .csrf(csrfSpec -> csrfSpec.accessDeniedHandler(new CsrfServerAccessDeniedHandler())
                         // client: cookie中保存 XSRF-TOKEN  server: 验证请求的头 X-XSRF-TOKEN
                         .csrfTokenRepository(cookieServerCsrfTokenRepository)
                         // 排除 登录和注册 页面

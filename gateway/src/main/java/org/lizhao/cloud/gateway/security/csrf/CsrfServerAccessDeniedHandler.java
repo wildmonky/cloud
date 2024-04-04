@@ -5,13 +5,12 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.Charset;
-import java.util.Collections;
 
 /**
  * Description TODO
@@ -22,7 +21,7 @@ import java.util.Collections;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-public class CsrfServerAccessDeinedHandler implements ServerAccessDeniedHandler {
+public class CsrfServerAccessDeniedHandler implements ServerAccessDeniedHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
