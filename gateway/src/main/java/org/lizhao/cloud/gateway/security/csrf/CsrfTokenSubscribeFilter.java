@@ -30,8 +30,10 @@ public class CsrfTokenSubscribeFilter implements WebFilter {
         Mono<CsrfToken> csrfTokenMono = exchange.getAttribute(CsrfToken.class.getName());
         csrfTokenMono = Objects.requireNonNullElse(csrfTokenMono, Mono.empty());
         return csrfTokenMono.doOnSuccess(xorToken -> {
-            exchange.getAttributes().put("xorCsrfToken", xorToken);
-            log.info("xorToken: " + xorToken.getToken());
+            if (Objects.nonNull(xorToken)) {
+                exchange.getAttributes().put("xorCsrfToken", xorToken);
+                log.info("xorToken: " + xorToken.getToken());
+            }
         }).then(chain.filter(exchange));
     }
 

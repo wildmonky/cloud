@@ -51,7 +51,7 @@ public class RouteServiceImpl extends RouteService {
     @Resource
     private RedisRouteDefinitionRepository redisRouteDefinitionRepository;
 
-    public Mono<List<RouteDefinition>> search(String id, String source, String target) {
+    public Flux<RouteDefinition> search(String id, String source, String target) {
         Flux<RouteDefinition> routeDefinitionFlux = redisRouteDefinitionRepository.getRouteDefinitions();
         return routeDefinitionFlux.filter(route -> {
             if (StringUtils.isNotBlank(id) && !route.getId().equalsIgnoreCase(id)) {
@@ -74,7 +74,7 @@ public class RouteServiceImpl extends RouteService {
                 }
             }
             return !StringUtils.isNotBlank(target) || route.getUri().getPath().contains(target);
-        }).collectList();
+        });
     }
 
     /**
@@ -85,9 +85,12 @@ public class RouteServiceImpl extends RouteService {
      * @date 2022/6/5 19:38
      * @param routeDefinitionList  要保存的routeDefinition列表
      */
-    public void batchSave(List<RouteDefinition> routeDefinitionList) {
-        routeDefinitionList.forEach(routeDefinition -> redisRouteDefinitionRepository.save(Mono.just(routeDefinition)).subscribe());
-        this.refresh();
+    public Mono<Void> save(Mono<RouteDefinition> routeDefinitionMono) {
+        return redisRouteDefinitionRepository.save(routeDefinitionMono)
+                .doOnSuccess(routeDefinition -> {
+                    System.out.println(routeDefinition);
+                    this.refresh();
+                });
     }
 
     /**

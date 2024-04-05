@@ -20,8 +20,6 @@ import org.lizhao.cloud.web.react.handler.GlobalResponseBodyHandler;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.cloud.gateway.filter.FilterDefinition;
-import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -106,11 +104,13 @@ public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
         configurer.defaultCodecs().configureDefaultCodec(codec -> {
             if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
                 SimpleModule simpleModule = new SimpleModule();
-                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
-                simpleModule.addDeserializer(FilterDefinition.class, new FilterDefinitionDeserializer());
+//                simpleModule.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
+//                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
+//                simpleModule.addDeserializer(FilterDefinition.class, new FilterDefinitionDeserializer());
                 abstractJackson2Decoder.getObjectMapper().registerModule(simpleModule);
             }
         });
+//        configurer.customCodecs().register(new RouteDefinitionDecoder());
     }
 
     @Bean
@@ -142,6 +142,11 @@ public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
         RedirectServerAuthenticationEntryPoint authenticationEntryPoint = new RedirectServerAuthenticationEntryPoint(securityProperties.getUrl().getLoginPath());
         authenticationEntryPoint.setRedirectStrategy(new XMLHttpRequestRedirectStrategy());
         return authenticationEntryPoint;
+    }
+
+    @Bean
+    public RedisLogoutSuccessHandler redisLogoutSuccessHandler() {
+        return new RedisLogoutSuccessHandler();
     }
 
     /**
@@ -200,6 +205,12 @@ public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
                             .permitAll()
                             .anyExchange().authenticated();
                 });
+        // for test
+//        http.authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())
+//                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+//                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+//                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+//                .logout(ServerHttpSecurity.LogoutSpec::disable);
         return http.build();
     }
 

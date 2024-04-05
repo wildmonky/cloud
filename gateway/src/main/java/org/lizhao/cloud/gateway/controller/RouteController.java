@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  * @since 0.0.1-SNAPSHOT
  */
 @Tag(name = "路由操作")
-@RequestMapping(path = "/route", consumes = {"application/json", "application/form-data"})
+@RequestMapping(path = "/route", consumes = {"application/*", "multipart/form-data"})
 @Controller
 public class RouteController {
 
@@ -43,7 +44,7 @@ public class RouteController {
     @Operation(summary = "查询路由列表")
     @GetMapping(path = "/list", produces = "application/json" )
     @ResponseBody
-    public Mono<List<RouteDefinition>> routeList(String id, String source, String target) {
+    public Flux<RouteDefinition> routeList(String id, String source, String target) {
         return routeServiceImpl.search(id, source, target);
     }
 
@@ -53,13 +54,14 @@ public class RouteController {
      * @since 0.0.1-SNAPSHOT
      * @author lizhao
      * @date 2022/6/12 18:24
-     * @param routeDefinitionFlux routeDefinitionList
+     * @param routeDefinition 路由定义
      */
     @Operation(summary = "更新、新增路由")
     @PostMapping(path = "/save")
     @ResponseBody
-    public void saveRouteList(@RequestBody List<RouteDefinition> routeDefinitionFlux) {
-        routeServiceImpl.batchSave(routeDefinitionFlux);
+    public Mono<ServerResponse> saveRouteList(@RequestBody RouteDefinition routeDefinition) {
+        return routeServiceImpl.save(Mono.just(routeDefinition))
+                .then(ServerResponse.ok().bodyValue("添加成功"));
     }
 
     /**

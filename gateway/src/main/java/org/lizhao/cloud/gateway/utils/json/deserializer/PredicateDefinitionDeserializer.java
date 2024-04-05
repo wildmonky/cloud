@@ -33,24 +33,24 @@ public class PredicateDefinitionDeserializer extends JsonDeserializer<PredicateD
 
     public static PredicateDefinition parse(JsonNode rootNode) {
         String name = ReflectUtil.upperFirstChar(rootNode.get("name").asText());
-        List<String> args = new ArrayList<>();
+        List<Object> args = new ArrayList<>();
         try {
             switch (name) {
                 case "After", "Before" -> args.add(rootNode.get("time").asText());
-                case "Between" -> args.addAll(rootNode.findValuesAsText("timeList"));
+                case "Between" -> args.add(rootNode.findValuesAsText("timeList"));
                 case "Header" -> {
                     args.add(rootNode.get("headerName").asText());
                     args.add(rootNode.get("regex").asText());
                 }
-                case "Host" -> args.addAll(rootNode.findValuesAsText("hostPatternSet"));
-                case "Method" -> args.addAll(rootNode.findValuesAsText("httpMethodSet"));
-                case "Path" -> args.addAll(rootNode.findValuesAsText("pathMatcherSet"));
+                case "Host" -> args.add(rootNode.findValuesAsText("hostPatternSet"));
+                case "Method" -> args.add(rootNode.findValuesAsText("httpMethodSet"));
+                case "Path" -> args.add(rootNode.findValuesAsText("pathMatcherSet"));
                 case "Query" -> {
                     args.add(rootNode.get("paramName").asText());
                     args.add(rootNode.get("paramValue").asText());
                 }
                 case "RemoteAddr" -> args.add(rootNode.get("remoteAddr").asText());
-                case "XForwardedRemoteAddr" -> args.addAll(rootNode.findValuesAsText("xForwardedRemoteAddrSet"));
+                case "XForwardedRemoteAddr" -> args.add(rootNode.findValuesAsText("xForwardedRemoteAddrSet"));
                 case "Weight" -> {
                     args.add(rootNode.get("group").asText());
                     args.add(rootNode.get("weight").asText());

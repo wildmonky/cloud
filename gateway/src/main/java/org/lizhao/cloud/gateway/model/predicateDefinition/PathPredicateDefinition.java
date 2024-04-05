@@ -4,11 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
-import org.springframework.util.AntPathMatcher;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Description PathPredicateDefinition
@@ -23,13 +21,11 @@ import java.util.stream.Collectors;
 @Getter
 public class PathPredicateDefinition extends PredicateDefinition {
 
-    private final Set<String> pathMatcherStrSet;
-    private final Set<AntPathMatcher> pathMatcherSet;
+    private final Set<String> pathMatcherSet;
 
     public PathPredicateDefinition(@NotNull Set<String> pathMatcherSet) {
         super.setName("Path");
-        this.pathMatcherSet = pathMatcherSet.stream().map(e -> new AntPathMatcher(e.toUpperCase())).collect(Collectors.toSet());
-        this.pathMatcherStrSet = pathMatcherSet;
+        this.pathMatcherSet = pathMatcherSet;
         Map<String, String> args = super.getArgs();
         int i = 0;
         for (String pathMatcher : pathMatcherSet) {
@@ -38,7 +34,7 @@ public class PathPredicateDefinition extends PredicateDefinition {
     }
 
     public String toYml() {
-        return super.getName() + "=" + String.join(",", this.pathMatcherStrSet);
+        return super.getName() + "=" + String.join(",", this.pathMatcherSet);
     }
 
 }

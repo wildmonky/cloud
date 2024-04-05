@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
@@ -16,7 +15,6 @@ import reactor.core.publisher.Mono;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-@Component
 public class RedisLogoutSuccessHandler extends RedirectServerLogoutSuccessHandler {
 
     @Override
