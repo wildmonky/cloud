@@ -1,7 +1,7 @@
 package org.lizhao.cloud.gateway.repository;
 
-import org.lizhao.cloud.gateway.entity.relation.GroupUserRelation;
-import org.lizhao.cloud.gateway.entity.user.User;
+import org.lizhao.base.entity.relation.GroupUserRelation;
+import org.lizhao.base.entity.user.User;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Mono;

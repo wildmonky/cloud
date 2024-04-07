@@ -74,18 +74,18 @@ web:
       key: 0F2F50B9C91B608842353348223BB61DC6D378564F66162E1D6B233307E467DF
       max-age: 1800
     url:
-      index-path: /
-      login-path: /login
-      logout-path: /logout
-      register-path: /register
-      error-path: /error
+      index-path: /gateway
+      login-path: /gateway/login
+      logout-path: /gateway/logout
+      register-path: /gateway/register
+      error-path: /gateway/error
       exclude-path:
-        - /static/**
+        - /gateway/static/**
         - /*.ico
     auth:
       cookie-name: TOKEN
       header-name: TOKEN
-      success-url: /
+      success-url: /gateway
 
 #    flyway:
 #      user: dev

@@ -108,7 +108,6 @@ COMMENT ON COLUMN gateway.role.status
 CREATE TABLE IF NOT EXISTS gateway.authority
 (
     id character varying COLLATE pg_catalog."default" NOT NULL,
-    parent_id character varying COLLATE pg_catalog."default",
     name character varying COLLATE pg_catalog."default" NOT NULL,
     comment character varying COLLATE pg_catalog."default" NOT NULL,
     status smallint NOT NULL DEFAULT 0,
@@ -272,3 +271,32 @@ ALTER TABLE IF EXISTS gateway.user_role_relation
 
 COMMENT ON TABLE gateway.user_role_relation
     IS '用户和角色关系表';
+
+-- Table: gateway_dev.group_role_relation
+
+-- DROP TABLE IF EXISTS gateway_dev.group_role_relation;
+
+CREATE TABLE IF NOT EXISTS gateway_dev.group_role_relation
+(
+    id character varying COLLATE pg_catalog."default" NOT NULL,
+    group_id character varying COLLATE pg_catalog."default" NOT NULL,
+    role_id character varying COLLATE pg_catalog."default" NOT NULL,
+    valid boolean NOT NULL DEFAULT false,
+    create_use_id character varying COLLATE pg_catalog."default" NOT NULL,
+    create_use_name character varying COLLATE pg_catalog."default",
+    create_time timestamp with time zone NOT NULL,
+    update_use_id character varying COLLATE pg_catalog."default",
+    update_use_name character varying COLLATE pg_catalog."default",
+    update_time timestamp with time zone,
+    CONSTRAINT group_role_relation_pkey PRIMARY KEY (id)
+)
+    WITH (
+        OIDS = FALSE
+    )
+    TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS gateway_dev.group_role_relation
+    OWNER to gateway_dev_01;
+
+COMMENT ON TABLE gateway_dev.group_role_relation
+    IS '组和角色关系表';

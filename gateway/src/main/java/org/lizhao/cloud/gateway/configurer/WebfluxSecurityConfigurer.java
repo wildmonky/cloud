@@ -3,6 +3,7 @@ package org.lizhao.cloud.gateway.configurer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
+import org.lizhao.cloud.gateway.handler.UserHandler;
 import org.lizhao.cloud.gateway.repository.*;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
@@ -220,28 +221,24 @@ public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
     }
 
     @Bean
+    public UserHandler userHandler(RoleRepository roleRepository,
+                                   GroupRepository groupRepository,
+                                   AuthorityRepository authorityRepository,
+                                   GroupUserRelationRepository groupUserRelationRepository
+    ) {
+        return new UserHandler(roleRepository, groupRepository, authorityRepository, groupUserRelationRepository);
+    }
+
+    @Bean
     public DBReactiveUserDetailsServiceImpl reactiveDBUserDetailsService(SecurityProperties properties,
                                                                      ObjectProvider<PasswordEncoder> passwordEncoder,
                                                                      UserRepository userRepository,
-                                                                     RoleRepository roleRepository,
-                                                                     GroupRepository groupRepository,
-                                                                     AuthorityRepository authorityRepository,
-                                                                     GroupUserRelationRepository groupUserRelationRepository,
-                                                                     GroupAuthorityRelationRepository groupAuthorityRelationRepository,
-                                                                     UserRoleRelationRepository userRoleRelationRepository,
-                                                                     UserAuthorityRelationRepository userAuthorityRelationRepository,
-                                                                     RoleAuthorityRelationRepository roleAuthorityRelationRepository
+                                                                     UserHandler userHandler
     ) {
-        return new DBReactiveUserDetailsServiceImpl(properties, passwordEncoder,
+        return new DBReactiveUserDetailsServiceImpl(properties,
+                passwordEncoder,
                 userRepository,
-                roleRepository,
-                groupRepository,
-                authorityRepository,
-                groupUserRelationRepository,
-                groupAuthorityRelationRepository,
-                userRoleRelationRepository,
-                userAuthorityRelationRepository,
-                roleAuthorityRelationRepository
+                userHandler
         );
     }
 

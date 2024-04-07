@@ -1,40 +1,40 @@
-package org.lizhao.cloud.gateway.entity.relation;
+package org.lizhao.base.entity.relation;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.cloud.gateway.entity.authority.Role;
-import org.lizhao.cloud.gateway.entity.user.User;
+import org.lizhao.base.entity.CommonAttribute;
+import org.lizhao.base.entity.authority.Role;
+import org.lizhao.base.entity.user.Group;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * Description 用户和角色关系实体
+ * Description 用户组-角色 关系实体
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
- * @date 2024-03-17 20:29
+ * @date 2024-04-06 13:45
  * @since 0.0.1-SNAPSHOT
  */
-
 @Getter
 @Setter
-@Table(name = "user_role_relation")
-public class UserRoleRelation {
+@Table(name = "group_role_relation")
+public class GroupRoleRelation extends CommonAttribute {
+
 
     /**
-     * 用户{@link User}和用户组 {@link Role} 关系Id
+     * 用户组 {@link Group}和权限{@link Role}关系Id
      */
     @Id
     private String id;
 
     /**
-     * 用户Id {@link User}
+     * 用户Id {@link Group}
      */
     @Column
-    private String userId;
+    private String groupId;
 
     /**
      * 用户组Id {@link Role}

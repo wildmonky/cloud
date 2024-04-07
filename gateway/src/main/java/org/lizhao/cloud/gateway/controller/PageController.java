@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2024-03-28 16:16
  * @since 0.0.1-SNAPSHOT
  */
-@RequestMapping("/")
+@RequestMapping("/gateway")
 @Controller
 public class PageController {
 

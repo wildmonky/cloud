@@ -13,7 +13,8 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.Charset;
 
 /**
- * Description TODO
+ * Description CSRF定义： 跨站请求伪造（英语：Cross-site request forgery)
+ *              CSRF 访问拒绝处理
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT

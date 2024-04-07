@@ -3,7 +3,7 @@ package org.lizhao.cloud.gateway.repository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
-import org.lizhao.cloud.gateway.entity.user.User;
+import org.lizhao.base.entity.user.User;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import reactor.test.StepVerifier;

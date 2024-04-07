@@ -3,6 +3,7 @@ package org.lizhao.cloud.gateway.repository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.lang.reflect.Field;
@@ -17,7 +18,7 @@ class RoleRepositoryTest {
 
     @Test
     void allChild() {
-        roleRepository.child(Collections.singleton("1"))
+        roleRepository.child(Mono.just("1"))
                 .as(StepVerifier::create)
                 .thenConsumeWhile(Objects::nonNull, this::printField)
                 .verifyComplete();
