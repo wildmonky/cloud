@@ -28,7 +28,7 @@ public interface AuthorityRepository extends R2dbcRepository<Authority, String> 
 
     /**
      * 查询用户所绑定的权限
-     * @param roleIds 角色id
+     * @param roleId 角色id
      * @param valid 绑定关系：
      *              null-所有绑定的权限;
      *              true-起效的权限;
@@ -49,7 +49,7 @@ public interface AuthorityRepository extends R2dbcRepository<Authority, String> 
 
     /**
      * 查询组所绑定的权限
-     * @param groupIds 组id
+     * @param groupId 组id
      * @param valid 绑定关系：
      *              null-所有绑定的权限;
      *              true-起效的权限;
@@ -68,7 +68,7 @@ public interface AuthorityRepository extends R2dbcRepository<Authority, String> 
 
     /**
      * 查询角色所绑定的权限
-     * @param roleIds 角色id
+     * @param roleId 角色id
      * @param valid 绑定关系：
      *              null-所有绑定的权限;
      *              true-起效的权限;

@@ -18,7 +18,6 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Getter
 @Setter
-@Entity
 @Table(name = "authority")
 public class Authority extends CommonAttribute {
 

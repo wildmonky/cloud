@@ -40,7 +40,7 @@ public interface RoleRepository extends R2dbcRepository<Role, String> {
 
     /**
      * 根据角色id获取关联的子节点
-     * @param roleIds 角色id
+     * @param roleId 角色id
      * @return roleIds 关联的所有子角色
      */
     @Query(
