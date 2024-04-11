@@ -2,7 +2,6 @@ package org.lizhao.base.entity.relation;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 import org.springframework.data.annotation.Id;
@@ -20,7 +19,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Table(name = "role_authority_relation")
-public class RoleAuthorityRelation extends CommonAttribute {
+public class RoleAuthorityRelation extends Relation {
 
     /**
      * 权限{@link Authority}和角色{@link Role}的关系Id

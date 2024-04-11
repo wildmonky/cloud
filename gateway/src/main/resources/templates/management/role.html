@@ -58,6 +58,7 @@
     </n-modal>
     <!-- 表格数据修改Modal-->
     <n-modal
+            style="min-width: 1000px"
             v-model:show="tableEditModal"
             preset="dialog"
             title="修改">
@@ -72,27 +73,27 @@
                 <n-input v-model:value="editingData.comment" type="textarea" round placeholder="备注" />
             </n-form-item>
             <n-form-item>
-                <div style="display: flex">
-                    <div style="width: 49%">
+                <div style="width:100%;display: flex">
+                    <div style="width: 50%;padding:10px;">
                         <base-table
                                 name="已绑定用户"
                                 :existed-columns="userRoleColumns"
                                 :column-operation="userRoleColumnOperation"
                                 :table-data-flush="usersBoundRole"
-                                :search-options="allUsers"
+                                :search-options="usersUnboundRole"
                                 :bind-to="bindRoleToUser"
                                 source-title="未绑定的用户"
                                 target-title="已绑定的用户"
                                 :root-id="editingData.id"
                         ></base-table>
                     </div>
-                    <div style="width: 49%">
+                    <div style="width: 50%;padding:10px;">
                         <base-table
                                 name="已绑定组"
                                 :existed-columns="groupRoleColumns"
                                 :column-operation="groupRoleColumnOperation"
                                 :table-data-flush="groupsBoundRole"
-                                :search-options="allGroups"
+                                :search-options="groupsUnboundRole"
                                 :bind-to="bindRoleToGroup"
                                 source-title="未绑定的组"
                                 target-title="已绑定的组"
@@ -209,31 +210,26 @@
         },
         methods: {
             flush() {
-                console.log('flush触发刷新');
                 this.loading = true;
                 this.tableDataFlush(this.rootId)
                     .then(rows => this.data = rows)
                     .finally(() => this.loading = false);
             },
             showBindModal() {
+                this.flushOptions();
                 this.modal = true
             },
             bindCall() {
                 this.bindTo(this.editData)
-                    .then(() => message.success("绑定成功"))
-                    .catch(() => message.error("绑定失败"))
-                    .finally(() => {
-                        this.modal = false;
+                    .then(() => {
                         this.flush();
+                        this.modal = false;
                     });
             },
             flushOptions() {
-                let existedIdArr = data.map(e => e.id);
                 this.transferLoading = true;
                 this.searchOptions(this.rootId)
-                    .then(options => this.options = options.filter(e => {
-                        return existedIdArr.indexOf(e.id) === -1
-                    }).map(e => ({
+                    .then(options => this.options = options.map(e => ({
                         label: e.name,
                         value: e.id
                     })))
@@ -241,45 +237,49 @@
             }
         },
         template: `
-            <n-flex justify="space-between" style="gap: 0">
-                <p style="margin: 0;font-weight: 800;">{{name}}</p>
-                <n-button-group>
-                    <n-button :loading="loading" @click="flush">
-                        刷新
-                    </n-button>
-                    <n-button type="info" @click="showBindModal">
-                        绑定
-                    </n-button>
-                </n-button-group>
-            </n-flex>
-            <n-data-table
-                :columns="columns"
-                :data="data"
-                :row-key="rowKey"
-                default-expand-all
-                :pagination="pagination"
-            />
-            <n-modal style="min-width: 600px"
-                v-model:show="modal"
-                preset="dialog"
-                title="修改">
-                <n-flex justify="end">
-                    <n-button-group>
-                        <n-button :loading="transferLoading" @click="flushOptions">刷新</n-button>
-                        <n-button type="info" @click="bindCall">保存</n-button>
-                    </n-button-group>
-                </n-flex>
-                <n-transfer
-                    ref="transfer"
-                    v-model:value="editData.source"
-                    :options="options"
-                    :source-title="sourceTitle"
-                    :target-title="targetTitle"
-                    virtual-scroll
-                    source-filterable
-                    target-filterable
-                />
-            </n-modal>
+            <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
+                <div style="width: 100%">
+                    <n-flex justify="space-between" style="gap: 0">
+                        <p style="margin: 0;font-weight: 800;">{{name}}</p>
+                        <n-button-group>
+                            <n-button :loading="loading" @click="flush">
+                                刷新
+                            </n-button>
+                            <n-button type="info" @click="showBindModal">
+                                绑定
+                            </n-button>
+                        </n-button-group>
+                    </n-flex>
+                    <n-data-table
+                        :columns="columns"
+                        :data="data"
+                        :row-key="rowKey"
+                        default-expand-all
+                        :pagination="pagination"
+                    />
+                </div>
+                <n-modal style="min-width: 600px"
+                    v-model:show="modal"
+                    preset="dialog"
+                    title="修改">
+                    <n-flex justify="end">
+                        <n-button-group>
+                            <n-button :loading="transferLoading" @click="flushOptions">刷新</n-button>
+                            <n-button type="info" @click="bindCall">保存</n-button>
+                        </n-button-group>
+                    </n-flex>
+                    <n-transfer
+                        ref="transfer"
+                        v-model:value="editData.source"
+                        :options="options"
+                        :source-title="sourceTitle"
+                        :target-title="targetTitle"
+                        virtual-scroll
+                        source-filterable
+                        target-filterable
+                    />
+                </n-modal>
+            </n-config-provider>
         `
     })
 
@@ -377,12 +377,8 @@
                 zhCN,
                 dateZhCN,
                 rowKey: (row) => row.index,
-                loading: false,
-                tableData: [{
-                    name: 'lziaho',
-                    comment: '5451dasdaadashduhaudhasuhduashd',
-                    status: 1
-                }],
+                loading: ref(false),
+                tableData: ref([]),
                 tableAddModal: ref(false),
                 addingData: ref({}),
                 tableEditModal: ref(false),
@@ -390,13 +386,7 @@
             };
         },
         mounted() {
-            this.flushTable();
-        },
-        update() {
-            console.info("update")
-        },
-        updated() {
-            console.info("updated")
+            window.onload = () => this.flushTable();
         },
         data() {
             return {
@@ -414,12 +404,6 @@
             }
         },
         methods: {
-            allUsers() {
-                return axios.get('/user/searchAll')
-            },
-            allGroups() {
-                return axios.get('/group/searchAll')
-            },
             flushTable() {
                 this.loading = true;
                 axios.get('/role/searchAll')
@@ -431,29 +415,37 @@
             },
             saveTableData(data) {
                 axios.post('/role/save', data)
-                    .then(() => message.success('用户组保存成功'))
+                    .then(() => {
+                        this.flushTable();
+                        this.tableAddModal = false;
+                        this.tableEditModal = false;
+                        message.success('用户组保存成功');
+                    })
             },
             removeTableData(data) {
                 axios.post('/role/remove', data)
-                    .then(() => message.success('删除用户组成功'));
+                    .then(() => {
+                        this.flushTable();
+                        message.success('删除用户组成功');
+                    });
             },
             userRoleColumns() {
                 return [
                     {
                         title: '用户名称',
-                        key: 'name'
+                        key: 'userName'
                     },
                     {
-                        title: '状态',
-                        key: 'valid',
+                        title: '用户状态',
+                        key: 'userStatus',
                         render: row => {
                             return h(
                                 NTag, {
                                     size: 'small',
-                                    type: row.valid ? 'success' : 'error',
+                                    type: row.userStatus === 0 ? '' : (row.userStatus === 1 ? 'success' : 'error'),
                                     round: true
                                 },
-                                {default: () => row.valid ? '有效' : '无效'}
+                                {default: () => row.userStatus === 0 ? '初始' : (row.userStatus === 1 ? '有效' : '停用')}
                             )
                         }
                     }
@@ -462,48 +454,59 @@
             userRoleColumnOperation() {
                 return {
                     remove(row) {
-                        axios.post('/role/unbind/from/user', row.id).success(() => {
+                        return axios.post('/role/unbind/from/user', {
+                            userId: row.userId,
+                            roleId: row.roleId
+                        }).then(() => {
                             message.success('用户移除成功');
+                        }).catch(err => {
+                            message.error('用户移除失败');
+                            return Promise.reject();
                         });
                     }
                 };
             },
             usersBoundRole(roleId) {
                 return axios.get('role/searchBoundUsers?roleId=' + roleId);
-                // return Promise.resolve(Mock.mock({
-                //     // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-                //     'list|1-30': [{
-                //         // 属性 id 是一个自增数，起始值为 1，每次增 1
-                //         'name|+1': 1
-                //     }]
-                // }).list);
+            },
+            usersUnboundRole(roleId) {
+                return axios.get('role/searchUnboundUsers?roleId=' + roleId);
             },
             bindRoleToUser(data) {
-                let map = new Map();
-                map.set({
+                let role = {
                     id: data.bindTo
-                }, data.source);
-                console.info(JSON.stringify(map))
-                axios.post('/role/bind/to/user', map)
-                    .then(() => messahe.success('用户角色绑定成功'))
+                }
+                let users = data.source.map(e => {
+                    return {id: e}
+                })
+                let d = '{"' +
+                    JSON.stringify(role).replaceAll('"', '\\"') +
+                    '":' +
+                    JSON.stringify(users) +
+                    '}';
+                return axios.post('/role/bind/to/user', d, {
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+                }).then(() => message.success('角色绑定成功'))
             },
             groupRoleColumns() {
                 return [
                     {
                         title: '用户组名称',
-                        key: 'name'
+                        key: 'groupName'
                     },
                     {
-                        title: '状态',
-                        key: 'valid',
+                        title: '用户组状态',
+                        key: 'groupStatus',
                         render: row => {
                             return h(
                                 NTag, {
                                     size: 'small',
-                                    type: row.valid ? 'success' : 'error',
+                                    type: row.groupStatus === 0 ? '' : (row.groupStatus === 1 ? 'success' : 'error'),
                                     round: true
                                 },
-                                {default: () => row.valid ? '有效' : '无效'}
+                                {default: row.groupStatus === 0 ? '初始' : (row.groupStatus === 1 ? '有效' : '停用')}
                             )
                         }
                     }
@@ -512,30 +515,41 @@
             groupRoleColumnOperation() {
                 return {
                     remove(row) {
-                        axios.post('/role/unbind/from/group', row.id).success(() => {
+                        return axios.post('/role/unbind/from/group', {
+                            groupId: row.groupId,
+                            roleId: row.roleId
+                        }).then(() => {
                             message.success('用户角色解绑成功');
+                        }).catch(err => {
+                            message.error('用户角色解绑失败');
+                            return Promise.reject();
                         });
                     }
                 };
             },
             groupsBoundRole(roleId) {
                 return axios.get('/role/searchBoundGroups?roleId=' + roleId);
-                // return Promise.resolve(Mock.mock({
-                //     // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-                //     'list|1-30': [{
-                //         // 属性 id 是一个自增数，起始值为 1，每次增 1
-                //         'name|+1': 1
-                //     }]
-                // }).list);
+            },
+            groupsUnboundRole(roleId) {
+                return axios.get('/role/searchUnboundGroups?roleId=' + roleId);
             },
             bindRoleToGroup(data) {
-                let map = new Map();
-                map.set({
+                let role = {
                     id: data.bindTo
-                }, data.source);
-                console.info(JSON.stringify(map))
-                axios.post('/authority/bind/to/user', map)
-                    .then(() => messahe.success('用户权限绑定成功'))
+                }
+                let groups = data.source.map(e => {
+                    return {id: e}
+                })
+                let d = '{"' +
+                    JSON.stringify(role).replaceAll('"', '\\"') +
+                    '":' +
+                    JSON.stringify(groups) +
+                    '}';
+                return axios.post('/role/bind/to/group', d, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(() => message.success('角色绑定成功'))
             },
         }
     }).use(naive);

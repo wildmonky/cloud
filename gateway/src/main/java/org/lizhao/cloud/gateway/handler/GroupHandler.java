@@ -21,8 +21,8 @@ public class GroupHandler {
     @Resource
     private UserRepository userRepository;
 
-    public Flux<UserGroupModel> findUsersInGroup(String groupId, Boolean valid) {
-        return userRepository.findUsersByGroupId(groupId, valid);
+    public Flux<UserGroupModel> findUsersInGroup(String groupId) {
+        return userRepository.findUsersByGroupId(groupId);
     }
 
     public Flux<User> findUsersNotInGroup(String groupId) {

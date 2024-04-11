@@ -43,7 +43,7 @@ class GroupRepositoryTest {
 
     @Test
     public void findGroupsIncludeChildByUserIdTest() {
-        groupRepository.findGroupsIncludeChildByUserId("28785986637824", true)
+        groupRepository.findGroupsIncludeChildByUserId("28785986637824")
                 .as(StepVerifier::create)
                 .thenConsumeWhile(Objects::nonNull, group ->
                     System.out.println(group.getName())

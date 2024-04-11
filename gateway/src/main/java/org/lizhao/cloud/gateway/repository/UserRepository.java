@@ -24,28 +24,24 @@ public interface UserRepository extends R2dbcRepository<User, String> {
      /**
       * 根据权限id查询绑定的用户
       * @param authorityId 权限id
-      * @param valid 绑定关系是否有效
       * @return 绑定该权限的用户
       */
      @Query(
              "select u.* from \"user\" u" +
              "      left join user_authority_relation uar on uar.user_id = u.id" +
-             "      where uar.authority_id = :authorityId" +
-             "      and (case when :valid is not null then uar.valid=:valid" +
-             "           else 1=1" +
-             "           end)"
+             "      where uar.authority_id = :authorityId"
      )
-     Flux<User> findUsersByAuthorityId(String authorityId, Boolean valid);
+     Flux<User> findUsersByAuthorityId(String authorityId);
 
      /**
       * 查询组中的所有绑定用户
       * @param groupId 组id
-      * @param valid 是否起效
       * @return 在组中的所有用户(valid相同)
       */
      @Query(
              "select u.id user_id," +
                      "u.name user_name," +
+                     "u.phone user_phone," +
                      "u.status user_status," +
                      "gur.id relation_id," +
                      "gur.valid relation_valid," +
@@ -56,12 +52,9 @@ public interface UserRepository extends R2dbcRepository<User, String> {
              "      from \"user\" u" +
              "      left join group_user_relation gur on gur.user_id = u.id" +
              "      left join \"group\" \"g\" on \"g\".id = gur.group_id" +
-             "      where gur.group_id = :groupId" +
-             "      and (case when :valid is not null then gur.valid=:valid" +
-             "           else 1=1" +
-             "           end)"
+             "      where gur.group_id = :groupId"
      )
-     Flux<UserGroupModel> findUsersByGroupId(String groupId, Boolean valid);
+     Flux<UserGroupModel> findUsersByGroupId(String groupId);
 
      /**
       * 查询未绑定至组中对的所有用户

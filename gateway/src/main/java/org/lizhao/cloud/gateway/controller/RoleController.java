@@ -2,13 +2,14 @@ package org.lizhao.cloud.gateway.controller;
 
 import jakarta.annotation.Resource;
 import org.lizhao.base.entity.authority.Role;
+import org.lizhao.base.entity.relation.GroupRoleRelation;
+import org.lizhao.base.entity.relation.UserRoleRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.cloud.gateway.model.GroupRoleModel;
+import org.lizhao.cloud.gateway.model.UserRoleModel;
 import org.lizhao.cloud.gateway.serviceImpl.RoleServiceImpl;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +25,7 @@ import java.util.Map;
  * @since 0.0.1-SNAPSHOT
  */
 @RequestMapping("/role")
-@Controller
+@RestController
 public class RoleController {
 
     @Resource
@@ -36,33 +37,57 @@ public class RoleController {
     }
 
     @GetMapping("/searchBoundUsers")
-    public Flux<User> searchBoundUsers(String roleId) {
+    public Flux<UserRoleModel> searchBoundUsers(String roleId) {
         return roleService.searchBoundUsers(roleId);
     }
 
+    @GetMapping("/searchUnboundUsers")
+    public Flux<User> searchUnboundUsers(String roleId) {
+        return roleService.searchUnboundUsers(roleId);
+    }
+
     @GetMapping("/searchBoundGroups")
-    public Flux<Group> searchBoundGroups(String roleId) {
+    public Flux<GroupRoleModel> searchBoundGroups(String roleId) {
         return roleService.searchBoundGroups(roleId);
     }
 
+    @GetMapping("/searchUnboundGroups")
+    public Flux<Group> searchUnboundGroups(String roleId) {
+        return roleService.searchUnboundGroups(roleId);
+    }
+
+    @PostMapping("/save")
+    public Mono<Boolean> save(@RequestBody Role role) {
+        return roleService.save(role).hasElement();
+    }
+
+    @GetMapping("/remove")
+    public Mono<Void> remove(String roleId) {
+        return roleService.remove(roleId);
+    }
+
     @PostMapping("/bind/to/user")
-    public Mono<Boolean> bindRoleToUser(Map<Role, Collection<User>> map) {
-        return roleService.bindRoleToUsers(map);
+    public Mono<Boolean> bindRoleToUser(@RequestBody Map<Role, Collection<User>> map) {
+        return roleService.bindRoleToUsers(map)
+                .collectList()
+                .map(l -> l.size() == map.values().stream().map(Collection::size).count());
     }
 
     @PostMapping("/unbind/from/user")
-    public Mono<Void> unbindRoleFromUser(String userRoleRelationId) {
-        return roleService.unbindRoleFromUser(userRoleRelationId);
+    public Mono<Void> unbindRoleFromUser(@RequestBody UserRoleRelation relation) {
+        return roleService.unbindRoleFromUser(relation);
     }
 
     @PostMapping("/bind/to/group")
-    public Mono<Boolean> bindRoleToGroup(Map<Role, Collection<Group>> map) {
-        return roleService.bindRoleToGroups(map);
+    public Mono<Boolean> bindRoleToGroup(@RequestBody Map<Role, Collection<Group>> map) {
+        return roleService.bindRoleToGroups(map)
+                .collectList()
+                .map(l -> l.size() == map.values().stream().map(Collection::size).count());
     }
 
     @PostMapping("/unbind/from/group")
-    public Mono<Void> unbindRoleFromGroup(String groupRoleRelationId) {
-        return roleService.unbindRoleFromGroup(groupRoleRelationId);
+    public Mono<Void> unbindRoleFromGroup(@RequestBody GroupRoleRelation relation) {
+        return roleService.unbindRoleFromGroup(relation);
     }
 
 }

@@ -31,7 +31,7 @@ public class GroupServiceImpl {
     }
 
     public Flux<UserGroupModel> searchBoundUsers(String groupId) {
-        return groupHandler.findUsersInGroup(groupId, null);
+        return groupHandler.findUsersInGroup(groupId);
     }
 
     public Flux<User> searchUnboundUsers(String groupId) {

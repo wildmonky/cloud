@@ -20,7 +20,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Table(name = "group_user_relation")
-public class GroupUserRelation extends CommonAttribute {
+public class GroupUserRelation extends Relation {
 
     /**
      * 用户{@link User}和用户组 {@link Group} 关系Id

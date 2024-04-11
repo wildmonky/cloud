@@ -20,7 +20,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Table(name = "user_role_relation")
-public class UserRoleRelation implements Cloneable{
+public class UserRoleRelation extends Relation implements Cloneable{
 
     /**
      * 用户{@link User}和用户组 {@link Role} 关系Id

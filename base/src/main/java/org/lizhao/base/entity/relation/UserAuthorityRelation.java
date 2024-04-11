@@ -20,7 +20,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Table(name = "user_authority_relation")
-public class UserAuthorityRelation {
+public class UserAuthorityRelation extends Relation {
 
     /**
      * 用户{@link User}和用户组 {@link Authority} 关系Id

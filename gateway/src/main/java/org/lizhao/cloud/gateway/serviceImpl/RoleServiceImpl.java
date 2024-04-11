@@ -2,9 +2,13 @@ package org.lizhao.cloud.gateway.serviceImpl;
 
 import jakarta.annotation.Resource;
 import org.lizhao.base.entity.authority.Role;
+import org.lizhao.base.entity.relation.GroupRoleRelation;
+import org.lizhao.base.entity.relation.UserRoleRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.cloud.gateway.handler.RoleHandler;
+import org.lizhao.cloud.gateway.model.GroupRoleModel;
+import org.lizhao.cloud.gateway.model.UserRoleModel;
 import org.lizhao.cloud.gateway.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -34,35 +38,51 @@ public class RoleServiceImpl {
         return roleRepository.findAll();
     }
 
-    public Flux<User> searchBoundUsers(String roleId) {
-        return roleRepository.findUsersByRoleId(roleId, true);
+    public Flux<UserRoleModel> searchBoundUsers(String roleId) {
+        return roleRepository.findUsersByRoleId(roleId);
     }
 
-    public Flux<Group> searchBoundGroups(String roleId) {
-        return roleRepository.findGroupsByRoleId(roleId, true);
+    public Flux<User> searchUnboundUsers(String roleId) {
+        return roleRepository.findUsersWithoutRoleId(roleId);
     }
 
-    public Mono<Boolean> bindRolesToUser(Map<User, Collection<Role>> map) {
-        return roleHandler.bindMoreToUser(map).hasElements();
+    public Flux<GroupRoleModel> searchBoundGroups(String roleId) {
+        return roleRepository.findGroupsByRoleId(roleId);
     }
 
-    public Mono<Boolean> bindRoleToUsers(Map<Role, Collection<User>> map) {
-        return roleHandler.bindToUsers(map).hasElements();
+    public Flux<Group> searchUnboundGroups(String roleId) {
+        return roleRepository.findGroupsWithoutRoleId(roleId);
     }
 
-    public Mono<Void> unbindRoleFromUser(String relationId) {
-        return roleHandler.unbindFromUser(relationId);
+    public Mono<Role> save(Role role) {
+        return roleRepository.save(role);
     }
 
-    public Mono<Boolean> bindRolesToGroup(Map<Group, Collection<Role>> map) {
-        return roleHandler.bindMoreToGroup(map).hasElements();
+    public Mono<Void> remove(String roleId) {
+        return roleRepository.deleteById(roleId);
     }
 
-    public Mono<Boolean> bindRoleToGroups(Map<Role, Collection<Group>> map) {
-        return roleHandler.bindToGroups(map).hasElements();
+    public Flux<UserRoleRelation> bindRolesToUser(Map<User, Collection<Role>> map) {
+        return roleHandler.bindMoreToUser(map);
     }
 
-    public Mono<Void> unbindRoleFromGroup(String relationId) {
-        return roleHandler.unbindFromGroup(relationId);
+    public Flux<UserRoleRelation> bindRoleToUsers(Map<Role, Collection<User>> map) {
+        return roleHandler.bindToUsers(map);
+    }
+
+    public Mono<Void> unbindRoleFromUser(UserRoleRelation relation) {
+        return roleHandler.unbindFromUser(relation);
+    }
+
+    public Flux<GroupRoleRelation> bindRolesToGroup(Map<Group, Collection<Role>> map) {
+        return roleHandler.bindMoreToGroup(map);
+    }
+
+    public Flux<GroupRoleRelation> bindRoleToGroups(Map<Role, Collection<Group>> map) {
+        return roleHandler.bindToGroups(map);
+    }
+
+    public Mono<Void> unbindRoleFromGroup(GroupRoleRelation relation) {
+        return roleHandler.unbindFromGroup(relation);
     }
 }

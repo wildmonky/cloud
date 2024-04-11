@@ -2,47 +2,38 @@ package org.lizhao.cloud.gateway.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.lizhao.base.entity.user.Group;
-
-import java.util.Collection;
 
 /**
- * Description 用户组 Model
+ * Description 角色模型
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
- * @date 2024-04-11 9:59
+ * @date 2024-04-11 16:56
  * @since 0.0.1-SNAPSHOT
  */
 @Getter
 @Setter
-public class UserGroupModel {
-
-    // 用户
+public class UserRoleModel {
 
     private String userId;
 
     private String userName;
-
-    private String userPhone;
-
+    /**
+     * 0-初始;1-可用;2-禁用
+     */
     private Integer userStatus;
 
     private String relationId;
 
-    // 组
-    private String groupId;
+    private String roleId;
 
-    private String groupName;
+    private String roleName;
     /**
      * 0-初始;1-可用;2-禁用
      */
-    private Integer groupStatus;
+    private Integer roleStatus;
     /**
      * 备注
      */
-    private String groupComment;
-
-    private Collection<Group> childGroup;
-
+    private String roleComment;
 }

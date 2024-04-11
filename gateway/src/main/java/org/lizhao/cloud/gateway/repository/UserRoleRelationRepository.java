@@ -1,8 +1,6 @@
 package org.lizhao.cloud.gateway.repository;
 
 import org.lizhao.base.entity.relation.UserRoleRelation;
-import org.lizhao.base.entity.user.User;
-import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Mono;
 
@@ -16,7 +14,11 @@ import reactor.core.publisher.Mono;
  */
 public interface UserRoleRelationRepository extends R2dbcRepository<UserRoleRelation, String> {
 
-    @Query("update user_role_relation set status = ?2 where id = ?1")
-    Mono<User> updateStatusById(String userId, boolean valid);
+    /**
+     * 根据 用户id 和 角色id 查询绑定关系
+     * @param userId 用户id
+     * @param roleId 角色id
+     */
+    Mono<UserRoleRelation> findByUserIdAndRoleId(String userId, String roleId);
 
 }

@@ -74,10 +74,18 @@ public class RoleHandler {
 
     /**
      * 解除角色与用户之间的绑定关系
-     * @param relationId 角色与用户之间的绑定关系
+     * @param relation 角色与用户之间的绑定关系
      */
-    public Mono<Void> unbindFromUser(String relationId) {
-        return userRoleRelationRepository.deleteById(relationId);
+    public Mono<Void> unbindFromUser(UserRoleRelation relation) {
+        if (relation == null) {
+            return Mono.error(new Throwable("绑定关系为空"));
+        }
+        if (relation.getUserId() == null || relation.getRoleId() == null) {
+            return Mono.error(new Throwable("绑定关系异常"));
+        }
+        return userRoleRelationRepository.findByUserIdAndRoleId(relation.getUserId(), relation.getRoleId())
+                .switchIfEmpty(Mono.error(new Throwable("不存在对应的绑定关系")))
+                .flatMap(rel -> userRoleRelationRepository.deleteById(rel.getId()));
     }
 
     /**
@@ -107,7 +115,7 @@ public class RoleHandler {
      */
     public Flux<GroupRoleRelation> bindToGroups(Map<Role, Collection<Group>> roleGroupsMap) {
         Publisher<GroupRoleRelation> bound = CommonHandler.bind(roleGroupsMap,
-                (group, role) -> {
+                (role, group) -> {
                     if (group.getId() == null || role.getId() == null) {
                         return null;
                     }
@@ -122,10 +130,18 @@ public class RoleHandler {
 
     /**
      * 解除角色与组之间的绑定关系
-     * @param relationId 角色与组之间的绑定关系
+     * @param relation 角色与组之间的绑定关系
      */
-    public Mono<Void> unbindFromGroup(String relationId) {
-        return groupRoleRelationRepository.deleteById(relationId);
+    public Mono<Void> unbindFromGroup(GroupRoleRelation relation) {
+        if (relation == null) {
+            return Mono.error(new Throwable("绑定关系为空"));
+        }
+        if (relation.getGroupId() == null || relation.getRoleId() == null) {
+            return Mono.error(new Throwable("绑定关系异常"));
+        }
+        return groupRoleRelationRepository.findByGroupIdAndRoleId(relation.getGroupId(), relation.getRoleId())
+                .switchIfEmpty(Mono.error(new Throwable("不存在对应的绑定关系")))
+                .flatMap(rel -> groupRoleRelationRepository.deleteById(rel.getId()));
     }
 
 }

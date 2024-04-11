@@ -55,25 +55,19 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
     /**
      * 查询 用户绑定的用户组
      * @param userId 用户Id
-     * @param valid 是否有效
      * @return 用户直接绑定的用户组
      */
     @Query(
             "select * from \"group\" \"g\" " +
             "left join group_user_relation gur on gur.group_id = \"g\".id " +
-            "where gur.user_id = :userId " +
-            "and (CASE WHEN :valid IS NOT NULL THEN gur.valid = :valid" +
-            "          ELSE 1=1" +
-            "       END " +
-            ")"
+            "where gur.user_id = :userId "
     )
-    Flux<Group> findGroupsByUserId(String userId, Boolean valid);
+    Flux<Group> findGroupsByUserId(String userId);
 
 
     /**
      * 查询 用户绑定的用户组（包含子组）
      * @param userId 用户id
-     * @param valid 是否有效
      * @return 用户绑定的用户组（包含子组）
      */
     @Query(
@@ -82,11 +76,6 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
             "       select \"g\".id from \"group\" \"g\"" +
             "       left join group_user_relation gur on gur.group_id = \"g\".id" +
             "       where gur.user_id = :userId " +
-            "       and ( CASE " +
-            "               WHEN :valid IS NOT NULL THEN gur.valid = :valid" +
-            "               ELSE 1=1" +
-            "               END" +
-            "           )" +
             "     )" +
             "    UNION ALL" +
             "    SELECT c.* FROM \"group\" c" +
@@ -94,22 +83,18 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
             ")" +
             "SELECT * FROM SubGroup;"
     )
-    Flux<Group> findGroupsIncludeChildByUserId(String userId, Boolean valid);
+    Flux<Group> findGroupsIncludeChildByUserId(String userId);
 
     /**
      * 根据权限id获取绑定的组
      * @param authorityId 权限id
-     * @param valid 是否有效
      * @return 绑定该用户的组
      */
     @Query(
             "select \"g\".* from \"group\" \"g\" " +
             "   left join group_authority_relation gar on gar.group_id = \"g\".id" +
-            "   where gar.authority_id = :authorityId" +
-            "   and (case when :valid is not null then gar.valid = :valid" +
-            "           else 1=1" +
-            "       end)"
+            "   where gar.authority_id = :authorityId"
     )
-    Flux<Group> findGroupsByAuthorityId(String authorityId, Boolean valid);
+    Flux<Group> findGroupsByAuthorityId(String authorityId);
 
 }

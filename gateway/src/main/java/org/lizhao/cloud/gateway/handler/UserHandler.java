@@ -52,7 +52,7 @@ public class UserHandler {
         }
 
         //1. 获取用户所在组（包含子组）
-        Flux<Group> allUserGroupFlux = userGroupsIncludeChild(user.getId(), true);
+        Flux<Group> allUserGroupFlux = userGroupsIncludeChild(user.getId());
 
         // 获取组绑定的角色
         Flux<Role> roleDirectFromGroupFlux = allUserGroupFlux.hasElements()
@@ -67,7 +67,7 @@ public class UserHandler {
                 .flatMapMany(hasElements -> hasElements ? treeRole(allRoleFlux) : Flux.empty());
 
         //3. 用户直接绑定的权限
-        Flux<Authority> authoritiesDirectFromUser = authorityRepository.findAuthoritiesByUsers(Mono.just(user.getId()), true);
+        Flux<Authority> authoritiesDirectFromUser = authorityRepository.findAuthoritiesByUsers(Mono.just(user.getId()));
         //4. 获取用户绑定的所有角色（组+子组+用户）的权限 （包含子角色）
         Flux<Authority> authoritiesFromRoleWithinUserFlux = allUserRoleFlux.hasElements()
                 .flatMapMany(hasElements -> hasElements ? roleAuthorities(allUserRoleFlux) : Flux.empty());
@@ -89,22 +89,20 @@ public class UserHandler {
     /**
      * 获取用户所属组（包含所属组的子组）
      * @param userId 用户id
-     * @param valid 绑定关系是否有效
      * @return 用户所属组（包含所属组的子组）
      */
-    public Flux<Group> userGroupsIncludeChild(String userId, boolean valid) {
-        return groupRepository.findGroupsIncludeChildByUserId(userId, valid);
+    public Flux<Group> userGroupsIncludeChild(String userId) {
+        return groupRepository.findGroupsIncludeChildByUserId(userId);
     }
 
 
     /**
      * 获取用户所属组（不包含所属组的子组）
      * @param userId 用户id
-     * @param valid 绑定关系是否有效
      * @return 用户所属组（不包含所属组的子组）
      */
-    public Flux<Group> userGroups(String userId, boolean valid) {
-        return groupRepository.findGroupsByUserId(userId, valid);
+    public Flux<Group> userGroups(String userId) {
+        return groupRepository.findGroupsByUserId(userId);
     }
 
     /**
@@ -113,7 +111,7 @@ public class UserHandler {
      * @return 用户直接绑定的角色(不包含子角色)
      */
     public Flux<Role> userRoles(String userId) {
-        return roleRepository.findRolesByUserId(userId, true);
+        return roleRepository.findRolesByUserId(userId);
     }
 
     /**
@@ -122,7 +120,7 @@ public class UserHandler {
      * @return 角色绑定权限
      */
     public Flux<Authority> roleAuthorities(Flux<Role> roleFlux) {
-        return authorityRepository.findAuthoritiesByRoles(roleFlux.map(Role::getId), true);
+        return authorityRepository.findAuthoritiesByRoles(roleFlux.map(Role::getId));
     }
 
     /**
@@ -131,7 +129,7 @@ public class UserHandler {
      * @return 组直接绑定的权限
      */
     public Flux<Authority> groupAuthorities(Flux<Group> groupFlux) {
-        return authorityRepository.findAuthoritiesByGroups(groupFlux.map(Group::getId), true);
+        return authorityRepository.findAuthoritiesByGroups(groupFlux.map(Group::getId));
     }
 
     /**
@@ -140,7 +138,7 @@ public class UserHandler {
      * @return userGroups(userId)
      */
     public Flux<Role> groupRoles(Flux<Group> groupFlux) {
-        return  roleRepository.rolesInGroup(groupFlux.map(Group::getId),true);
+        return  roleRepository.rolesInGroup(groupFlux.map(Group::getId));
     }
 
     /**
@@ -201,7 +199,7 @@ public class UserHandler {
 
     /**
      * 将用户与组解绑
-     * @param relationId 用户与组绑定关系
+     * @param relation 用户与组绑定关系
      */
     public Mono<Void> unbindFromGroup(GroupUserRelation relation) {
 

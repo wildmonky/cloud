@@ -3,15 +3,14 @@ package org.lizhao.cloud.gateway.repository;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.cloud.gateway.model.GroupRoleModel;
+import org.lizhao.cloud.gateway.model.UserRoleModel;
 import org.reactivestreams.Publisher;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * Description 角色仓库
@@ -70,30 +69,18 @@ public interface RoleRepository extends R2dbcRepository<Role, String> {
     /**
      * 获取组所绑定的角色
      * @param groupId 组id
-     * @param valid 绑定关系:
-     *              null-查询所有;
-     *              true-查询起效;
-     *              false-查询未起效
      * @return 组所绑定的角色（不包含子角色）
      */
     @Query(
             "SELECT * FROM \"role\" r" +
             "   LEFT JOIN \"group_role_relation\" grr ON grr.role_id = r.id" +
-            "   WHERE grr.group_id IN (:groupId)" +
-            "   AND (CASE WHEN :valid IS NOT NULL THEN grr.valid = :valid" +
-            "           ELSE 1=1" +
-            "        END" +
-            "   )"
+            "   WHERE grr.group_id IN (:groupId)"
     )
-    Flux<Role> rolesInGroup(Publisher<String> groupId, Boolean valid);
+    Flux<Role> rolesInGroup(Publisher<String> groupId);
 
     /**
      * 查询组绑定的所有角色（包含子角色）
      * @param groupId 组id
-     * @param valid 绑定关系:
-     *              null-查询所有子角色;
-     *              true-查询起效的子角色;
-     *              false-查询未起效的子角色;
      * @return 组所绑定的所有角色
      */
     @Query(
@@ -102,10 +89,6 @@ public interface RoleRepository extends R2dbcRepository<Role, String> {
             "       SELECT * FROM \"role\" r" +
             "       LEFT JOIN \"group_role_relation\" grr ON grr.role_id = r.id" +
             "       WHERE grr.group_id IN (:groupId) " +
-            "       AND (CASE WHEN :valid IS NOT NULL THEN grr.valid = :valid" +
-            "                 ELSE 1=1" +
-            "               END" +
-            "       )" +
             "    )" +
             "    UNION ALL" +
             "    SELECT c.* FROM \"role\" c" +
@@ -113,74 +96,102 @@ public interface RoleRepository extends R2dbcRepository<Role, String> {
             ")" +
             "SELECT * FROM SubRole;"
     )
-    Flux<Role> rolesIncludeChildInGroup(Publisher<String> groupId, Boolean valid);
+    Flux<Role> rolesIncludeChildInGroup(Publisher<String> groupId);
 
     /**
      * 查询用户绑定的角色（不包含子角色）
      * @param userId 用户id
-     * @param valid 绑定关系：
-     *              null-所有绑定的角色;
-     *              true-起效的角色;
-     *              false-未起效的角色;
      * @return 用户绑定的角色
      */
     @Query(
             "SELECT * FROM \"role\" r" +
             "   LEFT JOIN user_role_relation urr ON urr.role_id = r.id" +
-            "   WHERE urr.user_id = :userId" +
-            "   AND (CASE WHEN :valid IS NOT NULL THEN urr.valid = :valid" +
-            "           ELSE 1=1" +
-            "           END" +
-            "   )"
+            "   WHERE urr.user_id = :userId"
     )
-    Flux<Role> findRolesByUserId(String userId, Boolean valid);
+    Flux<Role> findRolesByUserId(String userId);
 
     /**
      * 根据权限获取绑定的角色
      * @param authorityId 权限id
-     * @param valid 是否起效
      * @return 绑定该权限的角色
      */
     @Query(
             "select r.* from \"role\" r" +
             "   left join role_authority_relation rar on rar.role_id = r.id" +
-            "   where rar.authority_id = :authorityId" +
-            "   and (case when :valid is not null then rar.valid = :valid" +
-            "       else 1=1" +
-            "       end)"
+            "   where rar.authority_id = :authorityId"
     )
-    Flux<Role> findRolesByAuthorityId(String authorityId, Boolean valid);
+    Flux<Role> findRolesByAuthorityId(String authorityId);
 
     /**
      * 根据角色获取绑定的用户
      * @param roleId 角色id
-     * @param valid 是否起效
      * @return 绑定该角色的用户
      */
     @Query(
-            "select u.* from \"user\" u" +
+            "select u.id user_id," +
+                    "u.name user_name," +
+                    "u.phone user_phone," +
+                    "u.status user_status," +
+                    "urr.id relation_id," +
+                    "r.id role_id," +
+                    "r.name role_name," +
+                    "r.status role_status," +
+                    "r.comment role_comment " +
+                    "   from \"user\" u" +
                     "   left join user_role_relation urr on urr.user_id = u.id" +
-                    "   where urr.role_id = :roleId" +
-                    "   and (case when :valid is not null then urr.valid = :valid" +
-                    "       else 1=1" +
-                    "       end)"
+                    "   left join \"role\" r on urr.role_id = r.id" +
+                    "   where urr.role_id = :roleId"
     )
-    Flux<User> findUsersByRoleId(String roleId, Boolean valid);
+    Flux<UserRoleModel> findUsersByRoleId(String roleId);
+
+    /**
+     * 根据角色获取未绑定的用户
+     * @param roleId 角色id
+     * @return 未绑定该角色的用户
+     */
+    @Query(
+            "select u.* from \"user\" u" +
+                    "   where id not in (" +
+                    "       select user_id from user_role_relation urr" +
+                    "       where urr.role_id = :roleId" +
+                    "   )"
+    )
+    Flux<User> findUsersWithoutRoleId(String roleId);
 
     /**
      * 根据角色获取绑定的组
      * @param roleId 角色id
-     * @param valid 是否起效
      * @return 绑定该角色的组
      */
     @Query(
-            "select g.* from \"group\" \"g\"" +
-                    "   left join group_role_relation grr on grr.group_id = u.id" +
-                    "   where grr.role_id = :roleId" +
-                    "   and (case when :valid is not null then grr.valid = :valid" +
-                    "       else 1=1" +
-                    "       end)"
+            "select \"g\".id group_id," +
+                    "\"g\".name group_name," +
+                    "\"g\".status group_status," +
+                    "\"g\".comment group_comment," +
+                    "grr.id relation_id," +
+                    "r.id role_id," +
+                    "r.name role_name," +
+                    "r.status role_status," +
+                    "r.comment role_comment " +
+                    "   from \"group\" \"g\"" +
+                    "       left join group_role_relation grr on grr.group_id = \"g\".id" +
+                    "       left join \"role\" r on grr.role_id = r.id" +
+                    "       where grr.role_id = :roleId"
     )
-    Flux<Group> findGroupsByRoleId(String roleId, Boolean valid);
+    Flux<GroupRoleModel> findGroupsByRoleId(String roleId);
+
+    /**
+     * 根据角色获取未绑定的组
+     * @param roleId 角色id
+     * @return 未绑定该角色的组
+     */
+    @Query(
+            "select g.* from \"group\" \"g\"" +
+                    "   where id not in (" +
+                    "       select group_id from group_role_relation grr" +
+                    "       where grr.role_id = :roleId" +
+                    ")"
+    )
+    Flux<Group> findGroupsWithoutRoleId(String roleId);
 
 }

@@ -134,15 +134,15 @@ public class AuthorityHandler {
     }
 
     public Flux<User> boundUsers(String authorityId) {
-        return userRepository.findUsersByAuthorityId(authorityId, true);
+        return userRepository.findUsersByAuthorityId(authorityId);
     }
 
     public Flux<Group> boundGroups(String authorityId) {
-        return groupRepository.findGroupsByAuthorityId(authorityId, true);
+        return groupRepository.findGroupsByAuthorityId(authorityId);
     }
 
     public Flux<Role> boundRoles(String authorityId) {
-        return roleRepository.findRolesByAuthorityId(authorityId, true);
+        return roleRepository.findRolesByAuthorityId(authorityId);
     }
 
 }
