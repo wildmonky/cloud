@@ -1,5 +1,7 @@
 package org.lizhao.cloud.gateway.configurer;
 
+import org.lizhao.base.utils.uniquekey.SnowFlake;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -26,5 +28,10 @@ public class GatewayConfigurer {
 //                .uri("https://www.baidu.com")
 //        ).build();
 //    }
+
+    @Bean
+    public SnowFlake snowFlake() {
+        return new SnowFlake(0L, 1L, 0L);
+    }
 
 }

@@ -7,7 +7,6 @@ import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
@@ -41,12 +40,5 @@ public class GroupRoleRelation extends CommonAttribute {
      */
     @Column
     private String roleId;
-
-    /**
-     * 关系是否有效：true-起效；false|null-无效
-     */
-    @Column
-    @InsertOnlyProperty
-    private Boolean valid;
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2024-03-28 16:16
  * @since 0.0.1-SNAPSHOT
  */
-@RequestMapping("/gateway")
+@RequestMapping("/")
 @Controller
 public class PageController {
 
@@ -39,6 +39,36 @@ public class PageController {
     @GetMapping("/error")
     public String error() {
         return "/public/error";
+    }
+
+    @Operation(summary = "主页")
+    @GetMapping("/root")
+    public String root() {
+        return "/root";
+    }
+
+    @Operation(summary = "权限")
+    @GetMapping("/authority")
+    public String authority() {
+        return "/management/authority";
+    }
+
+    @Operation(summary = "角色")
+    @GetMapping("/role")
+    public String role() {
+        return "/management/role";
+    }
+
+    @Operation(summary = "用户")
+    @GetMapping("/user")
+    public String user() {
+        return "/management/user";
+    }
+
+    @Operation(summary = "用户组")
+    @GetMapping("/group")
+    public String group() {
+        return "/management/group";
     }
 
 }

@@ -7,7 +7,6 @@ import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
@@ -41,10 +40,4 @@ public class RoleAuthorityRelation extends CommonAttribute {
     @Column
     private String authorityId;
 
-    /**
-     * 关系是否有效：true-有效；false|null-无效
-     */
-    @Column
-    @InsertOnlyProperty
-    private Boolean valid;
 }

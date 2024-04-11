@@ -46,6 +46,11 @@ public class Role extends CommonAttribute {
     @Column
     private Integer status;
 
+    /**
+     * 备注
+     */
+    private String comment;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

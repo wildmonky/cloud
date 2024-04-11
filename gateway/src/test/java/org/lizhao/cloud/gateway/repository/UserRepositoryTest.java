@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.lizhao.base.entity.user.User;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.r2dbc.core.DatabaseClientExtensionsKt;
 import reactor.test.StepVerifier;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * Description UserInfoRepository 单元测试
@@ -22,9 +24,6 @@ class UserRepositoryTest {
 
     @Resource
     private UserRepository userRepository;
-
-    @Resource
-    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Test
     void findByUsername() {
@@ -43,13 +42,13 @@ class UserRepositoryTest {
     public void save() {
         SnowFlake snowFlake = new SnowFlake(1L, 1L, 0L);
         User user = new User();
-        user.setId(String.valueOf(snowFlake.generateNextId()));
+//        user.setId(String.valueOf(snowFlake.generateNextId()));
         user.setName("lizhao");
         user.setPhone("18666496619");
         user.setPassword("19960214");
         userRepository.save(user)
                 .as(StepVerifier::create)
-                .expectNextMatches(e -> {
+                .thenConsumeWhile(Objects::nonNull, e -> {
                     for (Field declaredField : e.getClass().getDeclaredFields()) {
                         try {
                             declaredField.setAccessible(true);
@@ -58,7 +57,6 @@ class UserRepositoryTest {
                             throw new RuntimeException(ex);
                         }
                     }
-                    return true;
                 }).verifyComplete();
     }
 

@@ -46,6 +46,11 @@ public class Group extends CommonAttribute {
     @InsertOnlyProperty
     private Integer status;
 
+    /**
+     * 备注
+     */
+    private String comment;
+
     @Transient
     private Collection<Group> child;
 

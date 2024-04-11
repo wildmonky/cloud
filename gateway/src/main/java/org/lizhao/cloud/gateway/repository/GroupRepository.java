@@ -54,11 +54,12 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
 
     /**
      * 查询 用户绑定的用户组
-     * @param userId 用户组
+     * @param userId 用户Id
      * @param valid 是否有效
      * @return 用户直接绑定的用户组
      */
-    @Query("select * from \"group\" \"g\" " +
+    @Query(
+            "select * from \"group\" \"g\" " +
             "left join group_user_relation gur on gur.group_id = \"g\".id " +
             "where gur.user_id = :userId " +
             "and (CASE WHEN :valid IS NOT NULL THEN gur.valid = :valid" +
@@ -94,5 +95,21 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
             "SELECT * FROM SubGroup;"
     )
     Flux<Group> findGroupsIncludeChildByUserId(String userId, Boolean valid);
+
+    /**
+     * 根据权限id获取绑定的组
+     * @param authorityId 权限id
+     * @param valid 是否有效
+     * @return 绑定该用户的组
+     */
+    @Query(
+            "select \"g\".* from \"group\" \"g\" " +
+            "   left join group_authority_relation gar on gar.group_id = \"g\".id" +
+            "   where gar.authority_id = :authorityId" +
+            "   and (case when :valid is not null then gar.valid = :valid" +
+            "           else 1=1" +
+            "       end)"
+    )
+    Flux<Group> findGroupsByAuthorityId(String authorityId, Boolean valid);
 
 }

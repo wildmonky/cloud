@@ -1,6 +1,8 @@
 package org.lizhao.cloud.gateway.repository;
 
 import org.lizhao.base.entity.authority.Role;
+import org.lizhao.base.entity.user.Group;
+import org.lizhao.base.entity.user.User;
 import org.reactivestreams.Publisher;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
@@ -131,6 +133,54 @@ public interface RoleRepository extends R2dbcRepository<Role, String> {
             "           END" +
             "   )"
     )
-    Flux<Role> rolesInUser(String userId, Boolean valid);
+    Flux<Role> findRolesByUserId(String userId, Boolean valid);
+
+    /**
+     * 根据权限获取绑定的角色
+     * @param authorityId 权限id
+     * @param valid 是否起效
+     * @return 绑定该权限的角色
+     */
+    @Query(
+            "select r.* from \"role\" r" +
+            "   left join role_authority_relation rar on rar.role_id = r.id" +
+            "   where rar.authority_id = :authorityId" +
+            "   and (case when :valid is not null then rar.valid = :valid" +
+            "       else 1=1" +
+            "       end)"
+    )
+    Flux<Role> findRolesByAuthorityId(String authorityId, Boolean valid);
+
+    /**
+     * 根据角色获取绑定的用户
+     * @param roleId 角色id
+     * @param valid 是否起效
+     * @return 绑定该角色的用户
+     */
+    @Query(
+            "select u.* from \"user\" u" +
+                    "   left join user_role_relation urr on urr.user_id = u.id" +
+                    "   where urr.role_id = :roleId" +
+                    "   and (case when :valid is not null then urr.valid = :valid" +
+                    "       else 1=1" +
+                    "       end)"
+    )
+    Flux<User> findUsersByRoleId(String roleId, Boolean valid);
+
+    /**
+     * 根据角色获取绑定的组
+     * @param roleId 角色id
+     * @param valid 是否起效
+     * @return 绑定该角色的组
+     */
+    @Query(
+            "select g.* from \"group\" \"g\"" +
+                    "   left join group_role_relation grr on grr.group_id = u.id" +
+                    "   where grr.role_id = :roleId" +
+                    "   and (case when :valid is not null then grr.valid = :valid" +
+                    "       else 1=1" +
+                    "       end)"
+    )
+    Flux<Group> findGroupsByRoleId(String roleId, Boolean valid);
 
 }

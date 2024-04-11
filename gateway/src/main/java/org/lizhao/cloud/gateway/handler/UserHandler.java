@@ -113,7 +113,7 @@ public class UserHandler {
      * @return 用户直接绑定的角色(不包含子角色)
      */
     public Flux<Role> userRoles(String userId) {
-        return roleRepository.rolesInUser(userId, true);
+        return roleRepository.findRolesByUserId(userId, true);
     }
 
     /**
@@ -167,7 +167,7 @@ public class UserHandler {
      * 将用户绑定到组
      * @return 用户已绑定的组
      */
-    public Flux<GroupUserRelation> bindToGroup(Map<User, Collection<Group>> userGroupMap) {
+    public Flux<GroupUserRelation> bindToGroups(Map<User, Collection<Group>> userGroupMap) {
         Publisher<GroupUserRelation> bound = CommonHandler.bind(userGroupMap,
                 (user, group) -> {
                     if (user.getId() == null || group.getId() == null) {
@@ -181,4 +181,48 @@ public class UserHandler {
         return Flux.from(bound);
     }
 
+    /**
+     * 将用户绑定到组
+     * @return 用户已绑定的组
+     */
+    public Flux<GroupUserRelation> bindMoreToGroup(Map<Group, Collection<User>> userGroupMap) {
+        Publisher<GroupUserRelation> bound = CommonHandler.bind(userGroupMap,
+                (group, user) -> {
+                    if (user.getId() == null || group.getId() == null) {
+                        return null;
+                    }
+                    GroupUserRelation relation = new GroupUserRelation();
+                    relation.setGroupId(group.getId());
+                    relation.setUserId(user.getId());
+                    return relation;
+                }, groupUserRelationRepository::saveAll);
+        return Flux.from(bound);
+    }
+
+    /**
+     * 将用户与组解绑
+     * @param relationId 用户与组绑定关系
+     */
+    public Mono<Void> unbindFromGroup(GroupUserRelation relation) {
+
+        if (relation == null) {
+            return Mono.error(new Throwable("空的绑定关系"));
+        }
+        if (relation.getUserId() == null) {
+            return Mono.error(new Throwable("用户id为空"));
+        }
+        if (relation.getGroupId() == null) {
+            return Mono.error(new Throwable("用户组id为空"));
+        }
+
+        return groupUserRelationRepository.findByGroupIdAndUserId(relation.getGroupId(), relation.getUserId())
+                .switchIfEmpty(Mono.error(new Throwable("不存在用户与组的绑定关系")))
+                .collectList()
+                .flatMap(l -> {
+                    if (l.size() > 1) {
+                        return Mono.error(new Throwable("存在重复的绑定的关系"));
+                    }
+                    return groupUserRelationRepository.deleteById(l.get(0).getId());
+                });
+    }
 }

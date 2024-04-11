@@ -1,8 +1,6 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotNull;
 import org.lizhao.cloud.gateway.handler.UserHandler;
 import org.lizhao.cloud.gateway.repository.*;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
@@ -15,9 +13,6 @@ import org.lizhao.cloud.gateway.security.csrf.CsrfServerAccessDeniedHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutSuccessHandler;
 import org.lizhao.cloud.gateway.security.userdetailsservice.DelegateReactiveUserDetailsServiceImpl;
-import org.lizhao.cloud.gateway.utils.json.deserializer.FilterDefinitionDeserializer;
-import org.lizhao.cloud.gateway.utils.json.deserializer.PredicateDefinitionDeserializer;
-import org.lizhao.cloud.web.react.handler.GlobalResponseBodyHandler;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -30,9 +25,6 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.http.codec.json.AbstractJackson2Decoder;
-import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.security.authentication.AbstractUserDetailsReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -53,8 +45,6 @@ import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttrib
 import org.springframework.security.web.server.ui.LoginPageGeneratingWebFilter;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
-import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,43 +66,10 @@ import java.util.List;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity(useAuthorizationManager = true)
-public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
+public class WebFluxSecurityConfigurer {
 
     @Resource
     private org.lizhao.cloud.gateway.configurer.properties.SecurityProperties securityProperties;
-
-    @Bean
-    public GlobalResponseBodyHandler responseWrapper(@NotNull ServerCodecConfigurer serverCodecConfigurer,
-                                                     RequestedContentTypeResolver requestedContentTypeResolver) {
-        return new GlobalResponseBodyHandler(serverCodecConfigurer.getWriters(), requestedContentTypeResolver);
-    }
-
-    /**
-     * 添加自定义类型转换 支持类型:
-     *      1、Decoder, Encoder;
-     *      2、HttpMessageReader, HttpMessageWriter;
-     *
-     * @see DefaultServerCodecConfigurer
-     * org.springframework.http.codec.support.BaseCodecConfigurer的实现类
-     * 从其getReaders()方法中可以看出自定义的优先级最高 {@link DefaultServerCodecConfigurer#getReaders()}
-     * @param configurer the configurer to customize readers and writers
-     */
-    @Override
-    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
-        //设置自定义request body 类型转换
-//        configurer.customCodecs().register(new RouteDefinitionDecoder());
-        configurer.defaultCodecs().enableLoggingRequestDetails(true);
-        configurer.defaultCodecs().configureDefaultCodec(codec -> {
-            if (codec instanceof AbstractJackson2Decoder abstractJackson2Decoder) {
-                SimpleModule simpleModule = new SimpleModule();
-//                simpleModule.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
-//                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
-//                simpleModule.addDeserializer(FilterDefinition.class, new FilterDefinitionDeserializer());
-                abstractJackson2Decoder.getObjectMapper().registerModule(simpleModule);
-            }
-        });
-//        configurer.customCodecs().register(new RouteDefinitionDecoder());
-    }
 
     @Bean
     public CookieServerCsrfTokenRepository cookieServerCsrfTokenRepository() {
@@ -208,10 +165,10 @@ public class WebfluxSecurityConfigurer implements WebFluxConfigurer {
                 });
         // for test
 //        http.authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())
-//                .csrf(ServerHttpSecurity.CsrfSpec::disable)
 //                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
 //                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-//                .logout(ServerHttpSecurity.LogoutSpec::disable);
+//                .logout(ServerHttpSecurity.LogoutSpec::disable)
+//                .csrf(ServerHttpSecurity.CsrfSpec::disable);
         return http.build();
     }
 

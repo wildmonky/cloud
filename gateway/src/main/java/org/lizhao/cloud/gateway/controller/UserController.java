@@ -2,10 +2,11 @@ package org.lizhao.cloud.gateway.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
+import org.lizhao.base.entity.relation.GroupUserRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.cloud.gateway.model.GatewayUser;
-import org.lizhao.cloud.gateway.serviceImpl.GroupServiceImpl;
+import org.lizhao.cloud.gateway.serviceImpl.RelationServiceImpl;
 import org.lizhao.cloud.gateway.serviceImpl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -23,12 +24,14 @@ import java.util.Map;
  * @since 0.0.1-SNAPSHOT
  */
 
-@RequestMapping("/gateway/user")
+@RequestMapping("/user")
 @RestController
-public class UserGroupController {
+public class UserController {
 
     @Resource
     private UserServiceImpl userService;
+    @Resource
+    private RelationServiceImpl relationService;
 
     @Operation(summary = "在线用户列表")
     @PostMapping("/online")
@@ -57,26 +60,28 @@ public class UserGroupController {
 
     @Operation(summary = "将用户绑定到组")
     @PostMapping("/bind/to/group")
-    public Mono<Boolean> bindGroupToUser(@RequestBody Map<User, Collection<Group>> map) {
-        return userService.bindUserToGroup(map).hasElements();
+    public Mono<Boolean> bindGroupToUser(@RequestBody Map<Group, Collection<User>> map) {
+        return userService.bindUsersToGroup(map)
+                .collectList()
+                .map(l -> l.size() == map.values().stream().map(Collection::size).count());
     }
 
-
-    @RequestMapping("/group")
-    public static class GroupController {
-
-        @Resource
-        private GroupServiceImpl groupService;
-
-        @PostMapping("/save")
-        public Mono<Group> save(Group group) {
-            return groupService.save(group);
-        }
-
-        @PostMapping("/remove")
-        public Mono<Void> remove(Group group) {
-            return groupService.remove(group);
-        }
-
+    @Operation(summary = "将用户与组解绑")
+    @PostMapping("/unbind/from/group")
+    public Mono<Void> unbindFromGroup(@RequestBody GroupUserRelation relation) {
+        return userService.unbindFromGroup(relation);
     }
+
+    @Operation(summary = "开关用户与组关系")
+    @GetMapping("/group/relation/turn")
+    public Mono<Boolean> groupRelationChange(String relationId) {
+        return relationService.turnRelationBetweenUserAndGroup(relationId);
+    }
+
+    @Operation(summary = "所有用户")
+    @GetMapping("/searchAll")
+    public Flux<User> searchAll() {
+        return userService.searchAll();
+    }
+
 }

@@ -30,13 +30,16 @@ import java.util.Map;
 public class UserServiceImpl implements ApplicationEventPublisherAware {
 
     private ApplicationEventPublisher applicationEventPublisher;
-
     @Resource
     private RedisSecurityContextRepository repository;
     @Resource
     private UserHandler userHandler;
     @Resource
     private UserRepository userRepository;
+
+    public Flux<User> searchAll() {
+        return userRepository.findAll();
+    }
 
     /**
      * 获取在线用户
@@ -59,8 +62,16 @@ public class UserServiceImpl implements ApplicationEventPublisherAware {
         return userRepository.delete(user);
     }
 
-    public Flux<GroupUserRelation> bindUserToGroup(Map<User, Collection<Group>> map) {
-        return userHandler.bindToGroup(map);
+    public Flux<GroupUserRelation> bindUserToGroups(Map<User, Collection<Group>> map) {
+        return userHandler.bindToGroups(map);
+    }
+
+    public Flux<GroupUserRelation> bindUsersToGroup(Map<Group, Collection<User>> map) {
+        return userHandler.bindMoreToGroup(map);
+    }
+
+    public Mono<Void> unbindFromGroup(GroupUserRelation relation) {
+        return userHandler.unbindFromGroup(relation);
     }
 
     @Override

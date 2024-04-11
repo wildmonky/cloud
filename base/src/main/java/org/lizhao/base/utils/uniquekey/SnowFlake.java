@@ -100,7 +100,8 @@ public class SnowFlake implements BeforeExecutionGenerator {
         // 并发下可能是同一毫秒，添加序列号sequence
         if (currentTimestamp == lastTimestamp) {
             sequence = (sequence + 1) & maxSequence;
-            if (sequence == 0) {// sequence超过最大值，按位‘与’后为0，当前时间戳序列已满，下一个时间戳
+            if (sequence == 0) {
+                // sequence超过最大值，按位‘与’后为0，当前时间戳序列已满，下一个时间戳
                 currentTimestamp = currentTimestamp(lastTimestamp);
             }
         }else {

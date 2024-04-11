@@ -5,6 +5,7 @@ import org.lizhao.base.entity.relation.GroupUserRelation;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -40,7 +41,7 @@ public class CommonHandler {
             return Flux.empty();
         }
 
-        Flux<S> relationFlux = Flux.create(fluxSink -> {
+        Flux<S> relationFlux = Flux.push(fluxSink -> {
             for (Map.Entry<T, Collection<E>> entry : map.entrySet()) {
                 T t = entry.getKey();
                 if (t == null) {
@@ -59,6 +60,7 @@ public class CommonHandler {
                         fluxSink.next(s);
                     }
                 }
+                fluxSink.complete();
             }
         });
         return saveFunc.apply(relationFlux);

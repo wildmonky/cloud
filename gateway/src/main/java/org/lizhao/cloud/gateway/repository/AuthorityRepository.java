@@ -28,7 +28,7 @@ public interface AuthorityRepository extends R2dbcRepository<Authority, String> 
 
     /**
      * 查询用户所绑定的权限
-     * @param roleId 角色id
+     * @param userId 用户id
      * @param valid 绑定关系：
      *              null-所有绑定的权限;
      *              true-起效的权限;
@@ -38,13 +38,13 @@ public interface AuthorityRepository extends R2dbcRepository<Authority, String> 
     @Query(
             "SELECT * FROM \"authority\" a" +
             "   LEFT JOIN user_authority_relation uar ON uar.authority_id = a.id" +
-            "   WHERE uar.user_id IN (:roleId)" +
+            "   WHERE uar.user_id IN (:userId)" +
             "   AND (CASE WHEN :valid IS NOT NULL THEN uar.valid = :valid" +
             "           ELSE 1=1" +
             "        END" +
             "   )"
     )
-    Flux<Authority> findAuthoritiesByUsers(Publisher<String> roleId, Boolean valid);
+    Flux<Authority> findAuthoritiesByUsers(Publisher<String> userId, Boolean valid);
 
 
     /**
