@@ -60,7 +60,7 @@
             </n-form>
         </n-modal>
         <!-- 表格数据修改Modal-->
-        <n-modal style="width: 100%"
+        <n-modal style="max-width: 1000px;width:1000px;"
             v-model:show="tableEditModal"
             preset="dialog"
             title="修改">
@@ -102,7 +102,7 @@
                                 :existed-columns="userAuthorityColumns"
                                 :column-operation="userAuthorityColumnOperation"
                                 :table-data-flush="usersBoundAuthority"
-                                :search-options="allUsers"
+                                :search-options="usersUnboundAuthority"
                                 :bind-to="bindAuthorityToUser"
                                 source-title="未绑定的用户"
                                 target-title="已绑定的用户"
@@ -115,7 +115,7 @@
                                 :existed-columns="groupAuthorityColumns"
                                 :column-operation="groupAuthorityColumnOperation"
                                 :table-data-flush="groupsBoundAuthority"
-                                :search-options="allGroups"
+                                :search-options="groupsUnboundAuthority"
                                 :bind-to="bindAuthorityToGroup"
                                 source-title="未绑定的用户组"
                                 target-title="已绑定的用户组"
@@ -128,7 +128,7 @@
                                 :existed-columns="roleAuthorityColumns"
                                 :column-operation="roleAuthorityColumnOperation"
                                 :table-data-flush="rolesBoundAuthority"
-                                :search-options="allRoles"
+                                :search-options="rolesUnboundAuthority"
                                 :bind-to="bindAuthorityToRole"
                                 source-title="未绑定的角色"
                                 target-title="已绑定的角色"
@@ -252,24 +252,20 @@
                     .finally(() => this.loading = false);
             },
             showBindModal() {
-                this.modal = true
+                this.flushOptions();
+                this.modal = true;
             },
             bindCall() {
                 this.bindTo(this.editData)
-                    .then(() => message.success("绑定成功"))
-                    .catch(() => message.error("绑定失败"))
-                    .finally(() => {
+                    .then(() => {
                         this.modal = false;
                         this.flush();
                     });
             },
             flushOptions() {
-                let existedIdArr = data.map(e => e.id);
                 this.transferLoading = true;
                 this.searchOptions(this.rootId)
-                    .then(options => this.options = options.filter(e => {
-                        return existedIdArr.indexOf(e.id) === -1
-                    }).map(e => ({
+                    .then(options => this.options = options.map(e => ({
                         label: e.name,
                         value: e.id
                     })))
@@ -277,24 +273,26 @@
             }
         },
         template: `
-            <n-flex justify="space-between" style="gap: 0">
-                <p style="margin: 0;font-weight: 800;">{{name}}</p>
-                <n-button-group>
-                    <n-button :loading="loading" @click="flush">
-                        刷新
-                    </n-button>
-                    <n-button type="info" @click="showBindModal">
-                        绑定
-                    </n-button>
-                </n-button-group>
-            </n-flex>
-            <n-data-table
-                :columns="columns"
-                :data="data"
-                :row-key="rowKey"
-                default-expand-all
-                :pagination="pagination"
-            />
+            <div style="width: 100%;">
+                <n-flex justify="space-between" style="gap: 0">
+                    <p style="margin: 0;font-weight: 800;">{{name}}</p>
+                    <n-button-group>
+                        <n-button :loading="loading" @click="flush">
+                            刷新
+                        </n-button>
+                        <n-button type="info" @click="showBindModal">
+                            绑定
+                        </n-button>
+                    </n-button-group>
+                </n-flex>
+                <n-data-table
+                    :columns="columns"
+                    :data="data"
+                    :row-key="rowKey"
+                    default-expand-all
+                    :pagination="pagination"
+                />
+            </div>
             <n-modal style="min-width: 600px"
                 v-model:show="modal"
                 preset="dialog"
@@ -320,11 +318,6 @@
     })
 
     const tableColumns= [
-        // {
-        //     title: '主键',
-        //     key: 'id',
-        //     disabled: true
-        // },
         {
             title: '权限名称',
             key: 'name'
@@ -459,15 +452,6 @@
             }
         },
         methods: {
-            allUsers() {
-                return axios.get('/user/searchAll')
-            },
-            allGroups() {
-                return axios.get('/group/searchAll')
-            },
-            allRoles() {
-                return axios.get('/role/searchAll')
-            },
             flushTable() {
                 this.loading = true;
                 axios.get('/authority/searchAll')
@@ -479,7 +463,11 @@
             },
             saveTableData(data) {
                 axios.post('/authority/save', data)
-                    .then(() => message.success('权限保存成功'))
+                    .then(() => {
+                        this.tableAddModal = false;
+                        this.tableEditModal = false;
+                        message.success('权限保存成功');
+                    })
             },
             removeTableData(data) {
                 axios.post('/authority/remove', data)
@@ -489,19 +477,19 @@
                 return [
                     {
                         title: '用户名称',
-                        key: 'name'
+                        key: 'userName'
                     },
                     {
-                        title: '状态',
-                        key: 'valid',
+                        title: '用户状态',
+                        key: 'userStatus',
                         render: row => {
                             return h(
                                 NTag, {
                                     size: 'small',
-                                    type: row.valid ? 'success' : 'error',
+                                    type: row.userStatus === 0 ? '' : (row.userStatus === 1 ? 'success' : 'error'),
                                     round: true
                                 },
-                                {default: () => row.valid ? '有效' : '无效'}
+                                {default: () => row.userStatus === 0 ? '初始' : (row.userStatus === 1 ? '有效' : '停用')}
                             )
                         }
                     }
@@ -510,7 +498,10 @@
             userAuthorityColumnOperation() {
                 return {
                     remove(row) {
-                        axios.post('/authority/unbind/from/user', row).success(() => {
+                        return axios.post('/authority/unbind/from/user', {
+                            userId: row.userId,
+                            authorityId: row.authorityId
+                        }).then(() => {
                             message.success('用户权限移除成功');
                         });
                     }
@@ -518,40 +509,45 @@
             },
             usersBoundAuthority(authorityId) {
                 return axios.get('authority/searchBoundUser?authorityId=' + authorityId);
-                // return Promise.resolve(Mock.mock({
-                //     // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-                //     'list|1-30': [{
-                //         // 属性 id 是一个自增数，起始值为 1，每次增 1
-                //         'name|+1': 1
-                //     }]
-                // }).list);
+            },
+            usersUnboundAuthority(authorityId) {
+                return axios.get('authority/searchUnboundUser?authorityId=' + authorityId);
             },
             bindAuthorityToUser(data) {
-                let map = new Map();
-                map.set({
+                let authority = {
                     id: data.bindTo
-                }, data.source);
-                console.info(JSON.stringify(map))
-                axios.post('/authority/bind/to/user', map)
-                    .then(() => messahe.success('用户权限绑定成功'))
+                }
+                let users = data.source.map(e => {
+                    return {id: e}
+                })
+                let d = '{"' +
+                    JSON.stringify(authority).replaceAll('"', '\\"') +
+                    '":' +
+                    JSON.stringify(users) +
+                    '}';
+                return axios.post('/authority/bind/to/user', d, {
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+                }).then(() => message.success('用户权限绑定成功'))
             },
             groupAuthorityColumns() {
                 return [
                         {
                             title: '用户组名称',
-                            key: 'name'
+                            key: 'groupName'
                         },
                         {
-                            title: '状态',
-                            key: 'valid',
+                            title: '用户组状态',
+                            key: 'groupStatus',
                             render: row => {
                                 return h(
                                     NTag, {
                                         size: 'small',
-                                        type: row.valid ? 'success' : 'error',
+                                        type: row.groupStatus === 0 ? '' : (row.groupStatus === 1 ? 'success' : 'error'),
                                         round: true
                                     },
-                                    {default: () => row.valid ? '有效' : '无效'}
+                                    {default: () => row.groupStatus === 0 ? '初始' : (row.groupStatus === 1 ? '有效' : '停用')}
                                 )
                             }
                         }
@@ -560,47 +556,54 @@
             groupAuthorityColumnOperation() {
                 return {
                     remove(row) {
-                        return axios.post('/authority/unbind/from/group', row)
-                            .then(() => message.success('权限与组解绑成功'))
+                        return axios.post('/authority/unbind/from/group', {
+                            groupId: row.groupId,
+                            authorityId: row.authorityId
+                        }).then(() => message.success('权限与组解绑成功'))
                     }
                 };
             },
             groupsBoundAuthority(authorityId) {
                 return axios.get('authority/searchBoundGroup?authorityId=' + authorityId);
-                // return Promise.resolve(Mock.mock({
-                //     // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-                //     'list|1-30': [{
-                //         // 属性 id 是一个自增数，起始值为 1，每次增 1
-                //         'name|+1': 1
-                //     }]
-                // }).list);
+            },
+            groupsUnboundAuthority(authorityId) {
+                return axios.get('authority/searchUnboundGroup?authorityId=' + authorityId);
             },
             bindAuthorityToGroup(data) {
-                let map = new Map();
-                map.set({
+                let authority = {
                     id: data.bindTo
-                }, data.source);
-                console.info(JSON.stringify(map))
-                axios.post('/authority/bind/to/group', map)
-                    .then(() => messahe.success('用户权限绑定成功'))
+                }
+                let groups = data.source.map(e => {
+                    return {id: e}
+                })
+                let d = '{"' +
+                    JSON.stringify(authority).replaceAll('"', '\\"') +
+                    '":' +
+                    JSON.stringify(groups) +
+                    '}';
+                return axios.post('/authority/bind/to/group', d, {
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+                }).then(() => message.success('用户组权限绑定成功'))
             },
             roleAuthorityColumns() {
                 return  [
                             {
                                 title: '角色名称',
-                                key: 'name'
+                                key: 'roleName'
                             },
                             {
-                                title: '状态',
-                                key: 'valid',
+                                title: '角色状态',
+                                key: 'roleStatus',
                                 render: row => {
                                     return h(
                                         NTag, {
                                             size: 'small',
-                                            type: row.valid ? 'success' : 'error',
+                                            type: row.roleStatus === 0 ? '' : (row.roleStatus === 1 ? 'success' : 'error'),
                                             round: true
                                         },
-                                        {default: () => row.valid ? '有效' : '无效'}
+                                        {default: () => row.roleStatus === 0 ? '初始' : (row.roleStatus === 1 ? '有效' : '停用')}
                                     )
                                 }
                             }
@@ -609,29 +612,36 @@
             roleAuthorityColumnOperation() {
                 return {
                     remove(row) {
-                        return axios.post('/authority/unbind/from/role', row)
-                            .then(() => message.success('权限与角色解绑成功'))
+                        return axios.post('/authority/unbind/from/role', {
+                            roleId: row.roleId,
+                            authorityId: row.authorityId
+                        }).then(() => message.success('权限与角色解绑成功'))
                     }
                 };
             },
             rolesBoundAuthority(authorityId) {
                 return axios.get('authority/searchBoundRole?authorityId=' + authorityId);
-                // return Promise.resolve(Mock.mock({
-                //     // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-                //     'list|1-30': [{
-                //         // 属性 id 是一个自增数，起始值为 1，每次增 1
-                //         'name|+1': 1
-                //     }]
-                // }).list);
+            },
+            rolesUnboundAuthority(authorityId) {
+                return axios.get('authority/searchUnboundRole?authorityId=' + authorityId);
             },
             bindAuthorityToRole(data) {
-                let map = new Map();
-                map.set({
+                let authority = {
                     id: data.bindTo
-                }, data.source);
-                console.info(JSON.stringify(map))
-                axios.post('/authority/bind/to/role', map)
-                    .then(() => messahe.success('用户权限绑定成功'))
+                }
+                let roles = data.source.map(e => {
+                    return {id: e}
+                })
+                let d = '{"' +
+                    JSON.stringify(authority).replaceAll('"', '\\"') +
+                    '":' +
+                    JSON.stringify(roles) +
+                    '}';
+                return axios.post('/authority/bind/to/role', d, {
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+                }).then(() => message.success('角色权限绑定成功'))
             },
         }
     });

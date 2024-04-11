@@ -1,12 +1,13 @@
 package org.lizhao.base.entity.authority;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.CommonAttribute;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.util.Objects;
 
 /**
  * Description 权限实体
@@ -41,4 +42,35 @@ public class Authority extends CommonAttribute {
      */
     private String comment;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Authority authority = (Authority) o;
+
+        if (!Objects.equals(id, authority.id)) {
+            return false;
+        }
+        if (!Objects.equals(name, authority.name)) {
+            return false;
+        }
+        if (!Objects.equals(status, authority.status)) {
+            return false;
+        }
+        return Objects.equals(comment, authority.comment);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        return result;
+    }
 }

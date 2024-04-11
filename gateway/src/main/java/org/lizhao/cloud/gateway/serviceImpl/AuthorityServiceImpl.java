@@ -9,6 +9,9 @@ import org.lizhao.base.entity.relation.UserAuthorityRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.cloud.gateway.handler.AuthorityHandler;
+import org.lizhao.cloud.gateway.model.GroupAuthorityModel;
+import org.lizhao.cloud.gateway.model.RoleAuthorityModel;
+import org.lizhao.cloud.gateway.model.UserAuthorityModel;
 import org.lizhao.cloud.gateway.repository.AuthorityRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -43,8 +46,17 @@ public class AuthorityServiceImpl {
      * @param authorityId 权限id
      * @return 绑定权限的用户
      */
-    public Flux<User> searchBoundUser(String authorityId) {
+    public Flux<UserAuthorityModel> searchBoundUser(String authorityId) {
         return authorityHandler.boundUsers(authorityId);
+    }
+
+    /**
+     * 查询未绑定权限的用户
+     * @param authorityId 权限id
+     * @return 未绑定权限的用户
+     */
+    public Flux<User> searchUnboundUser(String authorityId) {
+        return authorityHandler.unboundUsers(authorityId);
     }
 
     /**
@@ -52,17 +64,36 @@ public class AuthorityServiceImpl {
      * @param authorityId 权限id
      * @return 组直接绑定的权限
      */
-    public Flux<Group> searchBoundGroup(String authorityId) {
+    public Flux<GroupAuthorityModel> searchBoundGroup(String authorityId) {
         return authorityHandler.boundGroups(authorityId);
     }
+
+    /**
+     * 查询未绑定该权限的组
+     * @param authorityId 权限id
+     * @return 未直接绑定该权限的组
+     */
+    public Flux<Group> searchUnboundGroup(String authorityId) {
+        return authorityHandler.unboundGroups(authorityId);
+    }
+
 
     /**
      * 查询直接绑定权限的角色
      * @param authorityId 权限id
      * @return 角色直接绑定的权限
      */
-    public Flux<Role> searchBoundRole(String authorityId) {
+    public Flux<RoleAuthorityModel> searchBoundRole(String authorityId) {
         return authorityHandler.boundRoles(authorityId);
+    }
+
+    /**
+     * 查询w未直接绑定权限的角色
+     * @param authorityId 权限id
+     * @return 未直接绑定的权限的角色
+     */
+    public Flux<Role> searchUnboundRole(String authorityId) {
+        return authorityHandler.unboundRoles(authorityId);
     }
 
     public Mono<Authority> save(Authority authority) {
@@ -73,16 +104,16 @@ public class AuthorityServiceImpl {
         return authorityRepository.delete(authority);
     }
 
-    public Mono<Boolean> bindToUser(Map<User, Collection<Authority>> userAuthorityMap) {
-        return authorityHandler.bindToUser(userAuthorityMap).hasElements();
+    public Flux<UserAuthorityRelation> bindToUser(Map<Authority, Collection<User>> userAuthorityMap) {
+        return authorityHandler.bindToUsers(userAuthorityMap);
     }
 
-    public Mono<Boolean> bindToGroup(Map<Group, Collection<Authority>> groupAuthorityMap) {
-        return authorityHandler.bindToGroup(groupAuthorityMap).hasElements();
+    public Flux<GroupAuthorityRelation> bindToGroup(Map<Authority, Collection<Group>> groupAuthorityMap) {
+        return authorityHandler.bindToGroups(groupAuthorityMap);
     }
 
-    public Mono<Boolean> bindToRole(Map<Role, Collection<Authority>> roleAuthorityMap) {
-        return authorityHandler.bindToRole(roleAuthorityMap).hasElements();
+    public Flux<RoleAuthorityRelation> bindToRole(Map<Authority, Collection<Role>> roleAuthorityMap) {
+        return authorityHandler.bindToRoles(roleAuthorityMap);
     }
 
     public Mono<Void> unbindFromGroup(GroupAuthorityRelation relation) {

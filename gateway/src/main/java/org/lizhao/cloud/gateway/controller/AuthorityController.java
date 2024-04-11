@@ -9,6 +9,9 @@ import org.lizhao.base.entity.relation.RoleAuthorityRelation;
 import org.lizhao.base.entity.relation.UserAuthorityRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.cloud.gateway.model.GroupAuthorityModel;
+import org.lizhao.cloud.gateway.model.RoleAuthorityModel;
+import org.lizhao.cloud.gateway.model.UserAuthorityModel;
 import org.lizhao.cloud.gateway.serviceImpl.AuthorityServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -38,22 +41,40 @@ public class AuthorityController {
         return authorityService.search();
     }
 
-    @Operation(summary = "查询用户权限信息")
+    @Operation(summary = "查询绑定该权限的用户信息")
     @GetMapping("/searchBoundUser")
-    public Flux<User> searchBoundUser(String authorityId) {
+    public Flux<UserAuthorityModel> searchBoundUser(String authorityId) {
         return authorityService.searchBoundUser(authorityId);
+    }
+
+    @Operation(summary = "查询未绑定该权限的用户信息")
+    @GetMapping("/searchUnboundUser")
+    public Flux<User> searchUnboundUser(String authorityId) {
+        return authorityService.searchUnboundUser(authorityId);
     }
 
     @Operation(summary = "查询组权限信息")
     @GetMapping("/searchBoundGroup")
-    public Flux<Group> searchBoundGroup(String authorityId) {
+    public Flux<GroupAuthorityModel> searchBoundGroup(String authorityId) {
         return authorityService.searchBoundGroup(authorityId);
+    }
+
+    @Operation(summary = "查询未绑定该权限的用户信息")
+    @GetMapping("/searchUnboundGroup")
+    public Flux<Group> searchUnboundGroup(String authorityId) {
+        return authorityService.searchUnboundGroup(authorityId);
     }
 
     @Operation(summary = "查询角色权限信息")
     @GetMapping("/searchBoundRole")
-    public Flux<Role> searchBoundRole(String authorityId) {
+    public Flux<RoleAuthorityModel> searchBoundRole(String authorityId) {
         return authorityService.searchBoundRole(authorityId);
+    }
+
+    @Operation(summary = "查询未绑定权限的角色信息")
+    @GetMapping("/searchUnboundRole")
+    public Flux<Role> searchUnboundRole(String authorityId) {
+        return authorityService.searchUnboundRole(authorityId);
     }
 
     @Operation(summary = "保存权限信息")
@@ -70,20 +91,26 @@ public class AuthorityController {
 
     @Operation(summary = "将权限绑定给用户")
     @PostMapping("/bind/to/user")
-    public Mono<Boolean> bindAuthorityToUser(Map<User, Collection<Authority>> userAuthorityMap) {
-        return authorityService.bindToUser(userAuthorityMap);
+    public Mono<Boolean> bindAuthorityToUser(@RequestBody Map<Authority, Collection<User>> userAuthorityMap) {
+        return authorityService.bindToUser(userAuthorityMap)
+                .collectList()
+                .map(l -> l.size() == userAuthorityMap.values().stream().map(Collection::size).count());
     }
 
     @Operation(summary = "将权限绑定给角色")
     @PostMapping("/bind/to/role")
-    public Mono<Boolean> bindAuthorityToRole(Map<Role, Collection<Authority>> roleAuthorityMap) {
-        return authorityService.bindToRole(roleAuthorityMap);
+    public Mono<Boolean> bindAuthorityToRole(@RequestBody Map<Authority, Collection<Role>> roleAuthorityMap) {
+        return authorityService.bindToRole(roleAuthorityMap)
+                .collectList()
+                .map(l -> l.size() == roleAuthorityMap.values().stream().map(Collection::size).count());
     }
 
     @Operation(summary = "将权限绑定给组")
     @PostMapping("/bind/to/group")
-    public Mono<Boolean> bindAuthorityToGroup(Map<Group, Collection<Authority>> groupAuthorityMap) {
-        return authorityService.bindToGroup(groupAuthorityMap);
+    public Mono<Boolean> bindAuthorityToGroup(@RequestBody Map<Authority, Collection<Group>> groupAuthorityMap) {
+        return authorityService.bindToGroup(groupAuthorityMap)
+                .collectList()
+                .map(l -> l.size() == groupAuthorityMap.values().stream().map(Collection::size).count());
     }
 
     @Operation(summary = "将权限与组解绑")
@@ -100,7 +127,7 @@ public class AuthorityController {
 
     @Operation(summary = "将权限与角色解绑")
     @PostMapping("/unbind/from/role")
-    public Mono<Void> removeAuthorityFromRole(RoleAuthorityRelation relation) {
+    public Mono<Void> removeAuthorityFromRole(@RequestBody RoleAuthorityRelation relation) {
         return authorityService.unbindFromRole(relation);
     }
 

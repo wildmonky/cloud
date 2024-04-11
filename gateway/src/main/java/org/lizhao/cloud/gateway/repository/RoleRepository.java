@@ -4,6 +4,7 @@ import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.cloud.gateway.model.GroupRoleModel;
+import org.lizhao.cloud.gateway.model.RoleAuthorityModel;
 import org.lizhao.cloud.gateway.model.UserRoleModel;
 import org.reactivestreams.Publisher;
 import org.springframework.data.r2dbc.repository.Query;
@@ -109,18 +110,6 @@ public interface RoleRepository extends R2dbcRepository<Role, String> {
             "   WHERE urr.user_id = :userId"
     )
     Flux<Role> findRolesByUserId(String userId);
-
-    /**
-     * 根据权限获取绑定的角色
-     * @param authorityId 权限id
-     * @return 绑定该权限的角色
-     */
-    @Query(
-            "select r.* from \"role\" r" +
-            "   left join role_authority_relation rar on rar.role_id = r.id" +
-            "   where rar.authority_id = :authorityId"
-    )
-    Flux<Role> findRolesByAuthorityId(String authorityId);
 
     /**
      * 根据角色获取绑定的用户

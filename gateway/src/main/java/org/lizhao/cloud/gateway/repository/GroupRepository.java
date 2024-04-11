@@ -85,16 +85,4 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
     )
     Flux<Group> findGroupsIncludeChildByUserId(String userId);
 
-    /**
-     * 根据权限id获取绑定的组
-     * @param authorityId 权限id
-     * @return 绑定该用户的组
-     */
-    @Query(
-            "select \"g\".* from \"group\" \"g\" " +
-            "   left join group_authority_relation gar on gar.group_id = \"g\".id" +
-            "   where gar.authority_id = :authorityId"
-    )
-    Flux<Group> findGroupsByAuthorityId(String authorityId);
-
 }

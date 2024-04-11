@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.validation.constraints.NotNull;
+import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
@@ -105,6 +106,19 @@ public class MyWebFluxConfigurer implements WebFluxConfigurer {
                     @Override
                     public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
                         return objectMapper.readValue(key, Role.class);
+                    }
+                });
+
+                simpleModule.addKeySerializer(Authority.class, new JsonSerializer<>() {
+                    @Override
+                    public void serialize(Authority value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                        gen.writeFieldName(objectMapper.writeValueAsString(value));
+                    }
+                });
+                simpleModule.addKeyDeserializer(Authority.class, new KeyDeserializer() {
+                    @Override
+                    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
+                        return objectMapper.readValue(key, Authority.class);
                     }
                 });
 

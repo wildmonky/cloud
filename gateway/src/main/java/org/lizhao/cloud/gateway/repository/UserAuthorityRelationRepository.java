@@ -3,6 +3,7 @@ package org.lizhao.cloud.gateway.repository;
 import org.lizhao.base.entity.relation.UserAuthorityRelation;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -17,5 +18,7 @@ public interface UserAuthorityRelationRepository extends R2dbcRepository<UserAut
 
     @Query("update user_authority_relation set status = ?2 where id = ?1")
     Mono<Boolean> updateStatusById(String userId, boolean valid);
+
+    Flux<UserAuthorityRelation> findByUserIdAndAuthorityId(String userId, String authorityId);
 
 }

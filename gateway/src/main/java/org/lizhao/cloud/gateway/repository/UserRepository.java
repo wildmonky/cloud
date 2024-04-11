@@ -22,18 +22,6 @@ public interface UserRepository extends R2dbcRepository<User, String> {
      Mono<Boolean> updateStatusById(String userId, short status);
 
      /**
-      * 根据权限id查询绑定的用户
-      * @param authorityId 权限id
-      * @return 绑定该权限的用户
-      */
-     @Query(
-             "select u.* from \"user\" u" +
-             "      left join user_authority_relation uar on uar.user_id = u.id" +
-             "      where uar.authority_id = :authorityId"
-     )
-     Flux<User> findUsersByAuthorityId(String authorityId);
-
-     /**
       * 查询组中的所有绑定用户
       * @param groupId 组id
       * @return 在组中的所有用户(valid相同)
