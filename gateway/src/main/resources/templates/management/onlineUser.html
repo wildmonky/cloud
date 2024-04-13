@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线用户管理</title>
+    <meta name="description" content="在线用户">
+    <!--通用JS axios http-->
+    <th:block th:replace="template::commonJs"></th:block>
+</head>
+<body>
+    <div id="app">
+        <n-button
+                :loading = "loading"
+                @click="flush"
+                name="left-size"
+                type="info"
+                style="margin-bottom: 12px"
+        >
+            刷新
+        </n-button>
+        <n-data-table
+                :columns="columns"
+                :data="tableData"
+                :pagination="pagination"
+                :bordered="false"
+        ></n-data-table>
+    </div>
+</body>
+<script>
+    const { createApp, ref, h } = Vue;
+    // 可配置为全局式  创建分离式的api, 不再受限与<n-xxx-provider/>标签, 要在setup()外
+    const { NButton, NTag, createDiscreteApi } = naive;
+
+    const { message } = createDiscreteApi(['message']);
+    // const { useMessage } = naive;
+
+    const flush = function() {
+        this.loading = true;
+        axios.post("/user/online")
+            .then(res => this.tableData = res)
+            .finally(() => this.loading = false);
+    }
+
+    const existedColumns = [{
+        title: '用户名',
+        key: 'username',
+        render: (row) => {
+            let array = new Array(2);
+            array.push(row.username);
+            if(row.token === Cookies.get('TOKEN')) {
+                array.push(h(
+                    NTag, {
+                        size: 'small',
+                        type: 'success',
+                        round: true
+                    },
+                    {default: () => 'current'}
+                ))
+            }
+            return array;
+        }
+    }];
+
+    const app = createApp({
+        setup() {
+            // 入口函数
+            // 配和 <n-message-provider/> 标签使用
+            // const message = useMessage();
+        },
+        data() {
+            return {
+                loading: ref(false),
+                pagination: false,
+                columns: createColumns({
+                    operation: {
+                        offline: {
+                            buttonSize: 'small',
+                            buttonType: 'error',
+                            buttonName: '下线',
+                            func: row => {
+                                axios.post('/user/offline', row.token, {
+                                    headers: {
+                                        "Content-Type": "text/plain"
+                                    }
+                                }).then(res => console.info(res))
+                                    .catch(err => console.error(err))
+                                    .finally(() => flush());
+                            }
+                        }
+                    },
+                    existedColumns: existedColumns
+                }),
+                tableData: []
+            }
+        },
+        methods: {
+            flush() {
+                this.loading = true;
+                axios.post("/user/online")
+                    .then(res => this.tableData = res)
+                    .finally(() => this.loading = false);
+            }
+        },
+        mounted() {
+            window.onload = () => this.flush()
+        }
+    }).use(naive).mount('#app');
+</script>
+<style>
+    #app {
+        width: 600px;
+        height: 400px;
+        position: absolute;
+        left: calc(50% - 300px);
+        top: calc(50% - 200px);
+    }
+</style>
+</html>

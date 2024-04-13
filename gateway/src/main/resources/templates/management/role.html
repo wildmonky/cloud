@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>角色管理</title>
-    <!--引入vue3-->
-    <script src="/static/vue/vue@3.4.21.global.js"></script>
-    <!--引入vuetify@3.5.13，依赖vue3-->
-    <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
-    <!--axios http-->
-    <script src="/static/config/axiosConfig.js" type="module"></script>
+    <!--通用js配置 axios http-->
+    <th:block th:replace="template::commonJs"></th:block>
 </head>
 <body>
 <div id="app">
@@ -47,6 +43,14 @@
                 <n-form-item label="角色名称" path="name">
                     <n-input v-model:value="addingData.name" placeholder="输入角色名称" />
                 </n-form-item>
+                <n-form-item label="父级角色" path="parentId">
+                    <n-tree-select
+                            label-field="name"
+                            key-field="id"
+                            :options="roleOptions"
+                            :value="addingData.parentId"
+                    />
+                </n-form-item>
                 <n-form-item label="备注" path="comment">
                     <n-input v-model:value="addingData.comment" type="textarea" round  placeholder="备注" />
                 </n-form-item>
@@ -65,10 +69,18 @@
                 title="修改">
             <n-form :label-width="100"
                     label-placement="left"
-                    :model="editingData"
+                    v-model:model="editingData"
             >
                 <n-form-item label="角色名称" path="name">
                     <n-input v-model:value="editingData.name" placeholder="输入角色名称" />
+                </n-form-item>
+                <n-form-item label="父级角色" path="parentId">
+                    <n-tree-select
+                            label-field="name"
+                            key-field="id"
+                            :options="roleOptions"
+                            v-model:value="editingData.parentId"
+                    />
                 </n-form-item>
                 <n-form-item label="备注" path="comment">
                     <n-input v-model:value="editingData.comment" type="textarea" round placeholder="备注" />
@@ -127,165 +139,9 @@
     const { message } = createDiscreteApi(['message']);
     const { modal } = createDiscreteApi(['modal']);
 
-    const baseTable = defineComponent({
-        name: 'BaseTable',
-        props: {
-            name: {
-                type: String,
-                default: ''
-            },
-            existedColumns: Function,
-            columnOperation: Function,
-            tableDataFlush: Function,
-            searchOptions: Function,
-            bindTo: Function,
-            sourceTitle: {
-                type: String,
-                default: '未绑定'
-            },
-            targetTitle: {
-                type: String,
-                default: '已绑定'
-            },
-            rootId: String
-        },
-        setup() {
-            const paginationReactive = reactive({
-                page: 1,
-                pageSlot: 5,
-                pageSize: 3,
-                showSizePicker: true,
-                pageSizes: [3, 5, 7],
-                onChange: (page) => {
-                    paginationReactive.page = page;
-                },
-                onUpdatePageSize: (pageSize) => {
-                    paginationReactive.pageSize = pageSize;
-                    paginationReactive.page = 1;
-                }
-            });
-            return {
-                rowKey: row => row.index,
-                pagination: paginationReactive,
-                columnOpera: {}
-            }
-        },
-        beforeCreate() {
-            // 对处理方法上下文设置 this call(this), 但会暴露上下文 !!!! important
-            // 每次操作后刷新表格
-            let columnOpera = this.columnOperation();
-            let _this = this
-            for(let key in columnOpera) {
-                let operaFunc = columnOpera[key];
-                if (typeof (operaFunc) === 'function') {
-                    columnOpera[key] = (...params) => {
-                        Promise.resolve(operaFunc(...params))
-                            .then(res => _this.flush())
-                    }
-                }
-            }
-            this.columnOpera = columnOpera;
-        },
-        mounted() {
-            this.flush();
-        },
-        data() {
-            return {
-                columns: createColumns(
-                    {
-                        operation: this.columnOpera,
-                        existedColumns: this.existedColumns(),
-                        size: 'tiny'
-                    }
-                ),
-                data: [],
-                options: [],
-                selectedOptions: [],
-                modal: false,
-                transferLoading: false,
-                editData: {
-                    bindTo: this.rootId,
-                    source: []
-                },
-                loading: false
-            };
-        },
-        methods: {
-            flush() {
-                this.loading = true;
-                this.tableDataFlush(this.rootId)
-                    .then(rows => this.data = rows)
-                    .finally(() => this.loading = false);
-            },
-            showBindModal() {
-                this.flushOptions();
-                this.modal = true
-            },
-            bindCall() {
-                this.bindTo(this.editData)
-                    .then(() => {
-                        this.flush();
-                        this.modal = false;
-                    });
-            },
-            flushOptions() {
-                this.transferLoading = true;
-                this.searchOptions(this.rootId)
-                    .then(options => this.options = options.map(e => ({
-                        label: e.name,
-                        value: e.id
-                    })))
-                    .finally(() => this.transferLoading = false);
-            }
-        },
-        template: `
-            <div style="width: 100%">
-                <n-flex justify="space-between" style="gap: 0">
-                    <p style="margin: 0;font-weight: 800;">{{name}}</p>
-                    <n-button-group>
-                        <n-button :loading="loading" @click="flush">
-                            刷新
-                        </n-button>
-                        <n-button type="info" @click="showBindModal">
-                            绑定
-                        </n-button>
-                    </n-button-group>
-                </n-flex>
-                <n-data-table
-                    :columns="columns"
-                    :data="data"
-                    :row-key="rowKey"
-                    default-expand-all
-                    :pagination="pagination"
-                />
-            </div>
-            <n-modal style="min-width: 600px"
-                v-model:show="modal"
-                preset="dialog"
-                title="修改">
-                <n-flex justify="end">
-                    <n-button-group>
-                        <n-button :loading="transferLoading" @click="flushOptions">刷新</n-button>
-                        <n-button type="info" @click="bindCall">保存</n-button>
-                    </n-button-group>
-                </n-flex>
-                <n-transfer
-                    ref="transfer"
-                    v-model:value="editData.source"
-                    :options="options"
-                    :source-title="sourceTitle"
-                    :target-title="targetTitle"
-                    virtual-scroll
-                    source-filterable
-                    target-filterable
-                />
-            </n-modal>
-        `
-    })
-
     const tableColumns= [
         {
-            title: '用户名称',
+            title: '角色名称',
             key: 'name'
         },
         {
@@ -308,65 +164,25 @@
         },
         {
             title: '创建人姓名',
-            key: 'createUseName'
+            key: 'createUseName',
+            width: '100px'
         },
         {
             title: '创建时间',
-            key: 'createTime'
+            key: 'createTime',
+            width: '220px'
         },
         {
             title: '更新人姓名',
-            key: 'updateUseName'
+            key: 'updateUseName',
+            width: '100px'
         },
         {
             title: '更新时间',
-            key: 'updateTime'
+            key: 'updateTime',
+            width: '220px'
         }
     ];
-
-    const createColumns = ({
-                               operation, existedColumns, size
-                           }) => {
-        if (typeof (operation.edit) === 'function' || typeof (operation.remove) === 'function') {
-            existedColumns.push({
-                title: '操作',
-                key: 'operation',
-                fixed: 'right',
-                // maxWidth: '80',
-                render(row) {
-                    let operations = [];
-                    if (typeof (operation.edit) === 'function') {
-                        operations.push(
-                            h(
-                                NButton, {
-                                    size: size,
-                                    type: 'info',
-                                    round: true,
-                                    onClick: () => operation.edit(row)
-                                },
-                                {default: () => '修改'}
-                            )
-                        )
-                    }
-                    if (typeof (operation.remove) === 'function') {
-                        operations.push(
-                            h(
-                                NButton, {
-                                    size: size,
-                                    type: 'error',
-                                    round: true,
-                                    onClick: () => operation.remove(row)
-                                },
-                                {default: () => '删除'}
-                            )
-                        )
-                    }
-                    return operations;
-                }
-            });
-        }
-        return existedColumns;
-    }
 
     const app = createApp({
         setup() {
@@ -376,13 +192,14 @@
             return {
                 zhCN,
                 dateZhCN,
-                rowKey: (row) => row.index,
+                rowKey: (row) => row.id,
                 loading: ref(false),
                 tableData: ref([]),
                 tableAddModal: ref(false),
                 addingData: ref({}),
                 tableEditModal: ref(false),
                 editingData: ref({}),
+                roleOptions: ref({})
             };
         },
         mounted() {
@@ -392,26 +209,43 @@
             return {
                 columns: createColumns({
                     operation: {
-                        edit: row => {
-                            this.editingData = row;
-                            this.tableEditModal = true
-                        },
-                        remove: row => this.removeTableData(row)
+                        edit: {
+                            buttonType: 'info',
+                            buttonSize: 'tiny',
+                            buttonName: '修改',
+                            func: row => {
+                                this.editingData = row;
+                                this.searchRoleOptions()
+                                    .then(() => this.tableEditModal = true);
+                            }
+                        } ,
+                        remove: {
+                            buttonType: 'error',
+                            buttonSize: 'tiny',
+                            buttonName: '删除',
+                            func: row => this.removeTableData(row)
+                        }
                     },
-                    existedColumns: tableColumns,
-                    size: 'small'
+                    existedColumns: tableColumns
                 }),
             }
         },
         methods: {
+            searchRoleOptions() {
+                return axios.get('/role/searchTree')
+                    .then(data => this.roleOptions = data)
+            },
             flushTable() {
                 this.loading = true;
-                axios.get('/role/searchAll')
+                axios.get('/role/searchTree')
                     .then(data => this.tableData = data)
                     .finally(() => this.loading = false);
             },
             showAddModal() {
-                this.tableAddModal = true;
+                this.searchRoleOptions().then(() => {
+                    this.addingData = {};
+                    this.tableAddModal = true;
+                });
             },
             saveTableData(data) {
                 axios.post('/role/save', data)

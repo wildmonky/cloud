@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +35,11 @@ public class RoleController {
     @GetMapping("/searchAll")
     public Flux<Role> searchAll() {
         return roleService.searchAll();
+    }
+
+    @GetMapping("/searchTree")
+    public Mono<List<Role>> searchTree() {
+        return roleService.searchTree();
     }
 
     @GetMapping("/searchBoundUsers")

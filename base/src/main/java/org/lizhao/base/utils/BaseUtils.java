@@ -1,24 +1,23 @@
 package org.lizhao.base.utils;
 
+import com.sun.source.tree.Tree;
+import org.lizhao.base.exception.CustomException;
+import org.lizhao.base.model.Node;
+import org.lizhao.base.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -129,4 +128,220 @@ public class BaseUtils {
     public static long toTimestamp(LocalDateTime time) {
         return time == null ? -1L : time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
+
+
+    /**
+     * 根据数据生成树
+     *
+     * @param collection 数据
+     * @param findParentFunc 寻找父亲节点的方法
+     * @param findChildrenFunc 寻找子节点的方法
+     * @return 生成的树
+     * @param <T> 泛型
+     */
+    public static <T> List<Node<T>> generateTree(Collection<T> collection,
+                                                     BiFunction<T, T, Boolean> findParentFunc,
+                                                     BiFunction<T, T, Boolean> findChildrenFunc
+    ) {
+        if (ObjectUtils.isEmpty(collection)) {
+            throw new CustomException("传入数据为空");
+        }
+        // parentId-child parentId 能为空
+        List<Node<T>> multiTree = new ArrayList<>();
+
+        Iterator<T> ite = collection.iterator();
+        // 注意： 不要改成 for循环，下面操作涉及集合节点删除
+        while(ite.hasNext()) {
+            T node = ite.next();
+            collection.remove(node);
+
+            Node<T> current = new Node<>();
+
+            Node<T> parent = treeParent(current, collection, findParentFunc);
+
+            if (parent.equals(current)) {
+                treeChildren(parent, collection, findChildrenFunc);
+            } else {
+                for (Node<T> childrenNode : parent.getChildren()) {
+                    treeChildren(childrenNode, collection, findChildrenFunc);
+                }
+            }
+            ite = collection.stream().iterator();
+            multiTree.add(parent);
+        }
+        return multiTree;
+    }
+
+    /**
+     * 寻找当前节点的父亲节点
+     *
+     * @param current 当前节点
+     * @param collection 数据
+     * @param equalsFunc 父节点比较方法
+     * @return 父亲节点
+     * @param <T> 泛型
+     */
+    private static <T> Node<T> treeParent(Node<T> current, Collection<T> collection,
+                                          BiFunction<T, T, Boolean> equalsFunc) {
+
+        T parent = collection.stream()
+                .filter(p -> equalsFunc.apply(current.get(), p)).findFirst()
+                .orElse(null);
+
+        if (parent == null) {
+            return current;
+        }
+
+        collection.remove(parent);
+
+        Node<T> parentNode = new Node<T>();
+        parentNode.set(parent);
+
+
+        Set<Node<T>> child = new HashSet<>();
+        child.add(current);
+        parentNode.setChildren(child);
+        treeParent(parentNode, collection, equalsFunc);
+
+        return parentNode;
+    }
+
+    /**
+     * 从数据中寻找子节点并装入当前节点
+     *
+     * @param current 当前节点
+     * @param collection 数据
+     * @param equalsFunc 子节点比较方法
+     * @param <T> 泛型
+     */
+    private static <T> void treeChildren(Node<T> current, Collection<T> collection,
+                                         BiFunction<T, T, Boolean> equalsFunc
+    ) {
+        Set<T> foundChildren = collection.stream()
+                .filter(e -> equalsFunc.apply(current.get(), e))
+                .collect(Collectors.toSet());
+        // 没有子节点
+        if (foundChildren.size() == 0) {
+            return;
+        }
+
+        collection.removeAll(foundChildren);
+
+        Set<Node<T>> childrenNode = foundChildren.stream().map(children -> {
+            Node<T> node = new Node<>();
+            node.set(children);
+            return node;
+        }).collect(Collectors.toSet());
+
+        Set<Node<T>> child = Optional.ofNullable(current.getChildren()).orElse(new HashSet<>());
+        child.addAll(childrenNode);
+        current.setChildren(child);
+
+        for (Node<T> next : childrenNode) {
+            treeChildren(next, collection, equalsFunc);
+        }
+    }
+
+
+    /**
+     * 根据数据生成树
+     *
+     * @param collection 数据
+     * @param findParentFunc 寻找父亲节点的方法
+     * @param findChildrenFunc 寻找子节点的方法
+     * @return 生成的树
+     * @param <T> 泛型
+     */
+    public static <T> List<? extends TreeNode<T>> buildTree(Collection<? extends TreeNode<T>> collection,
+                                                     BiFunction<TreeNode<T>, TreeNode<T>, Boolean> findParentFunc,
+                                                     BiFunction<TreeNode<T>, TreeNode<T>, Boolean> findChildrenFunc
+    ) {
+        if (ObjectUtils.isEmpty(collection)) {
+            throw new CustomException("传入数据为空");
+        }
+        // parentId-child parentId 能为空
+        List<TreeNode<T>> multiTree = new ArrayList<>();
+
+        Iterator<? extends TreeNode<T>> ite = collection.iterator();
+        // 注意： 不要改成 for循环，下面操作涉及集合节点删除
+        while(ite.hasNext()) {
+            TreeNode<T> node = ite.next();
+            collection.remove(node);
+
+            TreeNode<T> parent = treeParent(node, collection, findParentFunc);
+
+            if (parent.equals(node)) {
+                treeChildren(parent, collection, findChildrenFunc);
+            } else {
+                for (TreeNode<T> childrenNode : parent.getChildren()) {
+                    treeChildren(childrenNode, collection, findChildrenFunc);
+                }
+            }
+            ite = collection.stream().iterator();
+            multiTree.add(parent);
+        }
+        return multiTree;
+    }
+
+    /**
+     * 寻找当前节点的父亲节点
+     *
+     * @param current 当前节点
+     * @param collection 数据
+     * @param equalsFunc 父节点比较方法
+     * @return 父亲节点
+     * @param <T> 泛型
+     */
+    private static <T> TreeNode<T> treeParent(TreeNode<T> current, Collection<? extends TreeNode<T>> collection,
+                                              BiFunction<TreeNode<T>, TreeNode<T>, Boolean> equalsFunc) {
+
+        TreeNode<T> parentNode = collection.stream()
+                .filter(p -> equalsFunc.apply(current, p)).findFirst()
+                .orElse(null);
+
+        if (parentNode == null) {
+            return current;
+        }
+
+        collection.remove(parentNode);
+
+        Collection<TreeNode<T>> child = Optional.ofNullable(parentNode.getChildren()).orElse(new HashSet<>());
+        child.add(current);
+        parentNode.setChildren(child);
+        treeParent(parentNode, collection, equalsFunc);
+
+        return parentNode;
+    }
+
+    /**
+     * 从数据中寻找子节点并装入当前节点
+     *
+     * @param current 当前节点
+     * @param collection 数据
+     * @param equalsFunc 子节点比较方法
+     * @param <T> 泛型
+     */
+    private static <T> void treeChildren(TreeNode<T> current, Collection<? extends TreeNode<T>> collection,
+                                         BiFunction<TreeNode<T>, TreeNode<T>, Boolean> equalsFunc
+    ) {
+        Set<? extends TreeNode<T>> foundChildren = collection.stream()
+                .filter(e -> equalsFunc.apply(current, e))
+                .collect(Collectors.toSet());
+        // 没有子节点
+        if (foundChildren.size() == 0) {
+            return;
+        }
+
+        collection.removeAll(foundChildren);
+
+        Collection<TreeNode<T>> child = Optional.ofNullable(current.getChildren()).orElse(new HashSet<>());
+        child.addAll(foundChildren);
+        current.setChildren(child);
+
+        for (TreeNode<T> next : foundChildren) {
+            treeChildren(next, collection, equalsFunc);
+        }
+    }
+
+
 }

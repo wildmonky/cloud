@@ -3,10 +3,14 @@ package org.lizhao.base.entity.authority;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.CommonAttribute;
+import org.lizhao.base.entity.user.Group;
+import org.lizhao.base.model.TreeNode;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -20,7 +24,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Table(name = "role")
-public class Role extends CommonAttribute {
+public class Role extends CommonAttribute implements TreeNode<Role> {
 
     /**
      * 角色Id
@@ -51,6 +55,19 @@ public class Role extends CommonAttribute {
      */
     private String comment;
 
+    @Transient
+    private Collection<TreeNode<Role>> children;
+
+    @Override
+    public Collection<TreeNode<Role>> getChildren() {
+        return this.children;
+    }
+
+    @Override
+    public void setChildren(Collection<TreeNode<Role>> children) {
+        this.children = children;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -71,7 +88,13 @@ public class Role extends CommonAttribute {
         if (!Objects.equals(name, role.name)) {
             return false;
         }
-        return Objects.equals(status, role.status);
+        if (!Objects.equals(status, role.status)) {
+            return false;
+        }
+        if (!Objects.equals(comment, role.comment)) {
+            return false;
+        }
+        return Objects.equals(children, role.children);
     }
 
     @Override
@@ -80,6 +103,8 @@ public class Role extends CommonAttribute {
         result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (children != null ? children.hashCode() : 0);
         return result;
     }
 }

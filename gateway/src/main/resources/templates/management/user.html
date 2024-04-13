@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
     <title>用户管理</title>
-    <!--引入vue3-->
-    <script src="/static/vue/vue@3.4.21.global.js"></script>
-    <!--引入vuetify@3.5.13，依赖vue3-->
-    <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
     <!--axios http-->
-    <script src="/static/config/axiosConfig.js" type="module"></script>
+    <th:block th:replace="template::commonJs"></th:block>
 </head>
 <body>
 <div id="app">
@@ -103,7 +99,8 @@
     const tableColumns= [
         {
             title: '用户名称',
-            key: 'name'
+            key: 'name',
+            minWidth: '80px',
         },
         {
             title: '状态',
@@ -121,7 +118,8 @@
         },
         {
             title: '手机号码',
-            key: 'phone'
+            key: 'phone',
+            minWidth: '120px'
         },
         {
             title: '用户密码',
@@ -140,65 +138,25 @@
         },
         {
             title: '创建人姓名',
-            key: 'createUseName'
+            key: 'createUseName',
+            minWidth: '100px'
         },
         {
             title: '创建时间',
-            key: 'createTime'
+            key: 'createTime',
+            width: '220px'
         },
         {
             title: '更新人姓名',
-            key: 'updateUseName'
+            key: 'updateUseName',
+            width: '100px'
         },
         {
             title: '更新时间',
-            key: 'updateTime'
+            key: 'updateTime',
+            width: '220px'
         }
     ];
-
-    const createColumns = ({
-                               operation, existedColumns, size
-                           }) => {
-        if (typeof (operation.edit) === 'function' || typeof (operation.remove) === 'function') {
-            existedColumns.push({
-                title: '操作',
-                key: 'operation',
-                fixed: 'right',
-                // maxWidth: '80',
-                render(row) {
-                    let operations = [];
-                    if (typeof (operation.edit) === 'function') {
-                        operations.push(
-                            h(
-                                NButton, {
-                                    size: size,
-                                    type: 'info',
-                                    round: true,
-                                    onClick: () => operation.edit(row)
-                                },
-                                {default: () => '修改'}
-                            )
-                        )
-                    }
-                    if (typeof (operation.remove) === 'function') {
-                        operations.push(
-                            h(
-                                NButton, {
-                                    size: size,
-                                    type: 'error',
-                                    round: true,
-                                    onClick: () => operation.remove(row)
-                                },
-                                {default: () => '删除'}
-                            )
-                        )
-                    }
-                    return operations;
-                }
-            });
-        }
-        return existedColumns;
-    }
 
     const app = createApp({
         setup() {
@@ -218,22 +176,31 @@
             };
         },
         mounted() {
-            window.onload = () => {
-                this.flushTable();
-            }
+            window.onload = () => this.flushTable()
         },
         data() {
             return {
                 columns: createColumns({
                     operation: {
-                        edit: row => {
-                            this.editingData = row;
-                            this.tableEditModal = true
+                        edit: {
+                            buttonSize: 'tiny',
+                            buttonType: 'info',
+                            buttonName: '修改',
+                            func: (row) => {
+                                this.editingData = row;
+                                this.tableEditModal = true
+                            }
                         },
-                        remove: row => this.removeTableData(row)
+                        remove: {
+                            buttonSize: 'tiny',
+                            buttonType: 'error',
+                            buttonName: '删除',
+                            func: (row) => {
+                                this.removeTableData(row)
+                            }
+                        }
                     },
-                    existedColumns: tableColumns,
-                    size: 'small'
+                    existedColumns: tableColumns
                 }),
             }
         },

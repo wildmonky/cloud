@@ -2,137 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>首页</title>
-    <meta name="description" content="在线用户">
-    <!--引入vue3-->
-    <script src="/static/vue/vue@3.4.21.global.js"></script>
-    <!--引入vuetify@3.5.13，依赖vue3-->
-    <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
-    <!--axios http-->
-    <script src="/static/config/axiosConfig.js" type="module"></script>
+    <title>主页</title>
+    <!--通用js配置 axios http-->
+    <th:block th:replace="template::commonJs"></th:block>
 </head>
 <body>
-    <div id="app">
-        <n-button
-                :loading = "loading"
-                @click="flush"
-                name="left-size"
-                type="info"
-                style="margin-bottom: 12px"
-        >
-            刷新
-        </n-button>
-        <n-data-table
-                :columns="columns"
-                :data="tableData"
-                :pagination="pagination"
-                :bordered="false"
-        ></n-data-table>
-    </div>
+<div id="app">
+    <n-layout style="height: 100%">
+        <n-layout-header style="height:40px;background-color: rgb(0,21,40)">
+            <n-flex justify="space-between">
+                <p style="font-size: 24px;font-weight: 800;margin: 0;color: white">网关管理</p>
+                <n-button style="margin-top: 5px" type="error" size="small" @click="logout">退出</n-button>
+            </n-flex>
+        </n-layout-header>
+        <n-layout has-sider style="height: calc(100vh - 40px)">
+            <n-layout-sider
+                    :native-scrollbar="false"
+                    bordered
+                    collapse-mode="width"
+                    :collapsed-width="16"
+                    :width="150"
+                    show-trigger
+                    :inverted="inverted"
+            >
+                <n-menu
+                        :inverted="inverted"
+                        :collapsed-width="64"
+                        :collapsed-icon-size="22"
+                        :options="menuOptions"
+                        default-value="online-user-manage"
+                        @update:value="menuSelectChange"
+                />
+            </n-layout-sider>
+            <n-layout-content content-style="height: 100%" :native-scrollbar="false">
+                <iframe src="./onlineUser" style="margin:0;border:0;width: 100%;height:100%;" name="content_frame"></iframe>
+            </n-layout-content>
+        </n-layout>
+    </n-layout>
+</div>
 </body>
 <script>
-    const { createApp, ref, h } = Vue;
-    // 可配置为全局式  创建分离式的api, 不再受限与<n-xxx-provider/>标签, 要在setup()外
-    const { NButton, NTag, createDiscreteApi } = naive;
-
+    const { defineComponent, h, createApp, ref } = Vue;
+    const { NButton, NTag, NIcon, createDiscreteApi } = naive;
     const { message } = createDiscreteApi(['message']);
-    // const { useMessage } = naive;
 
-    const createColumns = ({
-        offline
-    }) => {
-        return [
-            {
-                title: '用户名',
-                key: 'username',
-                render: (row) => {
-                    let array = new Array(2);
-                    array.push(row.username);
-                    if(row.token === Cookies.get('TOKEN')) {
-                        array.push(h(
-                            NTag, {
-                                size: 'small',
-                                type: 'success',
-                                round: true
-                            },
-                            {default: () => 'current'}
-                        ))
-                    }
-                    return array;
-                }
-            },{
-                title: '操作',
-                key: 'operation',
-                render: (row) => {
-                    return h(
-                        NButton, {
-                            // strong: true,
-                            // tertiary: true,
-                            size: 'small',
-                            type: 'error',
-                            onClick: () => offline(row.token)
-                        },
-                        { default: () => '下线' }
-                    )
-                }
-            }
-        ]
-    };
-    const flush = function() {
-        this.loading = true;
-        axios.post("/user/online")
-            .then(res => this.tableData = res)
-            .finally(() => this.loading = false);
+    function renderIcon(icon) {
+        return () => h(NIcon, null, { default: () => h(icon) });
     }
+
+    const menuOptions = [
+        {
+            label: () => h("a",
+                {
+                    href: "./onlineUser",
+                    target: "content_frame",
+                    rel: "noopenner noreferrer"
+                },
+                "在线用户管理"
+            ),
+            key: "online-user-manage"
+            // icon: renderIcon(BookIcon)
+        },
+        {
+            label: () => h("a",
+                {
+                    href: "./user",
+                    target: "content_frame",
+                    rel: "noopenner noreferrer"
+                },
+                "用户管理"
+            ),
+            key: "user-manage"
+            // icon: renderIcon(BookIcon)
+        },
+        {
+            label: () => h("a",
+                {
+                    href: "./group",
+                    target: "content_frame",
+                    rel: "noopenner noreferrer"
+                },
+                "用户组管理"
+            ),
+            key: "group-manage"
+            // icon: renderIcon(BookIcon)
+        },
+        {
+            label: () => h("a",
+                {
+                    href: "./role",
+                    target: "content_frame",
+                    rel: "noopenner noreferrer"
+                },
+                "角色管理"
+            ),
+            key: "role-manage"
+            // icon: renderIcon(BookIcon),
+            // disabled: true
+        },
+        {
+            label: () => h("a",
+                {
+                    href: "./authority",
+                    target: "content_frame",
+                    rel: "noopenner noreferrer"
+                },
+                "权限管理"
+            ),
+            key: "authority-manage"
+            // disabled: true,
+            // icon: renderIcon(BookIcon)
+        }
+    ];
+
     const app = createApp({
         setup() {
             // 入口函数
             // 配和 <n-message-provider/> 标签使用
             // const message = useMessage();
-        },
-        data() {
             return {
-                loading: ref(false),
-                pagination: false,
-                columns: createColumns({
-                    offline(token) {
-                        axios.post('/user/offline', token, {
-                            headers: {
-                                "Content-Type": "text/plain"
-                            }
-                        }).then(res => console.info(res))
-                            .catch(err => console.error(err))
-                            .finally(() => flush());
-                    }
-                }),
-                tableData: [
-                    // { 'username': 'lizhao' },
-                    // { 'username': 'test' }
-                ]
-            }
+                inverted: ref(true),
+                menuOptions
+            };
         },
         methods: {
-            flush() {
-                this.loading = true;
-                axios.post("/user/online")
-                    .then(res => this.tableData = res)
-                    .finally(() => this.loading = false);
-            }
-        },
-        mounted() {
-            window.onload = () => {
-                this.flush();
+            logout() {
+                axios.get('/logout')
+                    .then(() => {
+                        Cookies.remove("token");
+                        window.location.href = '/';
+                })
+            },
+            menuSelectChange(key, item) {
+                console.log(item)
             }
         }
     }).use(naive).mount('#app');
 </script>
-<style>
-    #app {
-        width: 600px;
-        height: 400px;
-        position: absolute;
-        left: calc(50% - 300px);
-        top: calc(50% - 200px);
-    }
-</style>
 </html>

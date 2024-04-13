@@ -6,6 +6,7 @@ import org.lizhao.base.entity.relation.GroupRoleRelation;
 import org.lizhao.base.entity.relation.UserRoleRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.base.model.TreeNode;
 import org.lizhao.cloud.gateway.handler.RoleHandler;
 import org.lizhao.cloud.gateway.model.GroupRoleModel;
 import org.lizhao.cloud.gateway.model.UserRoleModel;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +38,12 @@ public class RoleServiceImpl {
 
     public Flux<Role> searchAll() {
         return roleRepository.findAll();
+    }
+
+    public Mono<List<Role>> searchTree() {
+        return roleRepository.findAll().collectList().map(l ->
+            roleHandler.generateTree(l)
+        );
     }
 
     public Flux<UserRoleModel> searchBoundUsers(String roleId) {

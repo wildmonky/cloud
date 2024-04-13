@@ -32,7 +32,6 @@ public interface UserRepository extends R2dbcRepository<User, String> {
                      "u.phone user_phone," +
                      "u.status user_status," +
                      "gur.id relation_id," +
-                     "gur.valid relation_valid," +
                      "\"g\".id group_id," +
                      "\"g\".name group_name," +
                      "\"g\".status group_status," +

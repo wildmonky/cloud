@@ -1,11 +1,16 @@
 package org.lizhao.cloud.gateway.handler;
 
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ObjectUtils;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.relation.GroupRoleRelation;
 import org.lizhao.base.entity.relation.UserRoleRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.base.exception.CustomException;
+import org.lizhao.base.model.Node;
+import org.lizhao.base.model.TreeNode;
+import org.lizhao.base.utils.BaseUtils;
 import org.lizhao.cloud.gateway.repository.GroupRoleRelationRepository;
 import org.lizhao.cloud.gateway.repository.UserRoleRelationRepository;
 import org.reactivestreams.Publisher;
@@ -14,7 +19,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Description 角色 handler
@@ -142,6 +149,33 @@ public class RoleHandler {
         return groupRoleRelationRepository.findByGroupIdAndRoleId(relation.getGroupId(), relation.getRoleId())
                 .switchIfEmpty(Mono.error(new Throwable("不存在对应的绑定关系")))
                 .flatMap(rel -> groupRoleRelationRepository.deleteById(rel.getId()));
+    }
+
+    /**
+     * 根据数据生成树
+     * @param roles 角色
+     * @return 树
+     */
+    public List<Role> generateTree(List<Role> roles) {
+        if (ObjectUtils.isEmpty(roles)) {
+            throw new CustomException("传入组为空");
+        }
+
+        List<? extends TreeNode<Role>> multiTree = BaseUtils.buildTree(roles, (current, parent) -> {
+            String parentId = ((Role)current).getParentId();
+            String id = ((Role)parent).getId();
+            return Objects.equals(parentId, id);
+        }, (current, children) -> {
+            String parentId = ((Role)children).getParentId();
+            String id = ((Role)current).getId();
+            return Objects.equals(parentId, id);
+        });
+
+//        if (multiTree.size() > 1) {
+//            throw new CustomException("数据中存在离散的节点");
+//        }
+
+        return (List<Role>)multiTree;
     }
 
 }

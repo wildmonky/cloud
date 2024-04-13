@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.base.model.TreeNode;
 import org.lizhao.cloud.gateway.model.UserGroupModel;
 import org.lizhao.cloud.gateway.serviceImpl.GroupServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Description 组 Controller
@@ -29,6 +32,12 @@ public class GroupController {
     @GetMapping("/searchAll")
     public Flux<Group> searchAll() {
         return groupService.searchAll();
+    }
+
+    @Operation(summary = "所有用户组")
+    @GetMapping("/searchTree")
+    public Mono<List<Group>> searchTree() {
+        return groupService.searchTree();
     }
 
     @Operation(summary = "组中所有绑定的用户")

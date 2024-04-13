@@ -42,6 +42,7 @@ import org.springframework.security.web.server.authentication.RedirectServerAuth
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.server.header.XFrameOptionsServerHttpHeadersWriter;
 import org.springframework.security.web.server.ui.LoginPageGeneratingWebFilter;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -123,8 +124,15 @@ public class WebFluxSecurityConfigurer {
                                                             ServerAuthenticationEntryPoint redirectServerAuthenticationEntryPoint
     ) {
         // 注意 登录地址、注册地址都不需要csrf、auth
-        // SecurityContext(包含用户信息) redis保存策略
-        http.securityContextRepository(redisSecurityContextRepository)
+
+        http.headers(headerSpec ->
+                    // 允许同域名下的 frame
+                    headerSpec.frameOptions(frameOptionsSpec ->
+                        frameOptionsSpec.mode(XFrameOptionsServerHttpHeadersWriter.Mode.SAMEORIGIN)
+                    )
+                )
+                // SecurityContext(包含用户信息) redis保存策略
+                .securityContextRepository(redisSecurityContextRepository)
 //                .httpBasic(Customizer.withDefaults())
                 // 允许跨域请求
                 .cors(corsSpec -> corsSpec.configurationSource(new UrlBasedCorsConfigurationSource()))

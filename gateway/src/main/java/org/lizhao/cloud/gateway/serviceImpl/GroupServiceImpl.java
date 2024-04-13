@@ -3,12 +3,15 @@ package org.lizhao.cloud.gateway.serviceImpl;
 import jakarta.annotation.Resource;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.base.model.TreeNode;
 import org.lizhao.cloud.gateway.handler.GroupHandler;
 import org.lizhao.cloud.gateway.model.UserGroupModel;
 import org.lizhao.cloud.gateway.repository.GroupRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Description 用户组服务
@@ -28,6 +31,10 @@ public class GroupServiceImpl {
 
     public Flux<Group> searchAll() {
         return groupRepository.findAll();
+    }
+
+    public Mono<List<Group>> searchTree() {
+        return groupRepository.findAll().collectList().map(coll -> groupHandler.generateTree(coll));
     }
 
     public Flux<UserGroupModel> searchBoundUsers(String groupId) {

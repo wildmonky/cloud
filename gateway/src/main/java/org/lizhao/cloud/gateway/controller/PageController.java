@@ -3,7 +3,10 @@ package org.lizhao.cloud.gateway.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Random;
 
 /**
  * Description 页面控制器 目前 webflux 不支持 forward
@@ -16,6 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 @Controller
 public class PageController {
+
+    /**
+     * 页面加载js等文件时，添加后缀?${version}，
+     * 防止浏览器使用缓存，应用更新后可以加载到更新后的文件
+     */
+    @ModelAttribute("version")
+    public Long randomId() {
+        return new Random().nextLong();
+    }
 
     @Operation(summary = "首页")
     @GetMapping("/")
@@ -41,10 +53,10 @@ public class PageController {
         return "/public/error";
     }
 
-    @Operation(summary = "主页")
-    @GetMapping("/root")
-    public String root() {
-        return "/root";
+    @Operation(summary = "在线用户页")
+    @GetMapping("/onlineUser")
+    public String onlineUser() {
+        return "/management/onlineUser";
     }
 
     @Operation(summary = "权限")

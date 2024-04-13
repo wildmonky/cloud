@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" xmlns:th="https://www.thymeleaf.org">
+    <title>通用JS引入</title>
+    <th:block th:fragment="commonJs">
+        <link rel="shortcut icon" href="/static/favicon.ico" />
+        <!--引入vue3-->
+        <script src="/static/vue/vue@3.4.21.global.js"></script>
+        <!--引入naive UI@3.5.13，依赖vue3-->
+        <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
+        <!--axios-->
+        <script th:src="@{/static/axios@1.6.8.js?{version}(version=${version})}"></script>
+        <!--Cookies-->
+        <script th:src="@{/static/js.cookie@3.0.5.js?{version}(version=${version})}"></script>
+        <!--axios 全局配置-->
+        <script>
+            //axios 初始化
+            let axiosInstance = axios.create({
+                baseURL: '/',
+                timeout: 10000,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                // `xsrfCookieName` is the name of the cookie to use as a value for xsrf token
+                xsrfCookieName: 'XSRF-TOKEN', // default
+                // `xsrfHeaderName` is the name of the http header that carries the xsrf token value
+                xsrfHeaderName: 'X-Xsrf-Token', // default
+                // `undefined` (default) - set XSRF header only for the same origin requests
+                withXSRFToken: (config) => {
+                    config.headers.set(config.xsrfHeaderName, Cookies.get(config.xsrfCookieName));
+                    return false; // 关闭 axios 默认配置
+                }
+
+            });
+
+            // Add a request interceptor
+            axiosInstance.interceptors.request.use(function (config) {
+                // Do something before request is sent
+                return config;
+            }, function (error) {
+                // Do something with request error
+                return Promise.reject(error);
+            });
+
+            // Add a response interceptor
+            axiosInstance.interceptors.response.use(function (response) {
+                // Any status code that lie within the range of 2xx cause this function to trigger
+                // Do something with response dat
+                if(response.headers["redirect-url"]) {
+                    window.top.location.href = response.headers["redirect-url"]
+                }
+
+                let data = response.data
+                if(data.code) {
+                    return data.result;
+                }
+                return response;
+            }, function (error) {
+                // Any status codes that falls outside the range of 2xx cause this function to trigger
+                // Do something with response error
+                return Promise.reject(error);
+            });
+            axios = axiosInstance;
+        </script>
+        <!--自定义组件-->
+        <script>
+            const createColumns = ({operation, existedColumns}) => {
+                if (typeof (existedColumns) === 'undefined') {
+                    existedColumns = [];
+                }
+                existedColumns.push({
+                        title: '操作',
+                        key: 'operation',
+                        fixed: 'right',
+                        width: Object.keys(operation).length * 60,
+                        render(row) {
+                            let operations = [];
+                            for (let key in operation) {
+                                let op = operation[key];
+                                if (typeof(op.func) === 'function') {
+                                    operations.push(
+                                        Vue.h(
+                                            naive.NButton, {
+                                                size: op.buttonSize,
+                                                type: op.buttonType,
+                                                round: true,
+                                                onClick: () => op.func(row)
+                                            },
+                                            {default: () => op.buttonName}
+                                        )
+                                    );
+                                }
+                            }
+                            return operations;
+                        }
+                    });
+
+                return existedColumns;
+            }
+
+            const baseTable = Vue.defineComponent({
+                name: 'BaseTable',
+                props: {
+                    name: {
+                        type: String,
+                        default: ''
+                    },
+                    existedColumns: Function,
+                    columnOperation: Function,
+                    tableDataFlush: Function,
+                    searchOptions: Function,
+                    bindTo: Function,
+                    sourceTitle: {
+                        type: String,
+                        default: '未绑定'
+                    },
+                    targetTitle: {
+                        type: String,
+                        default: '已绑定'
+                    },
+                    rootId: String
+                },
+                setup() {
+                    const paginationReactive = Vue.reactive({
+                        page: 1,
+                        pageSlot: 5,
+                        pageSize: 3,
+                        showSizePicker: true,
+                        pageSizes: [3, 5, 7],
+                        onChange: (page) => {
+                            paginationReactive.page = page;
+                        },
+                        onUpdatePageSize: (pageSize) => {
+                            paginationReactive.pageSize = pageSize;
+                            paginationReactive.page = 1;
+                        }
+                    });
+                    return {
+                        rowKey: row => row.index,
+                        pagination: paginationReactive,
+                        columnOpera: {}
+                    }
+                },
+                beforeCreate() {
+                    // 对处理方法上下文设置 this call(this), 但会暴露上下文 !!!! important
+                    // 每次操作后刷新表格
+                    let columnOpera = this.columnOperation();
+                    let _this = this
+                    for(let key in columnOpera) {
+                        let operaFunc = columnOpera[key];
+                        if (typeof (operaFunc) === 'function') {
+                            columnOpera[key] = (...params) => {
+                                Promise.resolve(operaFunc(...params))
+                                    .then(res => _this.flush())
+                            }
+                        }
+                    }
+                    this.columnOpera = columnOpera;
+                },
+                mounted() {
+                    this.flush();
+                },
+                data() {
+                    return {
+                        columns: createColumns(
+                            {
+                                operation: this.columnOpera,
+                                existedColumns: this.existedColumns()
+                            }
+                        ),
+                        data: [],
+                        options: [],
+                        selectedOptions: [],
+                        modal: false,
+                        transferLoading: false,
+                        editData: {
+                            bindTo: this.rootId,
+                            source: []
+                        },
+                        loading: false
+                    };
+                },
+                methods: {
+                    flush() {
+                        this.loading = true;
+                        this.tableDataFlush(this.rootId)
+                            .then(rows => this.data = rows)
+                            .finally(() => this.loading = false);
+                    },
+                    showBindModal() {
+                        this.flushOptions();
+                        this.modal = true;
+                    },
+                    bindCall() {
+                        this.bindTo(this.editData)
+                            .then(() => {
+                                this.modal = false;
+                                this.flush();
+                            });
+                    },
+                    flushOptions() {
+                        this.transferLoading = true;
+                        this.searchOptions(this.rootId)
+                            .then(options => this.options = options.map(e => ({
+                                label: e.name,
+                                value: e.id
+                            })))
+                            .finally(() => this.transferLoading = false);
+                    }
+                },
+                template: `
+            <div style="width: 100%;">
+                <n-flex justify="space-between" style="gap: 0">
+                    <p style="margin: 0;font-weight: 800;">{{name}}</p>
+                    <n-button-group>
+                        <n-button :loading="loading" @click="flush">
+                            刷新
+                        </n-button>
+                        <n-button type="info" @click="showBindModal">
+                            绑定
+                        </n-button>
+                    </n-button-group>
+                </n-flex>
+                <n-data-table
+                    :columns="columns"
+                    :data="data"
+                    :row-key="rowKey"
+                    default-expand-all
+                    :pagination="pagination"
+                />
+            </div>
+            <n-modal style="min-width: 600px"
+                v-model:show="modal"
+                preset="dialog"
+                title="修改">
+                <n-flex justify="end">
+                    <n-button-group>
+                        <n-button :loading="transferLoading" @click="flushOptions">刷新</n-button>
+                        <n-button type="info" @click="bindCall">保存</n-button>
+                    </n-button-group>
+                </n-flex>
+                <n-transfer
+                    ref="transfer"
+                    v-model:value="editData.source"
+                    :options="options"
+                    :source-title="sourceTitle"
+                    :target-title="targetTitle"
+                    virtual-scroll
+                    source-filterable
+                    target-filterable
+                />
+            </n-modal>
+        `
+            })
+        </script>
+    </th:block>
+</head>
+<body>
+</body>
+</html>

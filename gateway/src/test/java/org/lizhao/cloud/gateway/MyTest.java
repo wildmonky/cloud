@@ -2,22 +2,20 @@ package org.lizhao.cloud.gateway;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.junit.jupiter.api.Test;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.base.model.Node;
+import org.lizhao.base.model.TreeNode;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.springframework.util.AntPathMatcher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,6 +121,42 @@ public class MyTest {
         })
                 .hasElements()
                 .subscribe(System.out::println);
+
+    }
+
+    @Test
+    public void nodeTest() throws JsonProcessingException {
+        Node<Group> node = new Node<>();
+        Group current = new Group();
+        current.setId("124578963");
+        current.setName("当前节点");
+        node.set(current);
+
+        Node<Group> children = new Node<>();
+        Group g2 = new Group();
+        g2.setName("测试孩子");
+        children.set(g2);
+
+        HashSet<Node<Group>> c = new HashSet<>();
+        c.add(children);
+
+        node.setChildren(c);
+
+        ObjectMapper om = new ObjectMapper();
+        SimpleModule sm = new SimpleModule();
+//        sm.addSerializer(Node.class, new JsonSerializer<Node<?>>() {
+//            @Override
+//            public void serialize(Node<?> value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+//                Object o = value.get();
+//                Set<?> children = value.getChildren();
+//
+//                om.w .readValue(o, o.getClass())
+//
+//
+//            }
+//        })
+
+        System.out.println(om.writeValueAsString(node));
 
     }
 

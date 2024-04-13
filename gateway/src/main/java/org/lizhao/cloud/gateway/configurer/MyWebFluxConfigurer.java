@@ -3,7 +3,6 @@ package org.lizhao.cloud.gateway.configurer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.validation.constraints.NotNull;
@@ -23,10 +22,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.ResolverStyle;
 
 /**
  * Description TODO
@@ -63,8 +59,8 @@ public class MyWebFluxConfigurer implements WebFluxConfigurer {
                 // yyyy-MM-dd HH:mm:ss LocalDateTime 序列化 反序列化
                 SimpleModule simpleModule = new SimpleModule();
 
-//                simpleModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-//                simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                simpleModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 //                simpleModule.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
 //                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
