@@ -10,8 +10,11 @@ import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.cloud.gateway.utils.json.deserializer.RouteDefinitionDeserializer;
 import org.lizhao.cloud.web.react.handler.GlobalResponseBodyHandler;
+import org.lizhao.cloud.web.react.json.decoder.RouteDefinitionDecoder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -117,6 +120,16 @@ public class MyWebFluxConfigurer implements WebFluxConfigurer {
                         return objectMapper.readValue(key, Authority.class);
                     }
                 });
+
+                // route definition
+//                simpleModule.addSerializer(RouteDefinition.class, new JsonSerializer<RouteDefinition>() {
+//                    @Override
+//                    public void serialize(RouteDefinition value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+//                        gen.writeString(value.to);
+//                    }
+//                });
+
+                simpleModule.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
 
                 objectMapper.registerModules(simpleModule);
             }

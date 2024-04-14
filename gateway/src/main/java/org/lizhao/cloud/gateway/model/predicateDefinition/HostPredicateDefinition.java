@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.model.predicateDefinition;
 
+import com.alibaba.nacos.shaded.com.google.common.collect.Sets;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -21,20 +22,20 @@ import java.util.Set;
 @Getter
 public class HostPredicateDefinition extends PredicateDefinition {
 
-    private final Set<String> hostPatternSet;
+    private final Set<String> hosts;
 
-    public HostPredicateDefinition(@NotNull Set<String> hostPatternSet) {
+    public HostPredicateDefinition(@NotNull String... hosts) {
         super.setName("Host");
-        this.hostPatternSet = hostPatternSet;
+        this.hosts = Sets.newHashSet(hosts);
         Map<String, String> args = super.getArgs();
         int i = 0;
-        for (String host : hostPatternSet) {
+        for (String host : hosts) {
             args.put(NameUtils.generateName(i++), host);
         }
     }
 
     public String toYml() {
-        return super.getName() + "=" + String.join(",", hostPatternSet);
+        return super.getName() + "=" + String.join(",", hosts);
     }
 
 }

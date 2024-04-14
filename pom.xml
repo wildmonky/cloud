@@ -141,6 +141,13 @@
             <id>dev</id>
             <properties>
                 <maven.spring.env>dev</maven.spring.env>
+                <maven.nacos.server>106.52.188.209:8848</maven.nacos.server>
+                <maven.nacos.username>lizhao</maven.nacos.username>
+                <maven.nacos.password>19960214</maven.nacos.password>
+                <maven.nacos.config.namespace>dev</maven.nacos.config.namespace>
+                <maven.nacos.config.group>gateway</maven.nacos.config.group>
+                <maven.nacos.discovery.namespace>dev</maven.nacos.discovery.namespace>
+                <maven.nacos.discoveru.group>gateway</maven.nacos.discoveru.group>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -151,6 +158,13 @@
             <id>test</id>
             <properties>
                 <maven.spring.env>test</maven.spring.env>
+                <maven.nacos.server>106.52.188.209:8848</maven.nacos.server>
+                <maven.nacos.username>lizhao</maven.nacos.username>
+                <maven.nacos.password>19960214</maven.nacos.password>
+                <maven.nacos.config.namespace>test</maven.nacos.config.namespace>
+                <maven.nacos.config.group>gateway</maven.nacos.config.group>
+                <maven.nacos.discovery.namespace>test</maven.nacos.discovery.namespace>
+                <maven.nacos.discoveru.group>gateway</maven.nacos.discoveru.group>
             </properties>
             <activation>
                 <jdk>17</jdk>
@@ -160,6 +174,13 @@
             <id>prod</id>
             <properties>
                 <maven.spring.env>prod</maven.spring.env>
+                <maven.nacos.server>127.0.0.1:8848</maven.nacos.server>
+                <maven.nacos.username>lizhao</maven.nacos.username>
+                <maven.nacos.password>19960214</maven.nacos.password>
+                <maven.nacos.config.namespace>prod</maven.nacos.config.namespace>
+                <maven.nacos.config.group>gateway</maven.nacos.config.group>
+                <maven.nacos.discovery.namespace>prod</maven.nacos.discovery.namespace>
+                <maven.nacos.discoveru.group>gateway</maven.nacos.discoveru.group>
             </properties>
             <activation>
                 <jdk>17</jdk>

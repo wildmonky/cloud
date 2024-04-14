@@ -1,21 +1,29 @@
 package org.lizhao.cloud.gateway;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.lizhao.base.utils.JwtUtils;
+import org.lizhao.cloud.gateway.model.predicateDefinition.PathPredicateDefinition;
+import org.lizhao.cloud.gateway.utils.json.deserializer.RouteDefinitionDeserializer;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
+import java.net.URI;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;

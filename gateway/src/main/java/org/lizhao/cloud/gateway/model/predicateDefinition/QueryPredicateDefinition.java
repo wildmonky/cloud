@@ -5,8 +5,6 @@ import lombok.Getter;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 
-import java.time.ZonedDateTime;
-
 /**
  * Description QueryPredicateDefinition
  * 请求参数（query parameter）抉择器：

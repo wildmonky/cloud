@@ -1,6 +1,7 @@
 package org.lizhao.cloud.gateway;
 
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -44,6 +45,25 @@ public class ReactTest {
                 .map(s -> s + ", third two")
                 .doOnSuccess(System.out::println)
                 .subscribe();
+    }
+
+    @Test
+    public void fluxTest() {
+        Flux<String> flux = Flux.create(fluxSink -> {
+
+            fluxSink.next("ssss");
+            fluxSink.next("hhhh");
+
+            fluxSink.complete();
+        });
+
+        flux.concatMap(s -> {
+                    System.out.println(s);
+                    return Mono.just(s);
+                })
+                .hasElements()
+                .subscribe(System.out::println);
+
     }
 
 

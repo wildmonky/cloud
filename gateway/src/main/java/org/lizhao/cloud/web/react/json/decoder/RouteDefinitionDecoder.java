@@ -49,10 +49,10 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
                     JsonNode node = mapper.readTree(dataBuffer.asInputStream());
                     if (node != null) {
                         if (node.isArray()) {
-                            node.elements().forEachRemaining(e -> sink.next(parse(e)));
+                            node.elements().forEachRemaining(e -> sink.next(parse(mapper, e)));
                         }
                         if (node.isObject()) {
-                            sink.next(parse(node));
+                            sink.next(parse(mapper, node));
                         }
                     }
                 }
@@ -77,7 +77,7 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
     }
 
 
-    private RouteDefinition parse(JsonNode node) {
+    private RouteDefinition parse(ObjectMapper mapper, JsonNode node) {
         if (!node.isObject()) {
             throw new RuntimeException();
         }
@@ -94,8 +94,8 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
                 case "id" -> routeDefinition.setId(nextNode.asText());
                 case "order" -> routeDefinition.setOrder(nextNode.asInt(0));
                 case "uri" -> routeDefinition.setUri(URI.create(nextNode.asText()));
-                case "predicates" -> routeDefinition.setPredicates(parseDefinition(nextNode, PredicateDefinition.class));
-                case "filters" -> routeDefinition.setFilters(parseDefinition(nextNode, FilterDefinition.class));
+                case "predicates" -> routeDefinition.setPredicates(parseDefinition(mapper, nextNode, PredicateDefinition.class));
+                case "filters" -> routeDefinition.setFilters(parseDefinition(mapper, nextNode, FilterDefinition.class));
                 default -> {}
             }
 
@@ -103,7 +103,7 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
         return routeDefinition;
     }
 
-    private <T> List<T> parseDefinition(JsonNode jsonNode, Class<T> clazz) {
+    private <T> List<T> parseDefinition(ObjectMapper mapper, JsonNode jsonNode, Class<T> clazz) {
         if (!jsonNode.isArray()) {
             throw new RuntimeException();
         }
@@ -112,7 +112,7 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
         jsonNode.elements().forEachRemaining(child -> {
             Object o;
             if (clazz.equals(PredicateDefinition.class)) {
-                o = parsePredicate(child);
+                o = parsePredicate(mapper, child);
             } else if(clazz.equals(FilterDefinition.class)) {
                 o = parseFilter(child);
             } else {
@@ -123,8 +123,8 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
         return re;
     }
 
-    private PredicateDefinition parsePredicate(JsonNode jsonNode) {
-        return PredicateDefinitionDeserializer.parse(jsonNode);
+    private PredicateDefinition parsePredicate(ObjectMapper mapper, JsonNode jsonNode) {
+        return PredicateDefinitionDeserializer.parse(mapper, jsonNode);
     }
 
     private FilterDefinition parseFilter(JsonNode jsonNode) {

@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.model.predicateDefinition;
 
+import com.alibaba.nacos.shaded.com.google.common.collect.Sets;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -21,20 +22,20 @@ import java.util.Set;
 @Getter
 public class PathPredicateDefinition extends PredicateDefinition {
 
-    private final Set<String> pathMatcherSet;
+    private final Set<String> paths;
 
-    public PathPredicateDefinition(@NotNull Set<String> pathMatcherSet) {
+    public PathPredicateDefinition(@NotNull String... paths) {
         super.setName("Path");
-        this.pathMatcherSet = pathMatcherSet;
+        this.paths = Sets.newHashSet(paths);
         Map<String, String> args = super.getArgs();
         int i = 0;
-        for (String pathMatcher : pathMatcherSet) {
+        for (String pathMatcher : paths) {
             args.put(NameUtils.generateName(i++), pathMatcher);
         }
     }
 
     public String toYml() {
-        return super.getName() + "=" + String.join(",", this.pathMatcherSet);
+        return super.getName() + "=" + String.join(",", this.paths);
     }
 
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>权限管理</title>
     <!--通用js配置 axios http-->
-    <th:block th:replace="template::commonJs"></th:block>
+    <th:block th:replace="~{template::commonJs}"></th:block>
     <!--mock test-->
 <!--    <script src="https://cdn.bootcdn.net/ajax/libs/Mock.js/1.0.0/mock-min.js"></script>-->
 </head>
@@ -212,7 +212,7 @@
             return {
                 zhCN,
                 dateZhCN,
-                rowKey: (row) => row.index,
+                rowKey: (row) => row.id,
                 tableAddModal: ref(false),
                 addingData: ref({}),
                 tableEditModal: ref(false),

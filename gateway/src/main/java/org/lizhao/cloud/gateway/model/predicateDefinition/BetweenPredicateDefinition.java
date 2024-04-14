@@ -6,8 +6,6 @@ import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,12 +20,13 @@ import java.util.Map;
 @Getter
 public class BetweenPredicateDefinition extends PredicateDefinition {
 
-    private final List<ZonedDateTime> timeList = new ArrayList<>(2);
+    private final ZonedDateTime startTime;
+    private final ZonedDateTime endTime;
 
     public BetweenPredicateDefinition(@NotNull ZonedDateTime startTime, @NotNull ZonedDateTime endTime) {
         super.setName("Between");
-        this.timeList.add(startTime);
-        this.timeList.add(endTime);
+        this.startTime = startTime;
+        this.endTime = endTime;
         Map<String, String> args = super.getArgs();
         args.put(NameUtils.generateName(0), startTime.toString());
         args.put(NameUtils.generateName(1), endTime.toString());
@@ -39,9 +38,9 @@ public class BetweenPredicateDefinition extends PredicateDefinition {
     public String toYml() {
         return super.getName() +
                 "=" +
-                this.timeList.get(0).toString() +
+                this.startTime.toString() +
                 ", " +
-                this.timeList.get(1).toString();
+                this.endTime.toString();
     }
 
 }

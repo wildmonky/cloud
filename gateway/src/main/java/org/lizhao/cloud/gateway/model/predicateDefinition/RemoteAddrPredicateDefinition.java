@@ -29,7 +29,8 @@ import org.springframework.cloud.gateway.support.ipresolver.XForwardedRemoteAddr
 @Getter
 public class RemoteAddrPredicateDefinition extends PredicateDefinition {
 
-    private final String remoteAddr;// 192.168.10.20/24
+    // 192.168.10.20/24
+    private final String remoteAddr;
 
     public RemoteAddrPredicateDefinition(@NotNull String remoteAddr) {
         super.setName("RemoteAddr");

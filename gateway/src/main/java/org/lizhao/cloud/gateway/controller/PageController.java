@@ -83,4 +83,10 @@ public class PageController {
         return "/management/group";
     }
 
+    @Operation(summary = "项目")
+    @GetMapping("/project")
+    public String project() {
+        return "/management/project";
+    }
+
 }

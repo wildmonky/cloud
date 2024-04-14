@@ -75,9 +75,9 @@ public class RouteController {
      */
     @Operation(summary = "删除路由")
     @GetMapping(path = "/remove", produces = "text/plain")
-    public Mono<ServerResponse> removeRouteList(List<RouteDefinition> routeDefinitionList) {
-        routeServiceImpl.batchRemove(routeDefinitionList);
-        return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功");
+    public Mono<ServerResponse> removeRouteList(String routeDefinitionIds) {
+        return routeServiceImpl.remove(routeDefinitionIds)
+                .then(ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功"));
     }
 
 }

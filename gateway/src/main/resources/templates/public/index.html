@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>主页</title>
     <!--通用js配置 axios http-->
-    <th:block th:replace="template::commonJs"></th:block>
+    <th:block th:replace="~{template::commonJs}"></th:block>
 </head>
 <body>
 <div id="app">
@@ -110,6 +110,19 @@
                 "权限管理"
             ),
             key: "authority-manage"
+            // disabled: true,
+            // icon: renderIcon(BookIcon)
+        },
+        {
+            label: () => h("a",
+                {
+                    href: "./project",
+                    target: "content_frame",
+                    rel: "noopenner noreferrer"
+                },
+                "项目管理"
+            ),
+            key: "project-manage"
             // disabled: true,
             // icon: renderIcon(BookIcon)
         }

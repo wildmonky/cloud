@@ -71,7 +71,7 @@ class RouteControllerTest {
         HashMap<String, String> map = new HashMap<>();
         map.put("Path", "/index");
         predicateDefinition.setArgs(map);
-        PathPredicateDefinition pathPredicate = new PathPredicateDefinition(Sets.newHashSet("/**"));
+        PathPredicateDefinition pathPredicate = new PathPredicateDefinition("/**");
         routeDefinition.setPredicates(Collections.singletonList(pathPredicate));
 
         BDDMockito.given(routeServiceImpl.save(Mono.just(routeDefinition)))

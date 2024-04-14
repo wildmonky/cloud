@@ -1,5 +1,6 @@
 package org.lizhao.cloud.gateway.model.predicateDefinition;
 
+import com.alibaba.nacos.shaded.com.google.common.collect.Sets;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,9 @@ public class XForwardedRemoteAddrPredicateDefinition extends PredicateDefinition
 
     private final Set<String> xForwardedRemoteAddrSet;
 
-    public XForwardedRemoteAddrPredicateDefinition(@NotNull Set<String> xForwardedRemoteAddrSet) {
+    public XForwardedRemoteAddrPredicateDefinition(@NotNull String... xForwardedRemoteAddrSet) {
         super.setName("XForwardedRemoteAddr");
-        this.xForwardedRemoteAddrSet = xForwardedRemoteAddrSet;
+        this.xForwardedRemoteAddrSet = Sets.newHashSet(xForwardedRemoteAddrSet);
         int i = 0;
         for (String xForwardedRemoteAddr : xForwardedRemoteAddrSet) {
             super.getArgs().put(NameUtils.generateName(i++), xForwardedRemoteAddr);

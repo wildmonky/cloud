@@ -35,7 +35,7 @@ public class PredicateDefinitionDecoder extends AbstractDecoder<PredicateDefinit
             dataBufferFlux.handle((dataBuffer, sink) -> {
                 try {
                     JsonNode node = mapper.readTree(dataBuffer.asInputStream());
-                    sink.next(PredicateDefinitionDeserializer.parse(node));
+                    sink.next(PredicateDefinitionDeserializer.parse(mapper, node));
                 } catch (IOException e) {
                     sink.error(new RuntimeException(e));
                 }

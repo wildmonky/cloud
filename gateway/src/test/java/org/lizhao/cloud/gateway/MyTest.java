@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.model.Node;
-import org.lizhao.base.model.TreeNode;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
+import org.lizhao.cloud.gateway.model.predicateDefinition.PathPredicateDefinition;
+import org.lizhao.cloud.gateway.utils.json.deserializer.RouteDefinitionDeserializer;
+import org.springframework.cloud.gateway.route.RouteDefinition;
+import org.springframework.data.redis.util.ByteUtils;
 import org.springframework.util.AntPathMatcher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,24 +107,7 @@ public class MyTest {
 //        System.out.println(map);
     }
 
-    @Test
-    public void fluxTest() {
-        Flux<String> flux = Flux.create(fluxSink -> {
 
-            fluxSink.next("ssss");
-            fluxSink.next("hhhh");
-
-            fluxSink.complete();
-        });
-
-        flux.concatMap(s -> {
-            System.out.println(s);
-            return Mono.just(s);
-        })
-                .hasElements()
-                .subscribe(System.out::println);
-
-    }
 
     @Test
     public void nodeTest() throws JsonProcessingException {
@@ -157,6 +142,44 @@ public class MyTest {
 //        })
 
         System.out.println(om.writeValueAsString(node));
+
+    }
+
+
+    @Test
+    public void routeDefinitionJsonTest() throws IOException {
+        ObjectMapper om = new ObjectMapper();
+        SimpleModule sm = new SimpleModule();
+        sm.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
+        om.registerModule(sm);
+
+        RouteDefinition rd = new RouteDefinition();
+        rd.setId("test");
+        rd.setUri(URI.create("https://www.baidu.com"));
+        PathPredicateDefinition predicate = new PathPredicateDefinition("/hhh");
+        rd.setPredicates(Collections.singletonList(predicate));
+        String s = "{" +
+                        "\"id\":\"test\"," +
+                        "\"predicates\":[" +
+                            "{" +
+                                "\"name\":\"Path\"," +
+                                "\"args\":{" +
+                                    "\"_genkey_0\":\"/hhh\"" +
+                                "}," +
+                                "\"paths\":[\"/hhh\"]" +
+                            "}" +
+                        "]," +
+                        "\"filters\":[]," +
+                        "\"uri\":\"https://www.baidu.com\"," +
+                        "\"metadata\":{}," +
+                        "\"order\":0" +
+                   "}";
+
+        byte[] bytes = s.getBytes();
+        RouteDefinition definition = om.readValue(bytes, 0, bytes.length, RouteDefinition.class);
+        System.out.println(definition);
+//        RouteDefinition routeDefinition = om.readValue("{\"id\":\"test\",\"predicates\":[{\"name\":\"Path\",\"args\":{\"_genkey_0\":\"/hhh\"},\"paths\":[\"/hhh\"]}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\":0}", RouteDefinition.class);
+//        System.out.println(routeDefinition);
 
     }
 

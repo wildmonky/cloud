@@ -5,17 +5,17 @@ spring:
   cloud:
     nacos:
       # nacos 服务发现 and 配置中心
-      server-addr: 106.52.188.209:8848
-      username: lizhao # nacos中注册的用户名，注意赋予角色权限
-      password: 19960214 # nacos中注册的用户lizhao的密码
+      server-addr: @maven.nacos.server@
+      username: @maven.nacos.username@ # nacos中注册的用户名，注意赋予角色权限
+      password: @maven.nacos.password@ # nacos中注册的用户lizhao的密码
       config:
         enabled: false
-        namespace: dev # nacos中的namespace-id
-        group: gateway
+        namespace: @maven.nacos.config.namespace@ # nacos中的namespace-id
+        group: @maven.nacos.config.group@
         file-extension: yml
         #配置文件前缀，默认spring.application.name
         #prefix:
       discovery:
         enabled: true
-        namespace: dev # nacos中的namespace-id
-        group: gateway
+        namespace: @maven.nacos.discovery.namespace@ # nacos中的namespace-id
+        group: @maven.nacos.discoveru.group@

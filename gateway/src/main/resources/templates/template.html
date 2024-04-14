@@ -6,13 +6,13 @@
     <th:block th:fragment="commonJs">
         <link rel="shortcut icon" href="/static/favicon.ico" />
         <!--引入vue3-->
-        <script src="/static/vue/vue@3.4.21.global.js"></script>
+        <script th:src="@{/static/vue/vue@3.4.21.global{env}.js?{version}(env=${@environment.matchesProfiles('prod')} ? '.prod': '',version=${version})}"></script>
         <!--引入naive UI@3.5.13，依赖vue3-->
-        <script src="/static/naive-ui/naive-ui@2.38.1.js"></script>
+        <script th:src="@{/static/naive-ui/naive-ui@2.38.1{env}.js?{version}(env=${@environment.matchesProfiles('prod')} ? '.prod': '',version=${version})}"></script>
         <!--axios-->
-        <script th:src="@{/static/axios@1.6.8.js?{version}(version=${version})}"></script>
+        <script th:src="@{/static/axios@1.6.8{env}.js?{version}(env=${@environment.matchesProfiles('prod')} ? '.min': '',version=${version})}"></script>
         <!--Cookies-->
-        <script th:src="@{/static/js.cookie@3.0.5.js?{version}(version=${version})}"></script>
+        <script th:src="@{/static/js.cookie@3.0.5{env}.js?{version}(env=${@environment.matchesProfiles('prod')} ? '.min': '',version=${version})}"></script>
         <!--axios 全局配置-->
         <script>
             //axios 初始化

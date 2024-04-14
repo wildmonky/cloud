@@ -101,10 +101,9 @@ public class RouteServiceImpl extends RouteService {
      * @date 2022/6/5 19:40
      * @param routeDefinitionList 要删除的routeDefinition列表
      */
-    public void batchRemove(List<RouteDefinition> routeDefinitionList) {
-        routeDefinitionList.forEach(routeDefinition ->
-                redisRouteDefinitionRepository.delete(Mono.just(routeDefinition.getId())).subscribe());
-        this.refresh();
+    public Mono<Void> remove(String routeDefinitionIds) {
+        return redisRouteDefinitionRepository.delete(Mono.just(routeDefinitionIds))
+                .doOnSuccess(id -> this.refresh());
     }
 
 }

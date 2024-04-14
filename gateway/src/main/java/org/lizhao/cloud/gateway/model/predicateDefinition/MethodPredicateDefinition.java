@@ -6,6 +6,8 @@ import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.http.HttpMethod;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,20 +25,20 @@ import java.util.stream.Collectors;
 @Getter
 public class MethodPredicateDefinition extends PredicateDefinition {
 
-    private final Set<HttpMethod> httpMethodSet;
+    private final Set<HttpMethod> httpMethods;
 
-    public MethodPredicateDefinition(@NotNull Set<String> httpMethodSet) {
+    public MethodPredicateDefinition(@NotNull String... httpMethods) {
         super.setName("Method");
-        this.httpMethodSet = httpMethodSet.stream().map(e -> HttpMethod.valueOf(e.toUpperCase())).collect(Collectors.toSet());
+        this.httpMethods = Arrays.stream(httpMethods).map(e -> HttpMethod.valueOf(e.toUpperCase())).collect(Collectors.toSet());
         Map<String, String> args = super.getArgs();
         int i = 0;
-        for (String method : httpMethodSet) {
+        for (String method : httpMethods) {
             args.put(NameUtils.generateName(i++), method);
         }
     }
 
     public String toYml() {
-        Set<String> methodNameSet = this.httpMethodSet.stream().map(HttpMethod::name).collect(Collectors.toSet());
+        Set<String> methodNameSet = this.httpMethods.stream().map(HttpMethod::name).collect(Collectors.toSet());
         return super.getName() + "=" + String.join(",", methodNameSet);
     }
 

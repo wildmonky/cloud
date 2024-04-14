@@ -3,7 +3,6 @@ package org.lizhao.cloud.gateway.configurer;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 /**
  * Description 网关配置类
  *
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 0.0.1-SNAPSHOT
  */
 @Configuration
-public class GatewayConfigurer {
+public class GatewayConfigurer  {
 
 //    /**
 //     * Fluent Java API 定义路由
