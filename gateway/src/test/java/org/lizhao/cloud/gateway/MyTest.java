@@ -10,9 +10,10 @@ import org.lizhao.base.entity.user.User;
 import org.lizhao.base.model.Node;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.lizhao.cloud.gateway.model.predicateDefinition.PathPredicateDefinition;
-import org.lizhao.cloud.gateway.utils.json.deserializer.RouteDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.deserializer.RouteDefinitionDeserializer;
 import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.data.redis.util.ByteUtils;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
@@ -181,6 +182,15 @@ public class MyTest {
 //        RouteDefinition routeDefinition = om.readValue("{\"id\":\"test\",\"predicates\":[{\"name\":\"Path\",\"args\":{\"_genkey_0\":\"/hhh\"},\"paths\":[\"/hhh\"]}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\":0}", RouteDefinition.class);
 //        System.out.println(routeDefinition);
 
+    }
+
+    @Test
+    public void passwordEncoder() {
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        System.out.println(passwordEncoder.encode("123456"));
+        System.out.println(passwordEncoder.matches("123456", "{bcrypt}$2a$10$.QZw0bT25ZJaNPBBE4hhg.FjMPKiZyc8tKk2w.zblY5Y3DnLPo.L2"));
+        System.out.println(passwordEncoder.matches("123456", "{bcrypt}$2a$10$Np4tysrdi2rH02qxO.5gtOPMOpFgfKYSlIxmpgGj5gCzYmPdq1SWe"));
+//        System.out.println(passwordEncoder.matches("123456", "$2a$10$BQ/279bMtZVzrVLvOMHMJ.LasSVK4U3gr3Brtdb/lei5Y/Gjv44Ye"));
     }
 
 }

@@ -1,21 +1,17 @@
 package org.lizhao.cloud.gateway.configurer;
 
 import jakarta.annotation.Resource;
-import org.lizhao.cloud.gateway.handler.UserHandler;
-import org.lizhao.cloud.gateway.repository.*;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
 import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
-import org.lizhao.cloud.gateway.security.userdetailsservice.DBReactiveUserDetailsServiceImpl;
 import org.lizhao.cloud.gateway.security.authentication.handler.LogAndRedirectAuthenticationFailureHandler;
 import org.lizhao.cloud.gateway.security.authentication.handler.CookieTokenRedirectAuthenticationSuccessHandler;
 import org.lizhao.cloud.gateway.security.csrf.CsrfServerAccessDeniedHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutSuccessHandler;
 import org.lizhao.cloud.gateway.security.userdetailsservice.DelegateReactiveUserDetailsServiceImpl;
-import org.springframework.beans.factory.ObjectProvider;
+import org.lizhao.cloud.gateway.security.userdetailsservice.WebClientUserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -46,6 +42,7 @@ import org.springframework.security.web.server.header.XFrameOptionsServerHttpHea
 import org.springframework.security.web.server.ui.LoginPageGeneratingWebFilter;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,7 +121,6 @@ public class WebFluxSecurityConfigurer {
                                                             ServerAuthenticationEntryPoint redirectServerAuthenticationEntryPoint
     ) {
         // 注意 登录地址、注册地址都不需要csrf、auth
-
         http.headers(headerSpec ->
                     // 允许同域名下的 frame
                     headerSpec.frameOptions(frameOptionsSpec ->
@@ -195,16 +191,8 @@ public class WebFluxSecurityConfigurer {
     }
 
     @Bean
-    public DBReactiveUserDetailsServiceImpl reactiveDBUserDetailsService(SecurityProperties properties,
-                                                                     ObjectProvider<PasswordEncoder> passwordEncoder,
-                                                                     UserRepository userRepository,
-                                                                     UserHandler userHandler
-    ) {
-        return new DBReactiveUserDetailsServiceImpl(properties,
-                passwordEncoder,
-                userRepository,
-                userHandler
-        );
+    public WebClientUserDetailsServiceImpl webClientUserDetailsService(WebClient userServiceWebClient) {
+        return new WebClientUserDetailsServiceImpl(userServiceWebClient);
     }
 
 
@@ -226,8 +214,8 @@ public class WebFluxSecurityConfigurer {
 
     @Bean
     @Primary
-    public DelegateReactiveUserDetailsServiceImpl reactiveUserDetailsService(DBReactiveUserDetailsServiceImpl dbReactiveUserDetailsService) {
-        return new DelegateReactiveUserDetailsServiceImpl(dbReactiveUserDetailsService);
+    public DelegateReactiveUserDetailsServiceImpl reactiveUserDetailsService(WebClientUserDetailsServiceImpl webClientUserDetailsServiceImpl) {
+        return new DelegateReactiveUserDetailsServiceImpl(webClientUserDetailsServiceImpl);
     }
 
 }

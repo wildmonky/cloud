@@ -3,6 +3,7 @@ package org.lizhao.cloud.gateway.security.authentication;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 /**

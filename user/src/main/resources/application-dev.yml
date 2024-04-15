@@ -11,18 +11,28 @@ spring:
     #      hystrix:
     #        enabled: true
     #
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true
-    username: dev
-    password: 19960214
-  data:
-    mongodb:
-      host: 106.52.188.209
-      port: 27017
-      database: gateway
-      username: gateway
-      password: 19960214
+  r2dbc:
+    #    username: gateway
+    #    password: 19960214
+    url: r2dbc:postgresql://gateway_dev_01:19960214@106.52.188.209:5432/gateway
+    properties:
+      currentSchema: gateway_dev # 设置 schema
+    pool:
+      validation-query: select 1=1 from "user"
+      enabled: true
+      initial-size: 10
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+#    username: dev
+#    password: 19960214
+#  data:
+#    mongodb:
+#      host: 106.52.188.209
+#      port: 27017
+#      database: gateway
+#      username: gateway
+#      password: 19960214
 #    flyway:
 #      user: dev
 #      password: 19960214

@@ -23,20 +23,58 @@
             <version>${cloud.version}</version>
         </dependency>
 
+        <!--开启Spring Cloud 应用程序启动时加载bootstrap配置文件-->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <version>3.1.4</version>
+        </dependency>
+
+        <!--cloud服务注册与发现中心 nacos-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <!--cloud服务注册与发现中心 nacos-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-relational</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <!--api 管理-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jdbc</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
         </dependency>
+        <!--响应式postgresql数据库-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.data</groupId>-->
+<!--            <artifactId>spring-data-commons</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.data</groupId>-->
+<!--            <artifactId>spring-data-relational</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.data</groupId>-->
+<!--            <artifactId>spring-data-jdbc</artifactId>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
@@ -93,7 +131,58 @@
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <!--注意此处必须要配置 才能被访问到 图标  解决经过maven的filter，会破坏font文件的二进制文件格式，导致前台解析出错
+                解决办法：替换资源文件参数时，先将 替换处理后会被破坏的文件排除，在之后再重新获取被排除的文件
+            -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--使用maven属性替换资源文件中的参数-->
+                <filtering>true</filtering>
+                <!--资源文件打包到了父项目下。。。。-->
+                <!--                <targetPath>${project.build.outputDirectory}</targetPath>-->
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <excludes>
+                    <exclude>plugins</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>plugins/**</include>
+                    <include>static/**</include>
+                    <include>templates/**</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <!--使用maven属性替换测试资源文件中的参数-->
+                <filtering>true</filtering>
+                <!--                <targetPath>${project.build.testOutputDirectory}</targetPath>-->
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!--                <version>3.10.1</version>-->
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

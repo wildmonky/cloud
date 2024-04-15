@@ -1,7 +1,7 @@
 #引导配置文件
 spring:
   application:
-    name: cloud-gateway
+    name: gateway
   cloud:
     nacos:
       # nacos 服务发现 and 配置中心
@@ -18,4 +18,4 @@ spring:
       discovery:
         enabled: true
         namespace: @maven.nacos.discovery.namespace@ # nacos中的namespace-id
-        group: @maven.nacos.discoveru.group@
+        group: @maven.nacos.discovery.group@

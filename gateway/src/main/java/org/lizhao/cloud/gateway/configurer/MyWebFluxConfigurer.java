@@ -1,18 +1,12 @@
 package org.lizhao.cloud.gateway.configurer;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.validation.constraints.NotNull;
-import org.lizhao.base.entity.authority.Authority;
-import org.lizhao.base.entity.authority.Role;
-import org.lizhao.base.entity.user.Group;
-import org.lizhao.base.entity.user.User;
-import org.lizhao.cloud.gateway.utils.json.deserializer.RouteDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.deserializer.RouteDefinitionDeserializer;
 import org.lizhao.cloud.web.react.handler.GlobalResponseBodyHandler;
-import org.lizhao.cloud.web.react.json.decoder.RouteDefinitionDecoder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +17,6 @@ import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -65,62 +58,6 @@ public class MyWebFluxConfigurer implements WebFluxConfigurer {
                 simpleModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-//                simpleModule.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
-//                simpleModule.addDeserializer(PredicateDefinition.class, new PredicateDefinitionDeserializer());
-//                simpleModule.addDeserializer(FilterDefinition.class, new FilterDefinitionDeserializer());
-                // json 数据格式 key为对象时
-                simpleModule.addKeySerializer(User.class, new JsonSerializer<>() {
-                    @Override
-                    public void serialize(User value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                        gen.writeFieldName(objectMapper.writeValueAsString(value));
-                    }
-                });
-                simpleModule.addKeyDeserializer(User.class, new KeyDeserializer() {
-                    @Override
-                    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
-                        return objectMapper.readValue(key, User.class);
-                    }
-                });
-
-                simpleModule.addKeySerializer(Group.class, new JsonSerializer<>() {
-                    @Override
-                    public void serialize(Group value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                        gen.writeFieldName(objectMapper.writeValueAsString(value));
-                    }
-                });
-                simpleModule.addKeyDeserializer(Group.class, new KeyDeserializer() {
-                    @Override
-                    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
-                        return objectMapper.readValue(key, Group.class);
-                    }
-                });
-
-                simpleModule.addKeySerializer(Role.class, new JsonSerializer<>() {
-                    @Override
-                    public void serialize(Role value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                        gen.writeFieldName(objectMapper.writeValueAsString(value));
-                    }
-                });
-                simpleModule.addKeyDeserializer(Role.class, new KeyDeserializer() {
-                    @Override
-                    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
-                        return objectMapper.readValue(key, Role.class);
-                    }
-                });
-
-                simpleModule.addKeySerializer(Authority.class, new JsonSerializer<>() {
-                    @Override
-                    public void serialize(Authority value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                        gen.writeFieldName(objectMapper.writeValueAsString(value));
-                    }
-                });
-                simpleModule.addKeyDeserializer(Authority.class, new KeyDeserializer() {
-                    @Override
-                    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
-                        return objectMapper.readValue(key, Authority.class);
-                    }
-                });
-
                 // route definition
 //                simpleModule.addSerializer(RouteDefinition.class, new JsonSerializer<RouteDefinition>() {
 //                    @Override
@@ -128,7 +65,6 @@ public class MyWebFluxConfigurer implements WebFluxConfigurer {
 //                        gen.writeString(value.to);
 //                    }
 //                });
-
                 simpleModule.addDeserializer(RouteDefinition.class, new RouteDefinitionDeserializer());
 
                 objectMapper.registerModules(simpleModule);

@@ -6,7 +6,6 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.codec.HttpMessageWriter;
-import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.HandlerResult;
@@ -57,16 +56,15 @@ public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
                 returnType.hasMethodAnnotation(ResponseBody.class));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Mono<Void> handleResult(ServerWebExchange exchange, HandlerResult result) {
         Object body = result.getReturnValue();
         if (body instanceof Mono) {
-            body = ((Mono<Object>) body)
+            body = ((Mono<?>) body)
                     .map(o -> wrapResponseBody(o, exchange))
                     .defaultIfEmpty(ResponseBodyModel.success(null));
         }else if (body instanceof Flux) {
-            body = ((Flux<Object>) body)
+            body = ((Flux<?>) body)
                     .collectList()
                     .map(o -> wrapResponseBody(o, exchange))
                     .defaultIfEmpty(ResponseBodyModel.success(null));

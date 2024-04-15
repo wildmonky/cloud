@@ -2,12 +2,6 @@ package org.lizhao.cloud.web.react.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.model.ResponseBodyModel;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 /**

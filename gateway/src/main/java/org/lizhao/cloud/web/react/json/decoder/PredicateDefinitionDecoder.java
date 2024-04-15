@@ -2,7 +2,7 @@ package org.lizhao.cloud.web.react.json.decoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.lizhao.cloud.gateway.utils.json.deserializer.PredicateDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.deserializer.PredicateDefinitionDeserializer;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.core.ResolvableType;
