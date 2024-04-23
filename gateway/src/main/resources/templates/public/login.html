@@ -80,16 +80,16 @@
                 passwordInput.name = "password";
                 passwordInput.value = this.user.password;
                 // _csrf header
-                let csrf = document.createElement("input");
-                csrf.name = '[[${xorCsrfToken.parameterName}]]';
-                csrf.value = '[[${xorCsrfToken.token}]]';
-                csrf.style.display = 'none';
-                form.appendChild(csrf);
+                // let csrf = document.createElement("input");
+                // csrf.name = '[[${xorCsrfToken.parameterName}]]';
+                // csrf.value = '[[${xorCsrfToken.token}]]';
+                // csrf.style.display = 'none';
+                // form.appendChild(csrf);
                 form.appendChild(usernameInput);
                 form.appendChild(passwordInput);
                 document.body.appendChild(form)
                 form.method = 'post';
-                form.action = '/login';
+                form.action = '/login?redirectPath=${redirectPath}';
                 form.submit();
                 document.body.removeChild(form);
             }

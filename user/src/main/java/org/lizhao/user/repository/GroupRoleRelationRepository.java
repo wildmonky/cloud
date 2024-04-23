@@ -21,4 +21,6 @@ public interface GroupRoleRelationRepository extends R2dbcRepository<GroupRoleRe
      */
     Mono<GroupRoleRelation> findByGroupIdAndRoleId(String groupId, String roleId);
 
+    Mono<Boolean> existsAllByRoleId(String roleId);
+
 }

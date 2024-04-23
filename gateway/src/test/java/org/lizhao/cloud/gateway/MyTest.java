@@ -1,16 +1,26 @@
 package org.lizhao.cloud.gateway;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.lizhao.base.entity.authority.Authority;
+import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.model.Node;
+import org.lizhao.base.model.UserInfo;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
+import org.lizhao.cloud.gateway.json.userModel.UserInfoSerializer;
 import org.lizhao.cloud.gateway.model.predicateDefinition.PathPredicateDefinition;
-import org.lizhao.cloud.gateway.json.deserializer.RouteDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.definition.RouteDefinitionDeserializer;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +28,10 @@ import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -146,6 +160,43 @@ public class MyTest {
 
     }
 
+    @Test
+    public void DateTimeFormatterTest() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule simpleModule = new SimpleModule();
+
+        final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+//        simpleModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormat));
+        simpleModule.addDeserializer(LocalDateTime.class, new JsonDeserializer<>() {
+            @Override
+            public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+                String text = p.getText();
+                if (StringUtils.isNotBlank(text)) {
+                    ZonedDateTime zonedDateTime = ZonedDateTime.parse(text.trim(), dateTimeFormat);
+                    return zonedDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                }
+                return null;
+            }
+        });
+        simpleModule.addSerializer(LocalDateTime.class, new JsonSerializer<>() {
+            @Override
+            public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                ZonedDateTime zonedDateTime = value.atZone(ZoneId.systemDefault());
+                gen.writeString(zonedDateTime.format(dateTimeFormat));
+            }
+        });
+        objectMapper.registerModule(simpleModule);
+        try{
+            String s = objectMapper.writeValueAsString(LocalDateTime.now());
+            System.out.println(s);
+            String ss ="{\"groups\":null,\"roles\":null,\"authorities\":[],\"createUseId\":null,\"createUseName\":null,\"createTime\":\"2024-03-25T20:52:11.371434+08:00\",\"updateUseId\":\"141441121\",\"updateUseName\":\"lizhao\",\"updateTime\":\"2024-03-26T17:17:50.675977+08:00\",\"id\":\"28785986637824\",\"phone\":\"18666496619\",\"name\":\"lizhao\",\"password\":\"{bcrypt}$2a$10$4gyDA8lBCyZq7KQPKbRG4uaMB5R1HV2ZfokITKH9sFtRAUlKaF3Au\",\"status\":1,\"originAuthorities\":null,\"token\":null,\"grantedAuthorities\":[],\"enabled\":true,\"username\":\"lizhao\",\"accountNonExpired\":true,\"credentialsNonExpired\":true,\"accountNonLocked\":true}";
+            System.out.println(objectMapper.readValue(ss, UserInfo.class));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
 
     @Test
     public void routeDefinitionJsonTest() throws IOException {
@@ -191,6 +242,45 @@ public class MyTest {
         System.out.println(passwordEncoder.matches("123456", "{bcrypt}$2a$10$.QZw0bT25ZJaNPBBE4hhg.FjMPKiZyc8tKk2w.zblY5Y3DnLPo.L2"));
         System.out.println(passwordEncoder.matches("123456", "{bcrypt}$2a$10$Np4tysrdi2rH02qxO.5gtOPMOpFgfKYSlIxmpgGj5gCzYmPdq1SWe"));
 //        System.out.println(passwordEncoder.matches("123456", "$2a$10$BQ/279bMtZVzrVLvOMHMJ.LasSVK4U3gr3Brtdb/lei5Y/Gjv44Ye"));
+    }
+
+    @Test
+    public void domainTest() {
+        String[] urls = new String[]{"https://www.badiu.com/sss", "http://localhost:8083/test"};
+        Pattern p = Pattern.compile("(?<=https?://)([\\w.-]+)(?=[^\\w.-]|$)",Pattern.CASE_INSENSITIVE);
+        for (String url : urls) {
+            Matcher matcher = p.matcher(url);
+            if (matcher.find()) {
+                System.out.println(matcher.group());
+            }
+        }
+    }
+
+    @Test
+    public void userModelSerializerTest() throws JsonProcessingException {
+        Group group = new Group();
+        group.setName("组");
+
+        Role role = new Role();
+        role.setName("角色");
+
+        Authority authority = new Authority();
+        authority.setName("权限");
+
+        UserInfo userModel = new UserInfo();
+        userModel.setId("测试");
+        userModel.setCreateTime(LocalDateTime.now());
+//        userModel.setGroups(Collections.singleton(group));
+        userModel.setRoles(Collections.singleton(role));
+        userModel.setOriginAuthorities(Collections.singleton(authority));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JavaTimeModule module = new JavaTimeModule();
+        module.addSerializer(UserInfo.class, new UserInfoSerializer());
+        objectMapper.registerModule(module);
+
+        System.out.println(objectMapper.writeValueAsString(userModel));
+
     }
 
 }

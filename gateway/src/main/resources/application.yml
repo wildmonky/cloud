@@ -7,7 +7,7 @@ server:
     max-keep-alive-requests: 10000
     connection-timeout: 30
 
-# gateway 配置
+# actuator 配置
 management:
   endpoint:
     mappings:
@@ -23,10 +23,40 @@ management:
           - 127.0.0.1
       base-path: /actuator # 上下文路径
       exposure:
-        include:
-         - gateway # 暴露所有的endPoint
+        include: "*"
+#         - gateway # 暴露所有的endPoint
+#         - health
 
 spring:
+  boot:
+    admin:
+      client:
+        enabled: false
+        url:
+          - http://localhost:8083
+  cloud:
+    # 网关
+    gateway:
+      enabled: true
+      # 跨域配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+      discovery:
+        locator:
+          enabled: false
+      redis:
+        enabled: true # org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
+      redis-route-definition-repository:
+        enabled: true # org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5s
   web:
     resources:
       static-locations:
@@ -48,16 +78,6 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-  cloud:
-    gateway:
-      enabled: true
-      redis:
-        enabled: true # org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
-      redis-route-definition-repository:
-        enabled: true # org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
-      httpclient:
-        connect-timeout: 3000
-        response-timeout: 5s
   #kafka 配置
   kafka:
     client-id: ${spring.application.name}

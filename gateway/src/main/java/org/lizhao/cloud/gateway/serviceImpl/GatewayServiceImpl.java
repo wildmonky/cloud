@@ -1,14 +1,21 @@
 package org.lizhao.cloud.gateway.serviceImpl;
 
 import jakarta.annotation.Resource;
+import org.lizhao.base.entity.user.User;
+import org.lizhao.base.model.UserInfo;
 import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
 import org.lizhao.cloud.gateway.security.event.UserOfflineEvent;
+import org.lizhao.cloud.gateway.security.userdetailsservice.WebClientUserDetailsServiceImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
 
 /**
  * Description 用户服务 查找、下线
@@ -19,11 +26,13 @@ import reactor.core.publisher.Mono;
  * @since 0.0.1-SNAPSHOT
  */
 @Service
-public class UserServiceImpl implements ApplicationEventPublisherAware {
+public class GatewayServiceImpl implements ApplicationEventPublisherAware {
 
     private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     private RedisSecurityContextRepository repository;
+    @Resource
+    private WebClientUserDetailsServiceImpl webClientUserDetailsServiceImpl;
 
     /**
      * 获取在线用户
@@ -36,6 +45,15 @@ public class UserServiceImpl implements ApplicationEventPublisherAware {
     public Mono<Boolean> offline(String token) {
         applicationEventPublisher.publishEvent(new UserOfflineEvent(this));
         return repository.remove(token);
+    }
+
+    public Mono<UserInfo> currentUserDetails() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .flatMap(authentication -> {
+                    GatewayUser gatewayUser = (GatewayUser)authentication.getPrincipal();
+                    return webClientUserDetailsServiceImpl.findByUserId(gatewayUser.getId());
+                });
     }
 
     @Override

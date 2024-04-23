@@ -32,66 +32,66 @@ public class RoleController {
     @Resource
     private RoleService roleService;
 
-    @GetMapping("/searchAll")
+    @GetMapping("/all")
     public Flux<Role> searchAll() {
         return roleService.searchAll();
     }
 
-    @GetMapping("/searchTree")
+    @GetMapping("/tree")
     public Mono<List<Role>> searchTree() {
         return roleService.searchTree();
     }
 
-    @GetMapping("/searchBoundUsers")
+    @GetMapping("/user/boundUsers")
     public Flux<UserRoleModel> searchBoundUsers(String roleId) {
         return roleService.searchBoundUsers(roleId);
     }
 
-    @GetMapping("/searchUnboundUsers")
+    @GetMapping("/user/unboundUsers")
     public Flux<User> searchUnboundUsers(String roleId) {
         return roleService.searchUnboundUsers(roleId);
     }
 
-    @GetMapping("/searchBoundGroups")
+    @GetMapping("/group/boundGroups")
     public Flux<GroupRoleModel> searchBoundGroups(String roleId) {
         return roleService.searchBoundGroups(roleId);
     }
 
-    @GetMapping("/searchUnboundGroups")
+    @GetMapping("/group/unboundGroups")
     public Flux<Group> searchUnboundGroups(String roleId) {
         return roleService.searchUnboundGroups(roleId);
     }
 
-    @PostMapping("/save")
+    @PostMapping("")
     public Mono<Boolean> save(@RequestBody Role role) {
         return roleService.save(role).hasElement();
     }
 
-    @GetMapping("/remove")
-    public Mono<Void> remove(String roleId) {
-        return roleService.remove(roleId);
+    @DeleteMapping("")
+    public Mono<Void> remove(@RequestBody Role role) {
+        return roleService.remove(role);
     }
 
-    @PostMapping("/bind/to/user")
+    @PostMapping("/user")
     public Mono<Boolean> bindRoleToUser(@RequestBody Map<Role, Collection<User>> map) {
         return roleService.bindRoleToUsers(map)
                 .collectList()
                 .map(l -> l.size() == map.values().stream().map(Collection::size).count());
     }
 
-    @PostMapping("/unbind/from/user")
+    @DeleteMapping("/user")
     public Mono<Void> unbindRoleFromUser(@RequestBody UserRoleRelation relation) {
         return roleService.unbindRoleFromUser(relation);
     }
 
-    @PostMapping("/bind/to/group")
+    @PostMapping("/group")
     public Mono<Boolean> bindRoleToGroup(@RequestBody Map<Role, Collection<Group>> map) {
         return roleService.bindRoleToGroups(map)
                 .collectList()
                 .map(l -> l.size() == map.values().stream().map(Collection::size).count());
     }
 
-    @PostMapping("/unbind/from/group")
+    @DeleteMapping("/group")
     public Mono<Void> unbindRoleFromGroup(@RequestBody GroupRoleRelation relation) {
         return roleService.unbindRoleFromGroup(relation);
     }

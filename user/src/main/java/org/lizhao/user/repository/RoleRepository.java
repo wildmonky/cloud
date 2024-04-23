@@ -23,6 +23,12 @@ import reactor.core.publisher.Mono;
 public interface RoleRepository extends R2dbcRepository<Role, String> {
 
     /**
+     * @param parentId 父级角色id
+     * @return 父级角色是否存在子级角色
+     */
+    Mono<Boolean> existsAllByParentId(String parentId);
+
+    /**
      * 从根角色获取所有关联的角色节点
      * @return 所有关联的角色节点
      */

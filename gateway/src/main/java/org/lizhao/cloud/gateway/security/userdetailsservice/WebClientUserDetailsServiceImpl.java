@@ -1,14 +1,14 @@
 package org.lizhao.cloud.gateway.security.userdetailsservice;
 
-import org.lizhao.base.entity.user.User;
+import org.apache.commons.lang3.StringUtils;
 import org.lizhao.base.model.ResponseBodyModel;
+import org.lizhao.base.model.UserInfo;
+import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.Collections;
 
 /**
  * Description 从 用户服务 检索用户
@@ -28,14 +28,40 @@ public class WebClientUserDetailsServiceImpl implements ReactiveUserDetailsServi
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
+        if (StringUtils.isBlank(username)) {
+            return Mono.error(new Throwable("用户名为空"));
+        }
         return userServiceWebClient.get()
-                .uri("/user/search/" + username)
+                .uri("/user/" + username)
                 .exchangeToMono(clientResponse ->
                         clientResponse
-                                .bodyToMono(new ParameterizedTypeReference<ResponseBodyModel<User>>(){})
+                                .bodyToMono(new ParameterizedTypeReference<ResponseBodyModel<UserInfo>>(){})
                                 .map(responseBodyModel -> {
-                                    User user = responseBodyModel.getResult();
-                                    return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), Collections.emptyList());
+                                    UserInfo user = responseBodyModel.getResult();
+                                    return new GatewayUser(user);
+                                })
+                );
+    }
+
+    public Mono<UserInfo> findByUserId(String userId) {
+        if (StringUtils.isBlank(userId)) {
+            return Mono.error(new Throwable("用户Id为空"));
+        }
+        return userServiceWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/user/")
+                            .queryParam("id", userId)
+                            .build()
+                )
+                .exchangeToMono(clientResponse ->
+                        clientResponse
+                                .bodyToMono(new ParameterizedTypeReference<ResponseBodyModel<UserInfo>>(){})
+                                .handle((responseBodyModel, sink) -> {
+                                    UserInfo user = responseBodyModel.getResult();
+                                    if (user == null) {
+                                        sink.error(new RuntimeException("找不到id为" + userId + "的用户"));
+                                        return;
+                                    }
+                                    sink.next(user);
                                 })
                 );
     }

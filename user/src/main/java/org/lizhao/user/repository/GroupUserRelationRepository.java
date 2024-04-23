@@ -23,13 +23,6 @@ public interface GroupUserRelationRepository extends R2dbcRepository<GroupUserRe
     @Query("select * from group_user_relation where group_id = :groupId and user_id = :userId")
     Flux<GroupUserRelation> findByGroupIdAndUserId(String groupId, String userId);
 
-    /**
-     * 开关 关系
-     * @param relationId 关系id
-     * @return
-     */
-    @Modifying
-    @Query("update group_user_relation set valid = not valid where id = :relationId")
-    Mono<Boolean> turnRelation(String relationId);
+    Mono<Boolean> existsAllByGroupId(String groupId);
 
 }

@@ -4,6 +4,8 @@ import jakarta.annotation.Resource;
 import org.lizhao.base.entity.relation.GroupUserRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.base.model.UserInfo;
+import org.lizhao.base.utils.BaseUtils;
 import org.lizhao.user.handler.UserHandler;
 import org.lizhao.user.repository.UserRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,6 +17,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -44,6 +48,48 @@ public class UserService implements ApplicationEventPublisherAware {
         return userRepository.findByName(username);
     }
 
+    public Mono<User> searchDetailsByName(String username) {
+        return userRepository.findByName(username);
+    }
+
+    public Mono<UserInfo> searchDetailsById(String userId) {
+        return userRepository.findById(userId)
+                .switchIfEmpty(Mono.error(new RuntimeException(userId + "用户不存在")))
+                .map(user -> BaseUtils.copy(user, UserInfo.class))
+                .flatMap(this::searchDetails);
+    }
+
+    public Mono<UserInfo> searchDetails(UserInfo user) {
+        if (user == null || user.getId() == null) {
+            return Mono.error(new RuntimeException("用户不存在"));
+        }
+        return Mono.just(user)
+                .flatMap(userModel -> userHandler.userGroups(userModel.getId())
+                        .collectList()
+                        .defaultIfEmpty(Collections.emptyList())
+                        .map(groups -> {
+                            userModel.setGroups(new HashSet<>(groups));
+                            return userModel;
+                        })
+                )
+                .flatMap(userModel -> userHandler.userRoles(userModel.getId())
+                        .collectList()
+                        .defaultIfEmpty(Collections.emptyList())
+                        .map(roles -> {
+                            userModel.setRoles(new HashSet<>(roles));
+                            return userModel;
+                        })
+                )
+                .flatMap(userInfo -> userHandler.userAllAuthorities(userInfo)
+                        .collectList()
+                        .defaultIfEmpty(Collections.emptyList())
+                        .map(authorities -> {
+                            userInfo.setOriginAuthorities(new HashSet<>(authorities));
+                            return userInfo;
+                        })
+                );
+    }
+
     public Mono<User> save(User user) {
         // 密码加密
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -52,18 +98,6 @@ public class UserService implements ApplicationEventPublisherAware {
 
     public Mono<Void> remove(User user) {
         return userRepository.delete(user);
-    }
-
-    public Flux<GroupUserRelation> bindUserToGroups(Map<User, Collection<Group>> map) {
-        return userHandler.bindToGroups(map);
-    }
-
-    public Flux<GroupUserRelation> bindUsersToGroup(Map<Group, Collection<User>> map) {
-        return userHandler.bindMoreToGroup(map);
-    }
-
-    public Mono<Void> unbindFromGroup(GroupUserRelation relation) {
-        return userHandler.unbindFromGroup(relation);
     }
 
     @Override

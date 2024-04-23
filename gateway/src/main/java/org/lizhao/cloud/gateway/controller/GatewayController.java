@@ -2,8 +2,10 @@ package org.lizhao.cloud.gateway.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
+import org.lizhao.base.model.SimpleUserInfo;
+import org.lizhao.base.model.UserInfo;
 import org.lizhao.cloud.gateway.model.GatewayUser;
-import org.lizhao.cloud.gateway.serviceImpl.UserServiceImpl;
+import org.lizhao.cloud.gateway.serviceImpl.GatewayServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,12 +19,23 @@ import reactor.core.publisher.Mono;
  * @since 0.0.1-SNAPSHOT
  */
 
-@RequestMapping("/user")
+@RequestMapping("/")
 @RestController
-public class UserController {
+public class GatewayController {
 
     @Resource
-    private UserServiceImpl userService;
+    private GatewayServiceImpl userService;
+
+    /**
+     * 不返回密码
+     * @return
+     */
+    @Operation(summary = "在线用户列表")
+    @GetMapping("/current")
+    public Mono<SimpleUserInfo> current() {
+        return userService.currentUserDetails()
+                .map(UserInfo::transferToSimple);
+    }
 
     @Operation(summary = "在线用户列表")
     @PostMapping("/online")

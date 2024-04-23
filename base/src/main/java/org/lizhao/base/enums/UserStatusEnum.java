@@ -25,4 +25,14 @@ public enum UserStatusEnum {
         this.description = description;
     }
 
+    /**
+     * 检测 code 枚举元素是否匹配
+     * @param code
+     * @return true code与枚举元素的code相同；
+     *         false  code与枚举元素的code不同
+     */
+    public boolean check(int code) {
+        return this.code == code;
+    }
+
 }

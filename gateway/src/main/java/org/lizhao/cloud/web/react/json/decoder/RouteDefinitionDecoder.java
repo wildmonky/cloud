@@ -2,8 +2,8 @@ package org.lizhao.cloud.web.react.json.decoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.lizhao.cloud.gateway.json.deserializer.FilterDefinitionDeserializer;
-import org.lizhao.cloud.gateway.json.deserializer.PredicateDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.definition.FilterDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.definition.PredicateDefinitionDeserializer;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -114,7 +114,7 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
             if (clazz.equals(PredicateDefinition.class)) {
                 o = parsePredicate(mapper, child);
             } else if(clazz.equals(FilterDefinition.class)) {
-                o = parseFilter(child);
+                o = parseFilter(mapper, child);
             } else {
                 throw new RuntimeException("Definition类型异常");
             }
@@ -127,8 +127,8 @@ public class RouteDefinitionDecoder extends AbstractDecoder<RouteDefinition> {
         return PredicateDefinitionDeserializer.parse(mapper, jsonNode);
     }
 
-    private FilterDefinition parseFilter(JsonNode jsonNode) {
-        return FilterDefinitionDeserializer.parse(jsonNode);
+    private FilterDefinition parseFilter(ObjectMapper objectMapper, JsonNode jsonNode) {
+        return FilterDefinitionDeserializer.parse(objectMapper, jsonNode);
     }
 
 }

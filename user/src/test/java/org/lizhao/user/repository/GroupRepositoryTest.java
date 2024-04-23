@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.repository;
+package org.lizhao.user.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

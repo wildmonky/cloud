@@ -1,20 +1,19 @@
-package org.lizhao.cloud.gateway.json.deserializer;
+package org.lizhao.cloud.gateway.json.definition;
 
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
+import jakarta.validation.constraints.NotNull;
+import org.lizhao.base.utils.reflect.ReflectUtil;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description TODO
@@ -62,7 +61,7 @@ public class RouteDefinitionDeserializer extends JsonDeserializer<RouteDefinitio
             if (clazz.equals(PredicateDefinition.class)) {
                 o = parsePredicate(objectMapper, child);
             } else if(clazz.equals(FilterDefinition.class)) {
-                o = parseFilter(child);
+                o = parseFilter(objectMapper, child);
             } else {
                 throw new RuntimeException("Definition类型异常");
             }
@@ -75,7 +74,7 @@ public class RouteDefinitionDeserializer extends JsonDeserializer<RouteDefinitio
         return PredicateDefinitionDeserializer.parse(objectMapper, jsonNode);
     }
 
-    private FilterDefinition parseFilter(JsonNode jsonNode) {
-        return FilterDefinitionDeserializer.parse(jsonNode);
+    private FilterDefinition parseFilter(ObjectMapper objectMapper, JsonNode jsonNode) {
+        return FilterDefinitionDeserializer.parse(objectMapper, jsonNode);
     }
 }

@@ -1,6 +1,6 @@
 package org.lizhao.cloud.gateway.configurer.client.webClient;
 
-import org.lizhao.cloud.gateway.configurer.client.webClient.WebClientCreator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +29,8 @@ public class WebClientConfigurer {
      * @return webClient 链接 user service
      */
     @Bean
-    public WebClient userServiceWebClient(WebClient.Builder webClientBuilder) {
-        return WebClientCreator.createDefaultWebClient(webClientBuilder.baseUrl("http://user/"));
+    public WebClient userServiceWebClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
+        return WebClientCreator.createDefaultWebClient(webClientBuilder.baseUrl("http://user-service/"), objectMapper);
     }
 
 }

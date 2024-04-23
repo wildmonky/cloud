@@ -85,4 +85,11 @@ public interface GroupRepository extends R2dbcRepository<Group, String> {
     )
     Flux<Group> findGroupsIncludeChildByUserId(String userId);
 
+    /**
+     * parentId 对应的组 是否有子组
+     * @param parentId 父级别组Id
+     * @return 是否存在子组
+     */
+    Mono<Boolean> existsAllByParentId(String parentId);
+
 }

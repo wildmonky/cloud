@@ -11,6 +11,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Description CSRF定义： 跨站请求伪造（英语：Cross-site request forgery)
@@ -33,7 +34,7 @@ public class CsrfServerAccessDeniedHandler implements ServerAccessDeniedHandler 
 //            response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
 //            setAcceptCharset(Collections.singletonList(Charset.defaultCharset()));
             DataBufferFactory dataBufferFactory = response.bufferFactory();
-            DataBuffer buffer = dataBufferFactory.wrap("csrf检测异常".getBytes(Charset.defaultCharset()));
+            DataBuffer buffer = dataBufferFactory.wrap("csrf检测异常".getBytes(StandardCharsets.UTF_8));
             log.info(denied.getMessage());
             return response.writeWith(Mono.just(buffer)).doOnError((error) -> DataBufferUtils.release(buffer));
         });

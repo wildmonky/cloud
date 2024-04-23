@@ -6,6 +6,7 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.annotation.NonNull;
 
 /**
  * @author 15259
@@ -20,6 +21,13 @@ public interface UserRepository extends R2dbcRepository<User, String> {
       */
      @Query("update \"user\" set status = :status where id = :userId")
      Mono<Boolean> updateStatusById(String userId, short status);
+
+     /**
+      * 根据id获取用户信息
+      * @param id must not be {@literal null}.
+      * @return 用户信息
+      */
+     Mono<User> findById(@NonNull String id);
 
      /**
       * 通过用户名查询

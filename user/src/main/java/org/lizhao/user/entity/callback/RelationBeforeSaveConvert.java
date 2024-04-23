@@ -2,7 +2,7 @@ package org.lizhao.user.entity.callback;
 
 import jakarta.annotation.Resource;
 import org.lizhao.base.entity.relation.Relation;
-import org.lizhao.base.model.UserInfoHolder;
+import org.lizhao.base.model.ReactiveUserInfoHolder;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.reactivestreams.Publisher;
 import org.springframework.data.r2dbc.mapping.event.BeforeConvertCallback;
@@ -29,7 +29,7 @@ public class RelationBeforeSaveConvert implements BeforeConvertCallback<Relation
 
     @Override
     public Publisher<Relation> onBeforeConvert(Relation entity, SqlIdentifier table) {
-        return Mono.just(UserInfoHolder.get())
+        return ReactiveUserInfoHolder.get()
                 .switchIfEmpty(Mono.error(new Throwable("未获取到用户信息")))
                 .handle((userInfo, sink) -> {
                     String currentUserId = userInfo.getId();

@@ -66,7 +66,26 @@ spring:
   # 多数据源配置
 #  datasource:
 #    driver-class-name: org.postgresql.Driver
-
+#data:
+#  multiple:
+#    redis:
+#      multipleRedisMap:
+#        redisFirst: # map key
+#          # map value
+#          host: 106.52.188.209
+#          port: 6379
+#          database: 0
+#          username: gateway
+#          password: 19960214
+#          client-name: gateway
+#          client-type: LETTUCE
+#          lettuce:
+#            pool:
+#              enabled: true
+#              max-active: 8
+#              max-idle: 8
+#              max-wait: -1ms
+#            shutdown-timeout: 100ms
 # json web token 密钥 org.lizhao.base.utils.JwtUtils
 web:
   security:
@@ -83,8 +102,8 @@ web:
         - /static/**
         - /*.ico
     auth:
-      cookie-name: TOKEN
-      header-name: TOKEN
+      cookie-name: ACCESS-TOKEN
+      header-name: Authorization
       success-url: /
 
 #    flyway:

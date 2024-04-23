@@ -2,12 +2,34 @@ server:
   shutdown: GRACEFUL
   port: 8082
   servlet:
-    context-path: /user
+    context-path: /
   netty:
     max-keep-alive-requests: 10000
     connection-timeout: 30
 
+# actuator 配置
+management:
+  endpoint:
+    mappings:
+      enabled: true
+    health:
+      show-details: always
+  endpoints: # 管理终端配置 不开放给外部使用（仅供内部人员或运维人员） spring EndPoint
+    web:
+      cors:
+        allowed-origins:
+          - 127.0.0.1
+      base-path: /actuator # 上下文路径
+      exposure:
+        include: "*"
+
 spring:
+  boot:
+    admin:
+      client:
+        enabled: false
+        url:
+          - http://localhost:8083
   web:
     resources:
       static-locations:
@@ -17,6 +39,8 @@ spring:
         - classpath:/static/
         - classpath:/public/
   webflux:
+    problemdetails:
+      enabled: true
     # 根据 pattern 转换 request path 获取资源路径，
     # 如配置为 /static/** 在访问http://localhost:8081/static/test.txt时转换后会去获取test.txt(在默认的路径下去获取)
     # META-INF/resources/ resources/ static/ public/

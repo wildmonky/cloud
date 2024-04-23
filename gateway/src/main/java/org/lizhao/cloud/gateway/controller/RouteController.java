@@ -12,8 +12,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 /**
  * Description 网关路由配置
  *
@@ -42,7 +40,7 @@ public class RouteController {
      * @return reactor.core.publisher.Flux<org.springframework.cloud.gateway.route.Route>
      */
     @Operation(summary = "查询路由列表")
-    @GetMapping(path = "/list", produces = "application/json" )
+    @GetMapping(path = "/", produces = "application/json" )
     @ResponseBody
     public Flux<RouteDefinition> routeList(String id, String source, String target) {
         return routeServiceImpl.search(id, source, target);
@@ -57,10 +55,10 @@ public class RouteController {
      * @param routeDefinition 路由定义
      */
     @Operation(summary = "更新、新增路由")
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/")
     @ResponseBody
     public Mono<ServerResponse> saveRouteList(@RequestBody RouteDefinition routeDefinition) {
-        return routeServiceImpl.save(Mono.just(routeDefinition))
+        return routeServiceImpl.save(routeDefinition)
                 .then(ServerResponse.ok().bodyValue("添加成功"));
     }
 
@@ -70,11 +68,11 @@ public class RouteController {
      * @since 0.0.1-SNAPSHOT
      * @author lizhao
      * @date 2022/6/12 18:24
-     * @param routeDefinitionList routeDefinitionList
+     * @param routeDefinitionIds routeDefinitionIds
      * @return reactor.core.publisher.Mono<org.springframework.web.reactive.function.server.ServerResponse>
      */
     @Operation(summary = "删除路由")
-    @GetMapping(path = "/remove", produces = "text/plain")
+    @DeleteMapping(path = "/", produces = "text/plain")
     public Mono<ServerResponse> removeRouteList(String routeDefinitionIds) {
         return routeServiceImpl.remove(routeDefinitionIds)
                 .then(ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).bodyValue("路由删除成功"));

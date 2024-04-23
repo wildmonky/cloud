@@ -83,12 +83,12 @@ public class RouteServiceImpl extends RouteService {
      * @since 1.8.0
      * @author lizhao
      * @date 2022/6/5 19:38
-     * @param routeDefinitionList  要保存的routeDefinition列表
+     * @param routeDefinition  要保存的routeDefinition
      */
-    public Mono<Void> save(Mono<RouteDefinition> routeDefinitionMono) {
-        return redisRouteDefinitionRepository.save(routeDefinitionMono)
-                .doOnSuccess(routeDefinition -> {
-                    System.out.println(routeDefinition);
+    public Mono<Void> save(RouteDefinition routeDefinition) {
+        return redisRouteDefinitionRepository.save(Mono.just(routeDefinition))
+                .doOnSuccess(flag -> {
+                    log.info("路由更新: {}", routeDefinition);
                     this.refresh();
                 });
     }
@@ -99,7 +99,7 @@ public class RouteServiceImpl extends RouteService {
      * @since 1.8.0
      * @author lizhao
      * @date 2022/6/5 19:40
-     * @param routeDefinitionList 要删除的routeDefinition列表
+     * @param routeDefinitionIds 要删除的routeDefinition id
      */
     public Mono<Void> remove(String routeDefinitionIds) {
         return redisRouteDefinitionRepository.delete(Mono.just(routeDefinitionIds))

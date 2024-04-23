@@ -1,10 +1,11 @@
 package org.lizhao.base.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import org.lizhao.base.exception.CustomException;
 
 import javax.crypto.SecretKey;
@@ -24,6 +25,16 @@ import java.util.function.Function;
  */
 public class JwtUtils {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final JwtBuilder BUILDER = Jwts.builder();
+    private static final JwtParserBuilder PARSER_BUILDER = Jwts.parserBuilder();
+
+    static {
+        OBJECT_MAPPER.registerModule(new JavaTimeModule());
+        BUILDER.serializeToJsonWith(new JacksonSerializer<>(OBJECT_MAPPER));
+        PARSER_BUILDER.deserializeJsonWith(new JacksonDeserializer<>(OBJECT_MAPPER));
+    }
+
     /**
      * 生成 jwt
      *
@@ -35,7 +46,7 @@ public class JwtUtils {
         if (secretKey == null) {
             throw new CustomException("未配置JWT密钥");
         }
-        return Jwts.builder().signWith(secretKey).setClaims(payload).setExpiration(expireDate).compact();
+        return BUILDER.signWith(secretKey).setClaims(payload).setExpiration(expireDate).compact();
     }
 
     /**
@@ -77,7 +88,7 @@ public class JwtUtils {
         if (secretKey == null) {
             throw new CustomException("JWT密钥为空");
         }
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jws);
+        return PARSER_BUILDER.setSigningKey(secretKey).build().parseClaimsJws(jws);
     }
 
     /**
@@ -91,7 +102,7 @@ public class JwtUtils {
         if (secretKey == null) {
             throw new CustomException("JWT密钥为空");
         }
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jws);
+        return PARSER_BUILDER.setSigningKey(secretKey).build().parseClaimsJws(jws);
     }
 
     /**

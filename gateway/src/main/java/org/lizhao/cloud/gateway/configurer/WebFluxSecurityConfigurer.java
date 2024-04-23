@@ -1,12 +1,13 @@
 package org.lizhao.cloud.gateway.configurer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
+import org.lizhao.cloud.gateway.security.authentication.OutsideReactiveAuthenticationManager;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
-import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
+import org.lizhao.cloud.gateway.security.authentication.handler.SwitchAutoRedirectAuthenticationSuccessHandler;
 import org.lizhao.cloud.gateway.security.authentication.handler.LogAndRedirectAuthenticationFailureHandler;
-import org.lizhao.cloud.gateway.security.authentication.handler.CookieTokenRedirectAuthenticationSuccessHandler;
-import org.lizhao.cloud.gateway.security.csrf.CsrfServerAccessDeniedHandler;
+import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutSuccessHandler;
 import org.lizhao.cloud.gateway.security.userdetailsservice.DelegateReactiveUserDetailsServiceImpl;
@@ -21,6 +22,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractUserDetailsReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -28,19 +30,17 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.WebFilterExchange;
-import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
-import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
-import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
+import org.springframework.security.web.server.authentication.*;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
-import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.server.header.XFrameOptionsServerHttpHeadersWriter;
 import org.springframework.security.web.server.ui.LoginPageGeneratingWebFilter;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -118,7 +118,9 @@ public class WebFluxSecurityConfigurer {
                                                             RedisLogoutSuccessHandler userLogoutSuccessHandler,
                                                             RedisSecurityContextRepository redisSecurityContextRepository,
                                                             CookieServerCsrfTokenRepository cookieServerCsrfTokenRepository,
-                                                            ServerAuthenticationEntryPoint redirectServerAuthenticationEntryPoint
+                                                            ServerAuthenticationEntryPoint redirectServerAuthenticationEntryPoint,
+                                                            DelegateReactiveUserDetailsServiceImpl delegateReactiveUserDetailsService,
+                                                            ObjectMapper objectMapper
     ) {
         // 注意 登录地址、注册地址都不需要csrf、auth
         http.headers(headerSpec ->
@@ -131,31 +133,46 @@ public class WebFluxSecurityConfigurer {
                 .securityContextRepository(redisSecurityContextRepository)
 //                .httpBasic(Customizer.withDefaults())
                 // 允许跨域请求
-                .cors(corsSpec -> corsSpec.configurationSource(new UrlBasedCorsConfigurationSource()))
-                .csrf(csrfSpec -> csrfSpec.accessDeniedHandler(new CsrfServerAccessDeniedHandler())
-                        // client: cookie中保存 XSRF-TOKEN  server: 验证请求的头 X-XSRF-TOKEN
-                        .csrfTokenRepository(cookieServerCsrfTokenRepository)
-                        // 排除 登录和注册 页面
-//                        .requireCsrfProtectionMatcher(new CsrfRequestMatcher())
-                        .csrfTokenRequestHandler(new ServerCsrfTokenRequestAttributeHandler())
-                ).formLogin(formLogin -> // 表单验证
-                    formLogin
+                .cors(corsSpec -> {
+                    UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.addAllowedOrigin("*");
+                    corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.addAllowedMethod("*");
+                    urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+                    corsSpec.configurationSource(urlBasedCorsConfigurationSource);
+                })
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+//                .csrf(csrfSpec -> csrfSpec.accessDeniedHandler(new CsrfServerAccessDeniedHandler())
+//                        // client: cookie中保存 XSRF-TOKEN  server: 验证请求的头 X-XSRF-TOKEN
+//                        .csrfTokenRepository(cookieServerCsrfTokenRepository)
+//                        // 排除 登录和注册 页面
+////                        .requireCsrfProtectionMatcher(new CsrfRequestMatcher())
+//                        .csrfTokenRequestHandler(new ServerCsrfTokenRequestAttributeHandler())
+//                )
+                // 表单验证
+//                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .formLogin(formLogin ->
+                    formLogin.authenticationManager(new OutsideReactiveAuthenticationManager(delegateReactiveUserDetailsService))
                             // 如果不配置AuthenticationEntryPoint，会自动创建 LoginPageGeneratingWebFilter
-                            .authenticationEntryPoint(redirectServerAuthenticationEntryPoint)
+                            .authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))
+//                            .authenticationEntryPoint(redirectServerAuthenticationEntryPoint)
                             // 配置需要进行 authentication 的请求Url，AuthenticationWebFilter
                             .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, securityProperties.getUrl().getLoginPath()))
                             // AuthenticationWebFilter
-                            .authenticationSuccessHandler(CookieTokenRedirectAuthenticationSuccessHandler.create(securityProperties.getUrl().getIndexPath()))
+                            .authenticationSuccessHandler(SwitchAutoRedirectAuthenticationSuccessHandler.create(objectMapper, securityProperties.getUrl().getIndexPath()))
                             .authenticationFailureHandler(new LogAndRedirectAuthenticationFailureHandler(securityProperties.getUrl().getLoginErrorPath()))
                             // redirect，自动配置了 AuthenticationEntryPoint、AuthenticationWebFilter、entrypoint、failureHandler，failureHandler跳转到 {loginPage}?error
 //                           .loginPage("/gate/login")
-                ).logout(logoutSpec ->
+                )
+                .logout(logoutSpec ->
                     logoutSpec
 //                            .logoutUrl("/logout") // 使用 POST 方法
                             .logoutHandler(userLogoutHandler)
                             .logoutSuccessHandler(userLogoutSuccessHandler)
                             .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
-                ).authorizeExchange(exchange -> {
+                )
+                .authorizeExchange(exchange -> {
                     // 登录页面 无需验证
                     List<String> excludePath = new ArrayList<>(Arrays.asList(securityProperties.getUrl().getExcludePath()));
                     excludePath.add(securityProperties.getUrl().getLoginPath());
@@ -178,16 +195,7 @@ public class WebFluxSecurityConfigurer {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserHandler userHandler(RoleRepository roleRepository,
-                                   GroupRepository groupRepository,
-                                   AuthorityRepository authorityRepository,
-                                   GroupUserRelationRepository groupUserRelationRepository
-    ) {
-        return new UserHandler(roleRepository, groupRepository, authorityRepository, groupUserRelationRepository);
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
@@ -201,10 +209,10 @@ public class WebFluxSecurityConfigurer {
      * @param factory
      */
     @Bean
-    public ReactiveRedisTemplate<String, TokenAuthenticationToken> reactiveTokenRedisTemplate(ReactiveRedisConnectionFactory factory) {
+    public ReactiveRedisTemplate<String, TokenAuthenticationToken> reactiveTokenRedisTemplate(ReactiveRedisConnectionFactory factory, ObjectMapper objectMapper) {
         StringRedisSerializer keySerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer<TokenAuthenticationToken> valueSerializer = new Jackson2JsonRedisSerializer<>(
-                TokenAuthenticationToken.class);
+                objectMapper, TokenAuthenticationToken.class);
         RedisSerializationContext.RedisSerializationContextBuilder<String, TokenAuthenticationToken> builder = RedisSerializationContext
                 .newSerializationContext(keySerializer);
         RedisSerializationContext<String, TokenAuthenticationToken> context = builder.value(valueSerializer).build();

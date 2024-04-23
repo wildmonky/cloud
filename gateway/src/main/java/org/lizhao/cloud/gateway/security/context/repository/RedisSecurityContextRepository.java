@@ -2,12 +2,12 @@ package org.lizhao.cloud.gateway.security.context.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.lizhao.base.entity.user.User;
 import org.lizhao.base.utils.JwtUtils;
 import org.lizhao.cloud.gateway.configurer.properties.SecurityProperties;
 import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -69,11 +69,10 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
      */
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
-        HttpCookie token = exchange.getRequest().getCookies().getFirst(securityProperties.getAuth().getHeaderName());
-        if (token == null) {
-            return Mono.empty();
+        String tokenValue = exchange.getRequest().getHeaders().getFirst(securityProperties.getAuth().getHeaderName());
+        if (StringUtils.isBlank(tokenValue)) {
+            return  Mono.empty();
         }
-        String tokenValue = token.getValue();
         assert StringUtils.isNotBlank(tokenValue);
         return reactiveTokenRedisTemplate.keys(tokenValue)
 //                .take(1)
@@ -86,25 +85,26 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
     }
 
     /**
-     * 保存 SecurityContext 信息到 Redis中，并将token写入 response 中
+     * 保存 SecurityContext 信息到 Redis中，并将token写入 response 中，注意跨域
      * @param exchange the exchange to associate to the SecurityContext
      * @param context the SecurityContext to save
      * @return
      */
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
+        String cookieDomain = exchange.getRequest().getHeaders().getFirst("Host");
         Authentication authentication = context.getAuthentication();
         assert authentication != null;
-        String token = createKey(authentication);
+        String token = createKey(this.prefix, authentication);
         TokenAuthenticationToken authenticationToken = authentication instanceof TokenAuthenticationToken ?
                 (TokenAuthenticationToken)authentication : new TokenAuthenticationToken(authentication);
         authenticationToken.setToken(token);
         return reactiveTokenRedisTemplate.opsForValue().set(token, authenticationToken, expireDuration)
                 .doOnNext(redisSaveFlag -> {
                     if (redisSaveFlag) {
-                        log.info("redis: authToken 保存成功");
+                        log.info("redis: ACCESS-TOKEN 保存成功");
                     } else {
-                        log.error("redis: authToken 保存失败");
+                        log.error("redis: ACCESS-TOKEN 保存失败");
                     }
                 }).doOnNext(redisSaveFlag -> {
                     if (redisSaveFlag) {
@@ -112,10 +112,12 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
                                 .set(securityProperties.getAuth().getCookieName(),
                                         ResponseCookie.from(securityProperties.getAuth().getCookieName(), token)
                                                 .maxAge(securityProperties.getJwt().getMaxAge())
+                                                .domain(cookieDomain) // 设置cookie的 domain 与跳转请求相同
+                                                .path("/")
 //                                                .httpOnly(true)
                                                 .build()
                                 );
-                        log.info("response cookie: authToken 保存成功");
+                        log.info("response cookie: ACCESS-TOKEN 保存成功");
                     }
                 }).then();
     }
@@ -128,9 +130,7 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
         return reactiveTokenRedisTemplate.keys(StringUtils.isNotEmpty(token) ? token : prefix + "**")
                 .flatMap(key -> reactiveTokenRedisTemplate.opsForValue().get(key))
                 .handle((authenticationToken, sink) -> {
-                    Object principal = authenticationToken.getPrincipal();
-                    Map<String, String> map = (HashMap<String, String>)principal;
-                    GatewayUser gatewayUser = new GatewayUser(map.get("username"), map.get("password"), authenticationToken.getAuthorities());
+                    GatewayUser gatewayUser = (GatewayUser) authenticationToken.getPrincipal();
                     gatewayUser.setToken(authenticationToken.getToken());
                     sink.next(gatewayUser);
                 });
@@ -165,10 +165,11 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
 
     /**
      * pattern {PREFIX}:{jwtKey}
-     * @param authentication
-     * @return
+     * @param prefix 前缀
+     * @param authentication 认证信息
+     * @return 生成的json web token
      */
-    private String createKey(Authentication authentication) {
+    private String createKey(String prefix, Authentication authentication) {
         // 生成JWT
         Map<String, Object> map = new HashMap<>();
         map.put("credentials", authentication.getCredentials());

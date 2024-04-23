@@ -1,4 +1,4 @@
-package org.lizhao.cloud.gateway.repository;
+package org.lizhao.user.repository;
 
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;

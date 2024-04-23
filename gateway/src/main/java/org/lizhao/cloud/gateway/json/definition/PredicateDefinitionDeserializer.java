@@ -1,10 +1,8 @@
-package org.lizhao.cloud.gateway.json.deserializer;
+package org.lizhao.cloud.gateway.json.definition;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import jakarta.validation.constraints.NotNull;
 import org.lizhao.base.utils.reflect.ReflectUtil;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
@@ -33,7 +31,6 @@ public class PredicateDefinitionDeserializer extends JsonDeserializer<PredicateD
 
     public static PredicateDefinition parse(ObjectMapper objectMapper, JsonNode rootNode) {
         String name = ReflectUtil.upperFirstChar(rootNode.get("name").asText());
-        List<Object> args = new ArrayList<>();
 
         Map<String, Object> argsMap = new HashMap<>();
 

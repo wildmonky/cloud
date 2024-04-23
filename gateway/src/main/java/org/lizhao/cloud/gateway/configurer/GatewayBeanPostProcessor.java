@@ -2,7 +2,7 @@ package org.lizhao.cloud.gateway.configurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.lizhao.cloud.gateway.json.deserializer.RouteDefinitionDeserializer;
+import org.lizhao.cloud.gateway.json.definition.RouteDefinitionDeserializer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cloud.gateway.route.RouteDefinition;

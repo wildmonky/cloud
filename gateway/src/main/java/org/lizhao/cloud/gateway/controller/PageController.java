@@ -1,9 +1,12 @@
 package org.lizhao.cloud.gateway.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.hibernate.query.results.complete.ModelPartReferenceCollection;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Random;
@@ -43,7 +46,8 @@ public class PageController {
 
     @Operation(summary = "登录页")
     @GetMapping("/login")
-    public String login(String status) {
+    public String login(String status, String redirectPath, Model model) {
+        model.addAttribute("redirectPath", redirectPath);
         return "/public/login" + (status != null ? "?" + status : "");
     }
 

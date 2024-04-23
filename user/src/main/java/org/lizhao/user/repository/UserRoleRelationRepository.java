@@ -21,4 +21,6 @@ public interface UserRoleRelationRepository extends R2dbcRepository<UserRoleRela
      */
     Mono<UserRoleRelation> findByUserIdAndRoleId(String userId, String roleId);
 
+    Mono<Boolean> existsAllByRoleId(String roleId);
+
 }

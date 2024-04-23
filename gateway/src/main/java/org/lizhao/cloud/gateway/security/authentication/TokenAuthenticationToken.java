@@ -3,9 +3,11 @@ package org.lizhao.cloud.gateway.security.authentication;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -14,10 +16,6 @@ import java.util.Collection;
  */
 @JsonIgnoreProperties({"name", "authenticated"})
 public class TokenAuthenticationToken extends UsernamePasswordAuthenticationToken {
-
-    private String headerName;
-
-    private String cookieName;
 
     private String token;
 
@@ -28,10 +26,20 @@ public class TokenAuthenticationToken extends UsernamePasswordAuthenticationToke
 
     @JsonCreator
     public TokenAuthenticationToken(@JsonProperty("token") String token,
-                                    @JsonProperty("principal") Object principal,
+                                    @JsonProperty("principal") GatewayUser principal,
                                     @JsonProperty("credentials") Object credentials,
                                     @JsonProperty("details") Object details,
                                     @JsonProperty("authorities") Collection<? extends GrantedAuthority> authorities) {
+        super(principal, credentials, authorities);
+        super.setDetails(details);
+        this.token = token;
+    }
+
+    public TokenAuthenticationToken(String token,
+                                    Object principal,
+                                    Object credentials,
+                                    Object details,
+                                    Collection<? extends GrantedAuthority> authorities) {
         super(principal, credentials, authorities);
         super.setDetails(details);
         this.token = token;

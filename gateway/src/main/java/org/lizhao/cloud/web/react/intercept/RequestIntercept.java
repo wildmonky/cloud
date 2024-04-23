@@ -37,14 +37,14 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE) // SecurityWebFiltersOrder.FIRST
-@Component
+//@Component
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class RequestIntercept implements WebFilter {
 
     @Value("${server.servlet.context-path:''}")
     private String contextPath;
 
-    @Resource
+//    @Resource
     private SecurityProperties securityProperties;
 
     /**

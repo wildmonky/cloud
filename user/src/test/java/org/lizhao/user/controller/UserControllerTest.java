@@ -1,11 +1,10 @@
-package org.lizhao.cloud.gateway.controller;
+package org.lizhao.user.controller;
 
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.lizhao.cloud.gateway.configurer.WebFluxSecurityConfigurer;
-import org.lizhao.cloud.gateway.configurer.properties.SecurityProperties;
-import org.lizhao.cloud.gateway.serviceImpl.UserServiceImpl;
+import org.lizhao.user.UserApplication;
+import org.lizhao.user.service.UserService;
 import org.mockito.BDDMockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.AutoConfigureDataR2dbc;
@@ -22,19 +21,19 @@ import reactor.core.publisher.Flux;
 import java.util.HashMap;
 
 @ExtendWith(SpringExtension.class)
-@EnableConfigurationProperties(SecurityProperties.class)
+//@EnableConfigurationProperties(SecurityProperties.class)
 @AutoConfigureDataR2dbc // 加载r2dbc配置类
 @AutoConfigureDataRedis // 加载redis配置类
 @AutoConfigureWebTestClient(timeout = "PT15M")
-@WebFluxTest(controllers = org.lizhao.cloud.gateway.controller.UserController.class)
-@Import(WebFluxSecurityConfigurer.class)
+@WebFluxTest(controllers = org.lizhao.user.controller.UserController.class)
+//@Import(UserApplication.class)
 class UserControllerTest {
 
     @Resource
     private WebTestClient webTestClient;
 
     @MockBean
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Test
     void bindGroupToUser() {
@@ -48,7 +47,5 @@ class UserControllerTest {
                 .exchange()
                 .expectBody()
                 .consumeWith(System.out::println);
-
-
     }
 }

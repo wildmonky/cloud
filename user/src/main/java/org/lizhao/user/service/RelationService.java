@@ -19,9 +19,5 @@ public class RelationService {
     @Resource
     private GroupUserRelationRepository groupUserRelationRepository;
 
-    public Mono<Boolean> turnRelationBetweenUserAndGroup(String relationId) {
-        return groupUserRelationRepository.turnRelation(relationId);
-    }
-
 
 }

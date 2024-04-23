@@ -74,7 +74,7 @@ class RouteControllerTest {
         PathPredicateDefinition pathPredicate = new PathPredicateDefinition("/**");
         routeDefinition.setPredicates(Collections.singletonList(pathPredicate));
 
-        BDDMockito.given(routeServiceImpl.save(Mono.just(routeDefinition)))
+        BDDMockito.given(routeServiceImpl.save(routeDefinition))
                 .willReturn(Mono.empty());
         webTestClient.post().uri("/route/save")
                 .contentType(MediaType.APPLICATION_JSON)

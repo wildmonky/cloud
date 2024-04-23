@@ -1,35 +1,111 @@
 package org.lizhao.cloud.gateway.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.lizhao.base.entity.authority.Authority;
+import org.lizhao.base.entity.authority.Role;
+import org.lizhao.base.entity.user.Group;
+import org.lizhao.base.entity.user.User;
+import org.lizhao.base.enums.UserStatusEnum;
+import org.lizhao.base.model.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
- * Description 自定义用户类
- *
  * @author lizhao
- * @version 0.0.1-SNAPSHOT
- * @date 2024-03-25 21:49
- * @since 0.0.1-SNAPSHOT
  */
-@Getter
-@Setter
-public class GatewayUser extends User {
-
-    private String id;
-
-    private String phone;
-
+public class GatewayUser extends UserInfo implements UserDetails {
     private String token;
+    private final Set<? extends GrantedAuthority> grantedAuthorities;
 
-    public GatewayUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
+    @JsonCreator
+    public GatewayUser(@JsonProperty("groups") Set<Group> groups,
+                       @JsonProperty("roles") Set<Role> roles,
+                       @JsonProperty("authorities") Set<Authority> authorities) {
+        super();
+        super.setGroups(groups);
+        super.setRoles(roles);
+        this.grantedAuthorities = Optional.ofNullable(authorities).orElse(Collections.emptySet())
+                .stream().map(DefaultGrantedAuthority::new).collect(Collectors.toSet());
     }
 
-    public GatewayUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+    public GatewayUser(User user, Collection<? extends GrantedAuthority> authorities) {
+        super();
+        this.setUserInfo(user);
+        this.grantedAuthorities = new HashSet<>(authorities);
+    }
+
+    public GatewayUser(UserInfo userInfo) {
+        super();
+        this.setUserInfo(userInfo);
+        super.setGroups(userInfo.getGroups());
+        super.setRoles(userInfo.getRoles());
+        this.grantedAuthorities = new HashSet<>();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.grantedAuthorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return super.getName();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !UserStatusEnum.LOCK.check(super.getStatus());
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * 构建函数中使用时，必须在super()后
+     * @param user 用户信息
+     */
+    private void setUserInfo(User user) {
+        super.setId(user.getId());
+        super.setName(user.getName());
+        super.setPhone(user.getPhone());
+        super.setPassword(user.getPassword());
+        super.setStatus(user.getStatus());
+        super.setCreateUseId(user.getCreateUseId());
+        super.setCreateUseName(user.getCreateUseName());
+        super.setCreateTime(user.getCreateTime());
+        super.setUpdateUseId(user.getUpdateUseId());
+        super.setUpdateUseName(user.getUpdateUseName());
+        super.setUpdateTime(user.getUpdateTime());
     }
 
 }

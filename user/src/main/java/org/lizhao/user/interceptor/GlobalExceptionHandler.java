@@ -1,7 +1,14 @@
 package org.lizhao.user.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lizhao.base.exception.MessageException;
 import org.lizhao.base.model.ResponseBodyModel;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
@@ -14,13 +21,14 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 //@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-//@ControllerAdvice(annotations = { Controller.class, RestController.class })
+//@ControllerAdvice(annotations = { Controller.class })
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(Exception.class)
-    public Mono<ResponseBodyModel<?>> exceptionHandler(Exception e) {
+//    @ExceptionHandler(MessageException.class)
+//    @ResponseBody
+    public ResponseBodyModel<String> exceptionHandler(MessageException e) {
         log.error("捕获到异常{}, {}", e.getMessage(), e.getStackTrace());
-        return Mono.just(ResponseBodyModel.error(e.getMessage()));
+        return ResponseBodyModel.error(e.getMessage());
     }
 
 }

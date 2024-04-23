@@ -1,20 +1,20 @@
-package org.lizhao.user.interceptor;
+package org.lizhao.web.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.lizhao.base.model.ResponseBodyModel;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.ReactiveAdapterRegistry;
-import org.springframework.http.codec.HttpMessageWriter;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.HandlerResult;
-import org.springframework.web.reactive.accept.RequestedContentTypeResolver;
-import org.springframework.web.reactive.result.method.annotation.ResponseBodyResultHandler;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,40 +26,43 @@ import java.util.Optional;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
+@Aspect
+@ConditionalOnClass(name = {"org.springframework.web.reactive.result.method.annotation.ResponseBodyResultHandler"})
+public class ReactiveGlobalResponseBodyHandler {
 
     private static MethodParameter GLOBAL_METHOD_PARAMETER;
 
     static {
         try {
-            GLOBAL_METHOD_PARAMETER = new MethodParameter(GlobalResponseBodyHandler.class.getDeclaredMethod("methodParameter"), -1);
+            GLOBAL_METHOD_PARAMETER = new MethodParameter(ReactiveGlobalResponseBodyHandler.class.getDeclaredMethod("methodParameter"), -1);
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
     }
 
-    public GlobalResponseBodyHandler(List<HttpMessageWriter<?>> writers, RequestedContentTypeResolver resolver) {
-        super(writers, resolver);
+    private static <T> Mono<ResponseBodyModel<T>> methodParameter() {
+        return Mono.empty();
     }
 
-    public GlobalResponseBodyHandler(List<HttpMessageWriter<?>> writers, RequestedContentTypeResolver resolver, ReactiveAdapterRegistry registry) {
-        super(writers, resolver, registry);
-    }
 
-    @Override
-    public Mono<Void> handleResult(ServerWebExchange exchange, HandlerResult result) {
+    @Around(value = "execution(* org.springframework.web.reactive.result.method.annotation.ResponseBodyResultHandler.handleResult(..)) && args(exchange, result)", argNames = "pjp,exchange,result")
+    public Mono<Void> handleResult(ProceedingJoinPoint pjp, ServerWebExchange exchange, HandlerResult result) throws Throwable {
         Object body = result.getReturnValue();
+        MethodParameter methodParameter = result.getReturnTypeSource();
         if (body instanceof Mono) {
             body = ((Mono<?>) body)
                     .map(o -> wrapResponseBody(o, exchange))
                     .defaultIfEmpty(ResponseBodyModel.success(null));
+            methodParameter = GLOBAL_METHOD_PARAMETER;
         }else if (body instanceof Flux) {
             body = ((Flux<?>) body)
                     .collectList()
                     .map(o -> wrapResponseBody(o, exchange))
                     .defaultIfEmpty(ResponseBodyModel.success(null));
-        }else {
+            methodParameter = GLOBAL_METHOD_PARAMETER;
+        }else if (!(body instanceof ProblemDetail)){
             body = wrapResponseBody(result, exchange);
+            methodParameter = GLOBAL_METHOD_PARAMETER;
         }
 
         //设置响应类型，否则导致 No Encoder for [org.lizhao.base.model.ResponseBodyModel<?>] with preset Content-Type 'null'
@@ -70,23 +73,18 @@ public class GlobalResponseBodyHandler extends ResponseBodyResultHandler {
                 log.info("ReadOnlyHeaders can not add");
             }
         });
-
-        return writeBody(body, GLOBAL_METHOD_PARAMETER, exchange);
+        HandlerResult newHandlerResult = new HandlerResult(result.getHandler(), body, methodParameter, result.getBindingContext());
+        return (Mono<Void>) pjp.proceed(new Object[]{exchange, newHandlerResult});
     }
 
-    @SuppressWarnings("unchecked")
     private <T> ResponseBodyModel<T> wrapResponseBody(T result, ServerWebExchange exchange) {
         if (result instanceof ResponseBodyModel) {
             return (ResponseBodyModel<T>) result;
         }else{
-            ResponseBodyModel<T> model = result instanceof Exception ? ResponseBodyModel.error(result) : ResponseBodyModel.success(result);
+            ResponseBodyModel<T> model = result instanceof Exception ? ResponseBodyModel.error(((Exception) result).getMessage()) : ResponseBodyModel.success(result);
 //            CsrfToken csrfToken = exchange.getAttribute("xorCsrfToken");
 //            model.withCsrf(csrfToken == null ? "" : csrfToken.getToken());
             return model;
         }
-    }
-
-    private static <T> Mono<ResponseBodyModel<T>> methodParameter() {
-        return Mono.empty();
     }
 }

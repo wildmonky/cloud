@@ -10,13 +10,13 @@ package org.lizhao.base.model;
  */
 public class UserInfoHolder {
 
-    private static final ThreadLocal<UserInfo> USER_INFO_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleUserInfo> USER_INFO_THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void set(UserInfo userInfo) {
+    public static void set(SimpleUserInfo userInfo) {
         USER_INFO_THREAD_LOCAL.set(userInfo);
     }
 
-    public static UserInfo get() {
+    public static SimpleUserInfo get() {
         return USER_INFO_THREAD_LOCAL.get();
     }
 

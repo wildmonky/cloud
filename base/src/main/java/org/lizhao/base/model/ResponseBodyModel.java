@@ -26,25 +26,35 @@ public class ResponseBodyModel<T> {
     private T result;
 
     /**
+     * 信息
+     */
+    private String message;
+
+    /**
      * csrf request header 应配置值
      */
     private String csrfHeaderToken;
 
     public ResponseBodyModel() {}
 
-    public static <T> ResponseBodyModel<T> of(int code, T result) {
+    public static <T> ResponseBodyModel<T> of(int code, T result, String message) {
         ResponseBodyModel<T> responseResultModel = new ResponseBodyModel<T>();
         responseResultModel.setCode(code);
         responseResultModel.setResult(result);
+        responseResultModel.setMessage(message);
         return responseResultModel;
     }
 
     public static <T> ResponseBodyModel<T> success(T result) {
-        return of(1, result);
+        return of(200, result, null);
     }
 
-    public static <T> ResponseBodyModel<T> error(T result) {
-        return of(0, result);
+    public static <T> ResponseBodyModel<T> success(T result, String message) {
+        return of(200, result, message);
+    }
+
+    public static <T> ResponseBodyModel<T> error(String message) {
+        return of(-1, null, message);
     }
 
     public void withCsrf(String csrfHeaderToken) {

@@ -1,6 +1,10 @@
 package org.lizhao.cloud.gateway.configurer.client.webClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.codec.ClientCodecConfigurer;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
@@ -19,7 +23,6 @@ import java.time.Duration;
 public class WebClientCreator {
 
     //    private final ConnectionProvider provider = ConnectionProvider.create("global-webclient-connect", 80000);
-
     private static final ConnectionProvider PROVIDER = ConnectionProvider.create("global-webclient-connect");
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10L);
@@ -27,17 +30,23 @@ public class WebClientCreator {
 
     public WebClientCreator() {}
 
-    public static WebClient createDefaultWebClient(WebClient.Builder webClientBuilder) {
+    public static WebClient createDefaultWebClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
         HttpClient client = HttpClient.create(PROVIDER).responseTimeout(REQUEST_TIMEOUT);
         return webClientBuilder.clientConnector(new ReactorClientHttpConnector(client)).exchangeStrategies(ExchangeStrategies.builder().codecs((configurer) -> {
-            configurer.defaultCodecs().maxInMemorySize(1048576);
+            ClientCodecConfigurer.ClientDefaultCodecs defaultCodecs = configurer.defaultCodecs();
+            defaultCodecs.jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
+            defaultCodecs.jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
+            defaultCodecs.maxInMemorySize(1048576);
         }).build()).build();
     }
 
-    public WebClient createWebClient(WebClient.Builder webClientBuilder, Duration requestTimeout, int maxInMemBufferSize) {
+    public static WebClient createWebClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper, Duration requestTimeout, int maxInMemBufferSize) {
         HttpClient client = HttpClient.create(PROVIDER).responseTimeout(requestTimeout);
         return webClientBuilder.clientConnector(new ReactorClientHttpConnector(client)).exchangeStrategies(ExchangeStrategies.builder().codecs((configurer) -> {
-            configurer.defaultCodecs().maxInMemorySize(maxInMemBufferSize);
+            ClientCodecConfigurer.ClientDefaultCodecs defaultCodecs = configurer.defaultCodecs();
+            defaultCodecs.jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
+            defaultCodecs.jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
+            defaultCodecs.maxInMemorySize(maxInMemBufferSize);
         }).build()).build();
     }
 

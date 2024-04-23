@@ -8,6 +8,7 @@
         <version>3.1.2</version>
     </parent>
     <modules>
+        <module>admin</module>
         <module>base</module>
         <module>gateway</module>
         <module>user</module>
@@ -46,6 +47,7 @@
 <!--        <mysql-connector-java.version>8.0.30</mysql-connector-java.version>-->
         <mybatis-spring-boot-starter.version>2.2.2</mybatis-spring-boot-starter.version>
         <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
+        <spring-boot-admin.version>3.2.3</spring-boot-admin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -74,6 +76,20 @@
                 <artifactId>annotations</artifactId>
                 <version>${google-core-findbugs-annotations.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-dependencies</artifactId>
+                <version>${spring-boot-admin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+<!--            <dependency>-->
+<!--                <groupId>de.codecentric</groupId>-->
+<!--                <artifactId>spring-boot-admin-starter-server</artifactId>-->
+<!--                <version>${spring-boot-admin.version}</version>-->
+<!--            </dependency>-->
 
             <!--JAVA JSON WEB TOKEN-->
             <dependency>
