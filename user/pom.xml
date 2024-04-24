@@ -115,6 +115,12 @@
             <artifactId>spring-boot-admin-starter-client</artifactId>
         </dependency>
 
+        <!--引入log42框架-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
