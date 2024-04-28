@@ -3,7 +3,7 @@ package org.lizhao.base.enums;
 import lombok.Getter;
 
 /**
- * Description TODO
+ * Description {@link org.lizhao.base.entity.authority.Role} 枚举类
  *
  * @author lizhao
  * @version 1.0.0
