@@ -18,7 +18,9 @@ import java.util.Collection;
 @Setter
 public class UserGroupModel {
 
-    // 用户
+    /**
+     * 用户
+     */
     private String userId;
 
     private String userName;
@@ -29,7 +31,9 @@ public class UserGroupModel {
 
     private String relationId;
 
-    // 组
+    /**
+     * 组
+     */
     private String groupId;
 
     private String groupName;

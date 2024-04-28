@@ -38,11 +38,6 @@ public class RepositoryConfigurer {
     /**
      * relationalMappingContext.setForceQuote(true);
      * 为所有表名设置 quota，避免 user、group等关键字影响
-     *
-     * @param namingStrategy
-     * @param r2dbcCustomConversions
-     * @param r2dbcManagedTypes
-     * @return
      */
     @Bean
     public R2dbcMappingContext r2dbcMappingContext(ObjectProvider<NamingStrategy> namingStrategy,

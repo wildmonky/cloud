@@ -13,9 +13,18 @@ import lombok.Getter;
 @Getter
 public enum CommonStateEnum {
 
+    /*
+    通用状态： 创建
+     */
     NEW(0, "初创"),
+    /*
+    通用状态： 正常
+     */
     NORMAL(1, "正常"),
-    LOCKED(2,  "锁住");
+    /*
+    通用状态： 锁定
+     */
+    LOCKED(2,  "锁定");
 
     private final Integer code;
     private final String description;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.CommonAttribute;
@@ -32,7 +31,6 @@ public class ServerResource extends CommonAttribute {
     /**
      * 路径 资源请求路径
      */
-//    @NotBlank(message = "资源路径不能为空")
     private String path;
 
     /**

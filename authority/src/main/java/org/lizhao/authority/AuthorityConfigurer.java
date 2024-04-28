@@ -13,7 +13,6 @@ import org.lizhao.base.entity.user.User;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

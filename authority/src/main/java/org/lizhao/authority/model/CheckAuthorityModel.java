@@ -2,7 +2,7 @@ package org.lizhao.authority.model;
 
 
 /**
- * Description TODO
+ * Description 权限检查 model
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT

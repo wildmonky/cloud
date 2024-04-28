@@ -11,7 +11,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * Description 用户实体类
- *
  * 系统用户实体信息：保存登录名和密码
  *
  * @author lizhao

@@ -4,8 +4,6 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 
-import java.util.Arrays;
-
 /**
  * Description 基础操作枚举
  *

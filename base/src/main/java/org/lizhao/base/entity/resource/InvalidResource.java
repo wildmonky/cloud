@@ -1,6 +1,5 @@
 package org.lizhao.base.entity.resource;
 
-import jakarta.annotation.Resource;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;

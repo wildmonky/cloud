@@ -2,10 +2,8 @@ package org.lizhao.base.jpa;
 
 import jakarta.annotation.PostConstruct;
 import org.hibernate.HibernateException;
-//import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.BeforeExecutionGenerator;
-//import org.hibernate.generator.Generator;
 import org.hibernate.id.IdentifierGenerator;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 

@@ -1,7 +1,5 @@
 package org.lizhao.base.jpa;
 
-//import org.lizhao.base.entity.user.User;
-
 /**
  * Description 通用实体属性设置 监听器
  *

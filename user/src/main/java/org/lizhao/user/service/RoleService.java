@@ -1,7 +1,6 @@
 package org.lizhao.user.service;
 
 import jakarta.annotation.Resource;
-import org.apache.commons.lang3.BooleanUtils;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.relation.GroupRoleRelation;
 import org.lizhao.base.entity.relation.UserRoleRelation;

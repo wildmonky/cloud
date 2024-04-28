@@ -15,8 +15,6 @@ public class MyTest {
     @Test
     public void start() {
         System.out.println("hhhhh".startsWith(""));
-
-
     }
 
 }

@@ -149,7 +149,7 @@ public class RoleHandler {
 
     /**
      * 根据数据生成树
-     * @param roles 角色
+     * @param originRoles 角色
      * @return 树
      */
     public List<RoleModel> generateTree(List<Role> originRoles) {

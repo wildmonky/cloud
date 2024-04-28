@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Collection;
 import java.util.Objects;
 
 /**

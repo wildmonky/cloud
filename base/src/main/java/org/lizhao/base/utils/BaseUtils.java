@@ -20,6 +20,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * @author lizhao
+ */
 public class BaseUtils {
     private static final Logger log = LoggerFactory.getLogger(BaseUtils.class);
 
@@ -88,7 +91,7 @@ public class BaseUtils {
             return Collections.emptyMap();
         }
 
-        Map<K, T> mp = new HashMap<>();
+        Map<K, T> mp = new HashMap<>(map.size());
         for (Entry<K, V> en : map.entrySet()) {
             mp.put(en.getKey(), func.apply(en.getValue()));
         }

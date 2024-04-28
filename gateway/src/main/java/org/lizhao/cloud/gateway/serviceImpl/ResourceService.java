@@ -11,7 +11,6 @@ import org.lizhao.base.model.resource.ServerResourceModel;
 import org.lizhao.cloud.gateway.handler.ResourceHandler;
 import org.lizhao.cloud.gateway.repository.ResourceRepository;
 import org.lizhao.cloud.gateway.service.RouteService;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.repository.query.FluentQuery;
@@ -36,8 +35,6 @@ public class ResourceService extends RouteService {
     private ResourceHandler resourceHandler;
     @Resource
     private ResourceRepository resourceRepository;
-
-    private ApplicationEventPublisher applicationEventPublisher;
 
     public  Mono<List<ServerResourceModel>> findBy(ServerResource resource) {
         if (resource == null) {

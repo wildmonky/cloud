@@ -45,7 +45,7 @@ public class GroupHandler {
 
     /**
      * 根据数据生成树
-     * @param groups 组
+     * @param originGroups 组
      * @return 树
      */
     public List<GroupModel> generateTree(List<Group> originGroups) {

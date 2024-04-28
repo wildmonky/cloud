@@ -1,8 +1,6 @@
 package org.lizhao.user.service;
 
 import jakarta.annotation.Resource;
-import org.lizhao.base.entity.relation.GroupUserRelation;
-import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.model.UserInfo;
 import org.lizhao.base.utils.BaseUtils;
@@ -16,10 +14,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Description 用户服务 查找、下线
