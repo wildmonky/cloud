@@ -1,7 +1,6 @@
 package org.lizhao.cloud.gateway.serviceImpl;
 
 import jakarta.annotation.Resource;
-import org.lizhao.base.entity.user.User;
 import org.lizhao.base.model.UserInfo;
 import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
@@ -14,8 +13,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.HashMap;
 
 /**
  * Description 用户服务 查找、下线

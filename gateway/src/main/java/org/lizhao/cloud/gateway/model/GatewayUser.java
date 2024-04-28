@@ -6,7 +6,7 @@ import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
-import org.lizhao.base.enums.UserStatusEnum;
+import org.lizhao.base.enums.CommonStateEnum;
 import org.lizhao.base.model.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,11 +40,8 @@ public class GatewayUser extends UserInfo implements UserDetails {
     }
 
     public GatewayUser(UserInfo userInfo) {
-        super();
+        this(userInfo.getGroups(), userInfo.getRoles(), userInfo.getOriginAuthorities());
         this.setUserInfo(userInfo);
-        super.setGroups(userInfo.getGroups());
-        super.setRoles(userInfo.getRoles());
-        this.grantedAuthorities = new HashSet<>();
     }
 
     @Override
@@ -69,7 +66,7 @@ public class GatewayUser extends UserInfo implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !UserStatusEnum.LOCK.check(super.getStatus());
+        return !CommonStateEnum.LOCKED.check(super.getStatus());
     }
 
     @Override

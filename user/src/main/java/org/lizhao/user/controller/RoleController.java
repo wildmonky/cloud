@@ -7,6 +7,7 @@ import org.lizhao.base.entity.relation.UserRoleRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.user.model.GroupRoleModel;
+import org.lizhao.user.model.RoleModel;
 import org.lizhao.user.model.UserRoleModel;
 import org.lizhao.user.service.RoleService;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class RoleController {
     }
 
     @GetMapping("/tree")
-    public Mono<List<Role>> searchTree() {
+    public Mono<List<RoleModel>> searchTree() {
         return roleService.searchTree();
     }
 

@@ -39,7 +39,12 @@ public class GatewayConfigurer  {
 //    @Bean
 //    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 //        return builder.routes().route("test", r -> r
-//                .path("/gateway/**")
+//                .predicate(exchange -> {
+//                    return true;
+//                })
+//                .filters(gatewayFilterSpec ->
+//                    gatewayFilterSpec.stripPrefix(1)
+//                )
 //                .uri("https://www.baidu.com")
 //        ).build();
 //    }

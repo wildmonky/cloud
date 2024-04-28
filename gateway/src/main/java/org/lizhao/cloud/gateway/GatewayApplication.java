@@ -15,7 +15,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 @EnableAspectJAutoProxy
 @EnableRedisRepositories
 //@EnableReactiveMongoRepositories
-@SpringBootApplication(scanBasePackages = {"org.lizhao"})
+@SpringBootApplication(scanBasePackages = {"org.lizhao.cloud.gateway"})
 public class GatewayApplication {
 
     public static void main(String[] args) {

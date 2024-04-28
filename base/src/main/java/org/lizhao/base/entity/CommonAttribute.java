@@ -5,7 +5,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.user.User;
-import org.lizhao.database.jpa.CommonAttributeAuditEntityListener;
+import org.lizhao.base.jpa.CommonAttributeAuditEntityListener;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 

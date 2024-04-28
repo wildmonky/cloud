@@ -60,10 +60,17 @@ public class MyTest {
 
     @Test
     public void regexTest() {
-        Pattern pattern = Pattern.compile("(:)(\\w*$)");
-        Matcher matcher = pattern.matcher("password-update:lizhao");
+//        Pattern pattern = Pattern.compile("(:)(\\w*$)");
+//        Matcher matcher = pattern.matcher("password-update:lizhao");
+//        while (matcher.find()) {
+//            System.out.println(matcher.group() + " start: " + matcher.start() + " stop: " + matcher.end());
+//        }
+        Pattern pattern = Pattern.compile("^\\d{11}$");
+        Matcher matcher = pattern.matcher("18666496619");
+        System.out.println(matcher.matches());
+
         while (matcher.find()) {
-            System.out.println(matcher.group() + " start: " + matcher.start() + " stop: " + matcher.end());
+            System.out.println(matcher.group());
         }
     }
 
@@ -281,6 +288,14 @@ public class MyTest {
 
         System.out.println(objectMapper.writeValueAsString(userModel));
 
+    }
+
+    @Test
+    public void classTest() {
+        Class<Group> groupClass = Group.class;
+        System.out.println(groupClass.getPackageName());
+        String[] split = Group.class.getName().split("\\.");
+        System.out.println(split[split.length - 1]);
     }
 
 }

@@ -25,7 +25,7 @@ public class WebClientCreator {
     //    private final ConnectionProvider provider = ConnectionProvider.create("global-webclient-connect", 80000);
     private static final ConnectionProvider PROVIDER = ConnectionProvider.create("global-webclient-connect");
 
-    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10L);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(1000L);
     private static final int MAX_IN_MEM_BUFFER_SIZE = 1048576;
 
     public WebClientCreator() {}

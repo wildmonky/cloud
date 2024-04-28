@@ -9,6 +9,7 @@
     </parent>
     <modules>
         <module>admin</module>
+        <module>authority</module>
         <module>base</module>
         <module>gateway</module>
         <module>user</module>
@@ -84,12 +85,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-<!--            <dependency>-->
-<!--                <groupId>de.codecentric</groupId>-->
-<!--                <artifactId>spring-boot-admin-starter-server</artifactId>-->
-<!--                <version>${spring-boot-admin.version}</version>-->
-<!--            </dependency>-->
 
             <!--JAVA JSON WEB TOKEN-->
             <dependency>

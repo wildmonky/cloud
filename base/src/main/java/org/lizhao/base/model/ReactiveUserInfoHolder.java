@@ -1,5 +1,6 @@
 package org.lizhao.base.model;
 
+import org.lizhao.base.exception.MessageException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
@@ -31,7 +32,7 @@ public final class ReactiveUserInfoHolder {
     }
 
     private static Mono<UserInfo> getUserInfo(Context context) {
-        return context.<Mono<UserInfo>>get(USER_INFO_KEY);
+        return context.<Mono<UserInfo>>get(USER_INFO_KEY).switchIfEmpty(Mono.error(new MessageException("用户信息为空")));
     }
 
     public static Function<Context, Context> clear() {

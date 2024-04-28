@@ -7,6 +7,7 @@ import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.exception.MessageException;
 import org.lizhao.user.handler.GroupHandler;
+import org.lizhao.user.model.GroupModel;
 import org.lizhao.user.model.UserGroupModel;
 import org.lizhao.user.repository.GroupRepository;
 import org.lizhao.user.repository.GroupUserRelationRepository;
@@ -41,7 +42,7 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
-    public Mono<List<Group>> searchTree() {
+    public Mono<List<GroupModel>> searchTree() {
         return groupRepository.findAll().collectList().map(coll -> groupHandler.generateTree(coll));
     }
 

@@ -43,6 +43,12 @@ public class UserController {
     }
 
     @Operation(summary = "根据用户id查询")
+    @GetMapping("/details/{username}")
+    public Mono<UserInfo> searchDetailsByName(@PathVariable("username") String name) {
+        return userService.searchDetailsByName(name);
+    }
+
+    @Operation(summary = "根据用户id查询")
     @GetMapping("/")
     public Mono<UserInfo> searchDetails(@RequestParam("id") String id) {
         return userService.searchDetailsById(id);

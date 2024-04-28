@@ -1,6 +1,10 @@
 package org.lizhao.base.enums;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpMethod;
+
+import java.util.Arrays;
 
 /**
  * Description 基础操作枚举
@@ -16,21 +20,41 @@ public enum BaseOperationEnum {
     /**
      * 通用操作枚举项
      */
-    UPDATE(1, "更新"),
-    DELETE(2, "删除");
+    SEARCH("GET", "检索"),
+    CREATE("POST", "创建"),
+    UPDATE("PUT", "更新"),
+    DELETE("DELETE", "删除"),
+    GRANT("PATCH", "授权");
 
     /**
      * 操作Id
      */
-    private final Integer operationId;
+    private final String code;
     /**
      * 操作名称
      */
-    private final String operationName;
+    private final String name;
 
-    BaseOperationEnum(Integer operationId, String operationName) {
-        this.operationId = operationId;
-        this.operationName = operationName;
+    BaseOperationEnum(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
+    public static BaseOperationEnum of(HttpMethod httpMethod) {
+        String method = httpMethod.name();
+        return of(method);
+    }
+
+    public static BaseOperationEnum of(String method) {
+        if (StringUtils.isBlank(method)) {
+            throw new RuntimeException("参数不能为空");
+        }
+        for (BaseOperationEnum operation : values()) {
+            if (operation.getCode().equalsIgnoreCase(method)) {
+                return operation;
+            }
+        }
+        throw new RuntimeException("不存在" + method + "对应的操作");
     }
 
 }

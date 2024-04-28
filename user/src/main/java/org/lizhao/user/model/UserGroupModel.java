@@ -19,7 +19,6 @@ import java.util.Collection;
 public class UserGroupModel {
 
     // 用户
-
     private String userId;
 
     private String userName;

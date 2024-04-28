@@ -5,9 +5,9 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.lizhao.base.entity.relation.GroupUserRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
-import org.lizhao.base.exception.CustomException;
 import org.lizhao.base.model.TreeNode;
 import org.lizhao.base.utils.BaseUtils;
+import org.lizhao.user.model.GroupModel;
 import org.lizhao.user.model.UserGroupModel;
 import org.lizhao.user.repository.GroupUserRelationRepository;
 import org.lizhao.user.repository.UserRepository;
@@ -16,10 +16,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Description 用户组 handler
@@ -51,12 +48,16 @@ public class GroupHandler {
      * @param groups 组
      * @return 树
      */
-    public List<Group> generateTree(List<Group> groups) {
-        if (ObjectUtils.isEmpty(groups)) {
-            throw new CustomException("传入组为空");
+    public List<GroupModel> generateTree(List<Group> originGroups) {
+        if (ObjectUtils.isEmpty(originGroups)) {
+            return Collections.emptyList();
         }
 
-        List<? extends TreeNode<Group>> multiTree = BaseUtils.buildTree(groups, (current, parent) -> {
+        List<GroupModel> groups = originGroups.stream()
+                .map(e -> BaseUtils.copy(e, GroupModel.class))
+                .toList();
+
+        List<? extends TreeNode<GroupModel>> multiTree = BaseUtils.buildTree(groups, (current, parent) -> {
             String parentId = ((Group)current).getParentId();
             String id = ((Group)parent).getId();
             return Objects.equals(parentId, id);
@@ -70,7 +71,7 @@ public class GroupHandler {
 //            throw new CustomException("数据中存在离散的节点");
 //        }
 
-        return (List<Group>) multiTree;
+        return (List<GroupModel>) multiTree;
     }
 
     /**

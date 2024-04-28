@@ -1,11 +1,11 @@
 server:
   shutdown: GRACEFUL
-  port: 8081
+  port: 8083
   servlet:
     context-path: /gateway
   netty:
     max-keep-alive-requests: 10000
-    connection-timeout: 30
+    connection-timeout: 30s
 
 # actuator 配置
 management:
@@ -55,8 +55,8 @@ spring:
       redis-route-definition-repository:
         enabled: true # org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
       httpclient:
-        connect-timeout: 3000
-        response-timeout: 5s
+        connect-timeout: 30000
+        response-timeout: 10s
   web:
     resources:
       static-locations:

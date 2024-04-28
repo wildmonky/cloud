@@ -1,5 +1,7 @@
 package org.lizhao.base.entity.user;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.lizhao.base.entity.CommonAttribute;
 import org.springframework.data.annotation.Id;
@@ -33,15 +35,18 @@ public class User extends CommonAttribute {
     private String id;
 
     /**
-     * 用户手机号码，对外用户唯一识别码
+     * 用户手机号码，对外用户唯一识别码 11位
      */
     @Column
+    @NotBlank(message = "手机号码不能为空")
+    @Pattern(regexp = "^\\d{11}$", message = "手机号码必须是11位")
     private String phone;
 
     /**
      * 用户登录账号
      */
     @Column
+    @NotBlank(message = "用户名不能为空")
     private String name;
 
     /**

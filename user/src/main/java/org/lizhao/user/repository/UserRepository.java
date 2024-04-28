@@ -23,13 +23,6 @@ public interface UserRepository extends R2dbcRepository<User, String> {
      Mono<Boolean> updateStatusById(String userId, short status);
 
      /**
-      * 根据id获取用户信息
-      * @param id must not be {@literal null}.
-      * @return 用户信息
-      */
-     Mono<User> findById(@NonNull String id);
-
-     /**
       * 通过用户名查询
       * @param name 用户名
       * @return 用户信息

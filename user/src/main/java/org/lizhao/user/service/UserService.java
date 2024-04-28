@@ -48,8 +48,11 @@ public class UserService implements ApplicationEventPublisherAware {
         return userRepository.findByName(username);
     }
 
-    public Mono<User> searchDetailsByName(String username) {
-        return userRepository.findByName(username);
+    public Mono<UserInfo> searchDetailsByName(String name) {
+        return userRepository.findByName(name)
+                .switchIfEmpty(Mono.error(new RuntimeException(name + "用户不存在")))
+                .map(user -> BaseUtils.copy(user, UserInfo.class))
+                .flatMap(this::searchDetails);
     }
 
     public Mono<UserInfo> searchDetailsById(String userId) {

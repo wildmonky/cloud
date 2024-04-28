@@ -2,7 +2,9 @@ package org.lizhao.cloud.gateway.configurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import org.lizhao.cloud.gateway.handler.ResourceHandler;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
+import org.lizhao.cloud.gateway.security.authentication.ExchangeReactiveAuthorizationManager;
 import org.lizhao.cloud.gateway.security.authentication.OutsideReactiveAuthenticationManager;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
 import org.lizhao.cloud.gateway.security.authentication.handler.SwitchAutoRedirectAuthenticationSuccessHandler;
@@ -105,6 +107,12 @@ public class WebFluxSecurityConfigurer {
         return new RedisLogoutSuccessHandler();
     }
 
+    @Bean
+    public ExchangeReactiveAuthorizationManager exchangeReactiveAuthorizationManager(ResourceHandler resourceHandler,
+                                                                                     WebClientUserDetailsServiceImpl webClientUserDetailsServiceImpl) {
+        return new ExchangeReactiveAuthorizationManager(resourceHandler, webClientUserDetailsServiceImpl);
+    }
+
     /**
      * reactive security !!!
      * @see ServerAuthenticationFailureHandler 认证成功处理器
@@ -120,7 +128,8 @@ public class WebFluxSecurityConfigurer {
                                                             CookieServerCsrfTokenRepository cookieServerCsrfTokenRepository,
                                                             ServerAuthenticationEntryPoint redirectServerAuthenticationEntryPoint,
                                                             DelegateReactiveUserDetailsServiceImpl delegateReactiveUserDetailsService,
-                                                            ObjectMapper objectMapper
+                                                            ObjectMapper objectMapper,
+                                                            ExchangeReactiveAuthorizationManager exchangeReactiveAuthorizationManager
     ) {
         // 注意 登录地址、注册地址都不需要csrf、auth
         http.headers(headerSpec ->
@@ -182,7 +191,10 @@ public class WebFluxSecurityConfigurer {
                     exchange.pathMatchers(HttpMethod.GET,
                                     excludePath.toArray(new String[0]))
                             .permitAll()
-                            .anyExchange().authenticated();
+//                            .anyExchange()
+//                            .authenticated()
+                            .anyExchange()
+                            .access(exchangeReactiveAuthorizationManager);
                 });
         // for test
 //        http.authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())

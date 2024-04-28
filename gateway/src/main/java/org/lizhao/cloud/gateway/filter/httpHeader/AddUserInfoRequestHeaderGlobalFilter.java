@@ -30,7 +30,7 @@ public class AddUserInfoRequestHeaderGlobalFilter implements GlobalFilter, Order
     /**
      * 在 {@link ReactiveLoadBalancerClientFilter#LOAD_BALANCER_CLIENT_FILTER_ORDER} 前
      */
-    private static final int ADD_USER_INFO_REQUEST_HEADER_FILTER_ORDER = 10149;
+    private static final int ADD_USER_INFO_REQUEST_HEADER_FILTER_ORDER = ReactiveLoadBalancerClientFilter.LOAD_BALANCER_CLIENT_FILTER_ORDER - 1;
     private final ObjectMapper objectMapper;
 
     public AddUserInfoRequestHeaderGlobalFilter(ObjectMapper objectMapper) {

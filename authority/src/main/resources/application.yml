@@ -1,0 +1,19 @@
+server:
+    shutdown: GRACEFUL
+    port: 8082
+    servlet:
+        context-path: /
+    netty:
+        max-keep-alive-requests: 10000
+        connection-timeout: 30s
+spring:
+    profiles:
+        #起效的配置文件后缀 application-xxx，maven配置
+        active: @maven.spring.env@
+    springdoc:
+        api-docs:
+            enabled: true
+            version: OPENAPI_3_0
+        swagger-ui:
+            enabled: true
+            path: /swagger.html

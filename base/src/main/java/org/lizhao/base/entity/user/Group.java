@@ -3,9 +3,7 @@ package org.lizhao.base.entity.user;
 import lombok.Getter;
 import lombok.Setter;
 import org.lizhao.base.entity.CommonAttribute;
-import org.lizhao.base.model.TreeNode;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -23,7 +21,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Table(name = "group")
-public class Group extends CommonAttribute implements TreeNode<Group> {
+public class Group extends CommonAttribute {
 
     /**
      * 用户组Id
@@ -52,9 +50,6 @@ public class Group extends CommonAttribute implements TreeNode<Group> {
      */
     private String comment;
 
-    @Transient
-    private Collection<TreeNode<Group>> children;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -78,10 +73,7 @@ public class Group extends CommonAttribute implements TreeNode<Group> {
         if (!Objects.equals(status, group.status)) {
             return false;
         }
-        if (!Objects.equals(comment, group.comment)) {
-            return false;
-        }
-        return Objects.equals(children, group.children);
+        return Objects.equals(comment, group.comment);
     }
 
     @Override
@@ -91,7 +83,6 @@ public class Group extends CommonAttribute implements TreeNode<Group> {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (children != null ? children.hashCode() : 0);
         return result;
     }
 }

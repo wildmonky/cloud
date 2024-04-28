@@ -1,7 +1,7 @@
 package org.lizhao.cloud.gateway.security.authentication.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.lizhao.base.exception.MessageException;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.WebFilterExchange;
@@ -31,13 +31,16 @@ public class LogAndRedirectAuthenticationFailureHandler extends RedirectServerAu
 
     @Override
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException exception) {
-        log.error("用户验证失败", exception);
         MultiValueMap<String, String> queryParams = webFilterExchange.getExchange().getRequest().getQueryParams();
-        String redirectPath = queryParams.getFirst("redirect_path");
-        if (StringUtils.isNotBlank(redirectPath)) {
-            return Mono.error(new RuntimeException("用户验证失败"));
+        String authType = queryParams.getFirst("AuthType");
+        switch(authType) {
+            case "returnUser" -> {
+                return Mono.error(new MessageException("用户验证失败"));
+            }
+            default -> {
+                return super.onAuthenticationFailure(webFilterExchange, exception);
+            }
         }
-        return super.onAuthenticationFailure(webFilterExchange, exception);
     }
 
 }

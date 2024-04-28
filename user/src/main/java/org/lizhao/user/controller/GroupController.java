@@ -5,6 +5,7 @@ import jakarta.annotation.Resource;
 import org.lizhao.base.entity.relation.GroupUserRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
+import org.lizhao.user.model.GroupModel;
 import org.lizhao.user.model.UserGroupModel;
 import org.lizhao.user.service.GroupService;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class GroupController {
 
     @Operation(summary = "所有用户组")
     @GetMapping("/tree")
-    public Mono<List<Group>> searchTree() {
+    public Mono<List<GroupModel>> searchTree() {
         return groupService.searchTree();
     }
 

@@ -7,9 +7,9 @@ import org.lizhao.base.entity.relation.GroupRoleRelation;
 import org.lizhao.base.entity.relation.UserRoleRelation;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
-import org.lizhao.base.exception.CustomException;
 import org.lizhao.base.model.TreeNode;
 import org.lizhao.base.utils.BaseUtils;
+import org.lizhao.user.model.RoleModel;
 import org.lizhao.user.repository.GroupRoleRelationRepository;
 import org.lizhao.user.repository.UserRoleRelationRepository;
 import org.reactivestreams.Publisher;
@@ -17,10 +17,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Description 角色 handler
@@ -155,12 +152,16 @@ public class RoleHandler {
      * @param roles 角色
      * @return 树
      */
-    public List<Role> generateTree(List<Role> roles) {
-        if (ObjectUtils.isEmpty(roles)) {
-            throw new CustomException("传入组为空");
+    public List<RoleModel> generateTree(List<Role> originRoles) {
+        if (ObjectUtils.isEmpty(originRoles)) {
+            return Collections.emptyList();
         }
 
-        List<? extends TreeNode<Role>> multiTree = BaseUtils.buildTree(roles, (current, parent) -> {
+        List<RoleModel> roles = originRoles.stream()
+                .map(e -> BaseUtils.copy(e, RoleModel.class))
+                .toList();
+
+        List<? extends TreeNode<RoleModel>> multiTree = BaseUtils.buildTree(roles, (current, parent) -> {
             String parentId = ((Role)current).getParentId();
             String id = ((Role)parent).getId();
             return Objects.equals(parentId, id);
@@ -174,7 +175,7 @@ public class RoleHandler {
 //            throw new CustomException("数据中存在离散的节点");
 //        }
 
-        return (List<Role>)multiTree;
+        return (List<RoleModel>)multiTree;
     }
 
 }

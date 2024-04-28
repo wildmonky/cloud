@@ -1,6 +1,5 @@
 package org.lizhao.base.utils;
 
-import com.sun.source.tree.Tree;
 import org.lizhao.base.exception.CustomException;
 import org.lizhao.base.model.Node;
 import org.lizhao.base.model.TreeNode;

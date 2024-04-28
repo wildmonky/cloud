@@ -10,6 +10,7 @@ import org.lizhao.base.entity.user.User;
 import org.lizhao.base.exception.MessageException;
 import org.lizhao.user.handler.RoleHandler;
 import org.lizhao.user.model.GroupRoleModel;
+import org.lizhao.user.model.RoleModel;
 import org.lizhao.user.model.UserRoleModel;
 import org.lizhao.user.repository.GroupRoleRelationRepository;
 import org.lizhao.user.repository.RoleRepository;
@@ -47,7 +48,7 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    public Mono<List<Role>> searchTree() {
+    public Mono<List<RoleModel>> searchTree() {
         return roleRepository.findAll().collectList().map(l ->
             roleHandler.generateTree(l)
         );
