@@ -10,9 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *   <artifactId>spring-boot-configuration-processor</artifactId>
  *   <optional>true</optional>
  * </dependency>
- *
  * 配合注解@ConfigurationPropertiesScan或@EnableConfigurationProperties
- *
  * 之后需要 mvn clean mvn install IDEA才能在配置文件中进行提示
  *
  * @author lizhao

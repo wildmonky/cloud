@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Description
@@ -51,7 +52,7 @@ public class SwitchAutoRedirectAuthenticationSuccessHandler extends RedirectServ
         log.info("用户验证成功");
         MultiValueMap<String, String> queryParams = webFilterExchange.getExchange().getRequest().getQueryParams();
         String authType = queryParams.getFirst("AuthType");
-        switch(authType) {
+        switch(Objects.requireNonNull(authType)) {
             case "redirect" -> {
                 String redirectPath = queryParams.getFirst("redirectPath");
                 if (StringUtils.isNotBlank(redirectPath)) {
@@ -61,20 +62,20 @@ public class SwitchAutoRedirectAuthenticationSuccessHandler extends RedirectServ
             }
             case "returnUser" -> {
                 return webFilterExchange.getExchange().getResponse().writeWith(body -> {
-                    TokenAuthenticationToken tokeAuthentication = (TokenAuthenticationToken) authentication;
-                    GatewayUser user = (GatewayUser)authentication.getPrincipal();
-                    user.setToken(tokeAuthentication.getToken());
-                    ResponseBodyModel<LoginUserInfo> responseBodyModel = ResponseBodyModel.of(200, user.transferToLogin(), "用户信息获取成功");
-                    DefaultDataBufferFactory sharedInstance = DefaultDataBufferFactory.sharedInstance;
-                    DefaultDataBuffer dataBuffer;
-                    try {
-                        dataBuffer = sharedInstance.wrap(this.objectMapper.writeValueAsBytes(responseBodyModel));
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                    body.onNext(dataBuffer);
-                    body.onComplete();
-                });
+                            TokenAuthenticationToken tokeAuthentication = (TokenAuthenticationToken) authentication;
+                            GatewayUser user = (GatewayUser) authentication.getPrincipal();
+                            user.setToken(tokeAuthentication.getToken());
+                            ResponseBodyModel<LoginUserInfo> responseBodyModel = ResponseBodyModel.of(200, user.transferToLogin(), "用户信息获取成功");
+                            DefaultDataBufferFactory sharedInstance = DefaultDataBufferFactory.sharedInstance;
+                            DefaultDataBuffer dataBuffer;
+                            try {
+                                dataBuffer = sharedInstance.wrap(this.objectMapper.writeValueAsBytes(responseBodyModel));
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+                            body.onNext(dataBuffer);
+                            body.onComplete();
+                        });
             }
             default -> {
                 return super.onAuthenticationSuccess(webFilterExchange, authentication);
