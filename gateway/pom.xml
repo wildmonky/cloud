@@ -312,18 +312,18 @@
                 </executions>
             </plugin>
             <!-- aot 本地编译 需要安装对应java版本的Graalvm -->
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <version>0.9.23</version>
-                <configuration>
-                    <imageName>gateway-image</imageName>
-                    <buildArgs>
-                        <!-- 开发时可使用，加快构建速度，部署时需要去掉 -->
-                        <buildArg>-Ob</buildArg>
-                    </buildArgs>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.graalvm.buildtools</groupId>-->
+<!--                <artifactId>native-maven-plugin</artifactId>-->
+<!--&lt;!&ndash;                <version>0.9.23</version>&ndash;&gt;-->
+<!--                <configuration>-->
+<!--                    <imageName>gateway-image</imageName>-->
+<!--                    <buildArgs>-->
+<!--                        &lt;!&ndash; 开发时可使用，加快构建速度，部署时需要去掉 &ndash;&gt;-->
+<!--                        <buildArg>-Ob</buildArg>-->
+<!--                    </buildArgs>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

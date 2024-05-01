@@ -3,6 +3,7 @@ package org.lizhao.authority.service;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
+import lombok.extern.slf4j.Slf4j;
 import org.lizhao.authority.handler.ResourceHandler;
 import org.lizhao.authority.repository.ResourceRepository;
 import org.lizhao.base.model.resource.ServerResourceModel;
@@ -27,6 +28,7 @@ import java.util.List;
  * @date 2024-04-24 17:52
  * @since 0.0.1-SNAPSHOT
  */
+@Slf4j
 @Service
 public class ResourceService {
 

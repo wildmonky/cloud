@@ -2,12 +2,17 @@ package org.lizhao.cloud.gateway.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.lizhao.base.entity.authority.Authority;
 import org.lizhao.base.entity.authority.Role;
 import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.enums.CommonStateEnum;
+import org.lizhao.base.model.LoginUserInfo;
+import org.lizhao.base.model.SimpleUserInfo;
 import org.lizhao.base.model.UserInfo;
+import org.lizhao.base.utils.BaseUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,7 +24,11 @@ import java.util.stream.Collectors;
  * @author lizhao
  */
 public class GatewayUser extends UserInfo implements UserDetails {
+
+    @Getter
+    @Setter
     private String token;
+
     private final Set<? extends GrantedAuthority> grantedAuthorities;
 
     @JsonCreator
@@ -79,14 +88,6 @@ public class GatewayUser extends UserInfo implements UserDetails {
         return true;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     /**
      * 构建函数中使用时，必须在super()后
      * @param user 用户信息
@@ -103,6 +104,13 @@ public class GatewayUser extends UserInfo implements UserDetails {
         super.setUpdateUseId(user.getUpdateUseId());
         super.setUpdateUseName(user.getUpdateUseName());
         super.setUpdateTime(user.getUpdateTime());
+    }
+
+    public LoginUserInfo transferToLogin() {
+        SimpleUserInfo simpleUserInfo = transferToSimple();
+        LoginUserInfo loginUserInfo = BaseUtils.copy(simpleUserInfo, LoginUserInfo.class);
+        loginUserInfo.setToken(this.token);
+        return loginUserInfo;
     }
 
 }

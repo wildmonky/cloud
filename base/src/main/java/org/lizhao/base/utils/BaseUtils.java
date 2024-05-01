@@ -330,7 +330,7 @@ public class BaseUtils {
                 .filter(e -> equalsFunc.apply(current, e))
                 .collect(Collectors.toSet());
         // 没有子节点
-        if (foundChildren.size() == 0) {
+        if (foundChildren.isEmpty()) {
             return;
         }
 

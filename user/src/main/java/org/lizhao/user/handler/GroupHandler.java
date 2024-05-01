@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description 用户组 handler
@@ -55,7 +56,7 @@ public class GroupHandler {
 
         List<GroupModel> groups = originGroups.stream()
                 .map(e -> BaseUtils.copy(e, GroupModel.class))
-                .toList();
+                .collect(Collectors.toList());
 
         List<? extends TreeNode<GroupModel>> multiTree = BaseUtils.buildTree(groups, (current, parent) -> {
             String parentId = ((Group)current).getParentId();

@@ -5,7 +5,7 @@ spring:
     activate:
       # 当前配置文件名称
       on-profile:
-        - prod
+        - prod-docker
     #
     #    circuitbreaker:
     #      hystrix:
@@ -20,12 +20,12 @@ spring:
 #    password: 19960214
   kafka: # 其他配置在 application.yml
     bootstrap-servers:
-      - 127.0.0.1:9092
+      - host.docker.internal:9092
   data:
     redis:
       repositories:
         enabled: true
-      host: 127.0.0.1
+      host: host.docker.internal
       port: 6379
       database: 0
       username: gateway
@@ -42,7 +42,7 @@ spring:
   r2dbc:
     #    username: gateway
     #    password: 19960214
-    url: r2dbc:postgresql://gateway_dev_01:19960214@127.0.0.1:5432/gateway
+    url: r2dbc:postgresql://gateway_dev_01:19960214@host.docker.internal:5432/gateway
     properties:
       currentSchema: gateway_dev # 设置 schema
     pool:

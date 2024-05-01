@@ -27,7 +27,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <log.root>cloud-log</log.root>
+        <log.root>logs</log.root>
         <cloud.version>0.0.1-SNAPSHOT</cloud.version>
         <java.version>17</java.version>
         <!--设置maven source编译使用的jdk，否则刷新依赖时自动设置为1.5-->
@@ -152,7 +152,7 @@
             <id>dev</id>
             <properties>
                 <maven.spring.env>dev</maven.spring.env>
-                <maven.nacos.server>106.52.188.209:8848</maven.nacos.server>
+                <maven.nacos.server>106.52.188.209:8948</maven.nacos.server>
                 <maven.nacos.username>lizhao</maven.nacos.username>
                 <maven.nacos.password>19960214</maven.nacos.password>
                 <maven.nacos.config.namespace>dev</maven.nacos.config.namespace>
@@ -169,12 +169,12 @@
             <id>test</id>
             <properties>
                 <maven.spring.env>test</maven.spring.env>
-                <maven.nacos.server>106.52.188.209:8848</maven.nacos.server>
+                <maven.nacos.server>106.52.188.209:8948</maven.nacos.server>
                 <maven.nacos.username>lizhao</maven.nacos.username>
                 <maven.nacos.password>19960214</maven.nacos.password>
-                <maven.nacos.config.namespace>test</maven.nacos.config.namespace>
+                <maven.nacos.config.namespace>b37c7ba2-3004-42a9-92b5-27971fe6d460</maven.nacos.config.namespace>
                 <maven.nacos.config.group>gateway</maven.nacos.config.group>
-                <maven.nacos.discovery.namespace>test</maven.nacos.discovery.namespace>
+                <maven.nacos.discovery.namespace>b37c7ba2-3004-42a9-92b5-27971fe6d460</maven.nacos.discovery.namespace>
                 <maven.nacos.discovery.group>gateway</maven.nacos.discovery.group>
             </properties>
             <activation>
@@ -185,12 +185,28 @@
             <id>prod</id>
             <properties>
                 <maven.spring.env>prod</maven.spring.env>
-                <maven.nacos.server>127.0.0.1:8848</maven.nacos.server>
+                <maven.nacos.server>127.0.0.1:8948</maven.nacos.server>
                 <maven.nacos.username>lizhao</maven.nacos.username>
                 <maven.nacos.password>19960214</maven.nacos.password>
-                <maven.nacos.config.namespace>prod</maven.nacos.config.namespace>
+                <maven.nacos.config.namespace>46368a8c-2e39-4596-93a3-110780733597</maven.nacos.config.namespace>
                 <maven.nacos.config.group>gateway</maven.nacos.config.group>
-                <maven.nacos.discovery.namespace>prod</maven.nacos.discovery.namespace>
+                <maven.nacos.discovery.namespace>46368a8c-2e39-4596-93a3-110780733597</maven.nacos.discovery.namespace>
+                <maven.nacos.discovery.group>gateway</maven.nacos.discovery.group>
+            </properties>
+            <activation>
+                <jdk>17</jdk>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod-docker</id>
+            <properties>
+                <maven.spring.env>prod-docker</maven.spring.env>
+                <maven.nacos.server>host.docker.internal:8948</maven.nacos.server>
+                <maven.nacos.username>lizhao</maven.nacos.username>
+                <maven.nacos.password>19960214</maven.nacos.password>
+                <maven.nacos.config.namespace>a153782a-d09a-4768-a4e8-79dac7d808e4</maven.nacos.config.namespace>
+                <maven.nacos.config.group>gateway</maven.nacos.config.group>
+                <maven.nacos.discovery.namespace>a153782a-d09a-4768-a4e8-79dac7d808e4</maven.nacos.discovery.namespace>
                 <maven.nacos.discovery.group>gateway</maven.nacos.discovery.group>
             </properties>
             <activation>

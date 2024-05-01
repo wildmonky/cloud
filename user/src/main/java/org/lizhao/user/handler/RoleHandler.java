@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description 角色 handler
@@ -159,7 +160,7 @@ public class RoleHandler {
 
         List<RoleModel> roles = originRoles.stream()
                 .map(e -> BaseUtils.copy(e, RoleModel.class))
-                .toList();
+                .collect(Collectors.toList());
 
         List<? extends TreeNode<RoleModel>> multiTree = BaseUtils.buildTree(roles, (current, parent) -> {
             String parentId = ((Role)current).getParentId();

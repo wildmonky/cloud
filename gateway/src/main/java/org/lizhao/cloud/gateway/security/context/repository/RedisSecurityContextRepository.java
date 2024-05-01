@@ -2,8 +2,8 @@ package org.lizhao.cloud.gateway.security.context.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.lizhao.base.entity.user.User;
 import org.lizhao.base.utils.JwtUtils;
+import org.lizhao.base.utils.WebUtils;
 import org.lizhao.cloud.gateway.configurer.properties.SecurityProperties;
 import org.lizhao.cloud.gateway.model.GatewayUser;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
@@ -22,7 +22,10 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Description SecurityContext(包含用户信息，如：账号密码) 保存策略 Redis
@@ -92,7 +95,7 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
      */
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
-        String cookieDomain = exchange.getRequest().getHeaders().getFirst("Host");
+        String cookieDomain = WebUtils.paresHost(exchange.getRequest().getHeaders().getFirst("Host"));
         Authentication authentication = context.getAuthentication();
         assert authentication != null;
         String token = createKey(this.prefix, authentication);

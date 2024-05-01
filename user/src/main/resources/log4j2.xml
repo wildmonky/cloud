@@ -29,19 +29,31 @@
             </Policies>
             <DefaultRolloverStrategy max="1" />
         </RollingFile>
+
+        <RollingFile name="appCompleteLog"
+                     fileName="${APP_LOG_ROOT}/${APP_NAME}/complete.log"
+                     filePattern="${APP_LOG_ROOT}/${APP_NAME}/complete-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console" />
         </Root>
 
-        <Logger name="org.lizhao.user" additivity="false" level="info">
+        <Logger name="SERVICE" additivity="false" level="info">
             <AppenderRef ref="appServiceLog" />
+            <AppenderRef ref="appCompleteLog" />
             <AppenderRef ref="Console" />
         </Logger>
 
-        <Logger name="org.lizhao.user" additivity="false" level="info">
+        <Logger name="SYSTEM" additivity="false" level="info">
             <AppenderRef ref="appSystemLog" />
+            <AppenderRef ref="appCompleteLog" />
             <AppenderRef ref="Console" />
         </Logger>
     </Loggers>

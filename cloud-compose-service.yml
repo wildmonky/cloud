@@ -1,0 +1,56 @@
+version: "3"
+
+networks:
+  cloud-net:
+
+services:
+
+  gateway: # 网关
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    working_dir: /app
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8081:8081"
+#      - "5105:5105"
+    networks:
+      - cloud-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /data/docker/logs:/app/logs
+
+  authority: # 权限服务
+    build:
+      context: ./authority
+      dockerfile: Dockerfile
+    working_dir: /app
+    environment:
+      TZ: Asia/Shanghai
+#    ports:
+#      - "8082:8082"
+    networks:
+      - cloud-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /data/docker/logs:/app/logs
+
+  user: # 用户服务
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    working_dir: /app
+    environment:
+      TZ: Asia/Shanghai
+#    ports:
+#      - "5105:5105"
+#      - "8083:8083"
+    networks:
+      - cloud-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /data/docker/logs:/app/logs

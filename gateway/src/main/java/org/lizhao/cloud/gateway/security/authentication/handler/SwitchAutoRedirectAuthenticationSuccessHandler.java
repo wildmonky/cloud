@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.lizhao.base.model.LoginUserInfo;
 import org.lizhao.base.model.ResponseBodyModel;
+import org.lizhao.cloud.gateway.model.GatewayUser;
+import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
 import org.springframework.core.io.buffer.DefaultDataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.security.core.Authentication;
@@ -58,9 +61,12 @@ public class SwitchAutoRedirectAuthenticationSuccessHandler extends RedirectServ
             }
             case "returnUser" -> {
                 return webFilterExchange.getExchange().getResponse().writeWith(body -> {
-                    ResponseBodyModel<Authentication> responseBodyModel = ResponseBodyModel.of(200, authentication, "用户信息获取成功");
+                    TokenAuthenticationToken tokeAuthentication = (TokenAuthenticationToken) authentication;
+                    GatewayUser user = (GatewayUser)authentication.getPrincipal();
+                    user.setToken(tokeAuthentication.getToken());
+                    ResponseBodyModel<LoginUserInfo> responseBodyModel = ResponseBodyModel.of(200, user.transferToLogin(), "用户信息获取成功");
                     DefaultDataBufferFactory sharedInstance = DefaultDataBufferFactory.sharedInstance;
-                    DefaultDataBuffer dataBuffer = null;
+                    DefaultDataBuffer dataBuffer;
                     try {
                         dataBuffer = sharedInstance.wrap(this.objectMapper.writeValueAsBytes(responseBodyModel));
                     } catch (JsonProcessingException e) {

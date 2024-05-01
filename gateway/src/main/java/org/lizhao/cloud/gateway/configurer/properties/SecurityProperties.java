@@ -151,9 +151,9 @@ public class SecurityProperties {
     }
 
     public static class Auth{
-        private String cookieName = "TOKEN";
+        private String cookieName = "ACCESS-TOKEN";
 
-        private String headerName = "TOKEN";
+        private String headerName = "Authorization";
 
         private String successUrl = "/";
 

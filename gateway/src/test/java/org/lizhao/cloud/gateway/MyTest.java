@@ -15,6 +15,7 @@ import org.lizhao.base.entity.user.Group;
 import org.lizhao.base.entity.user.User;
 import org.lizhao.base.model.Node;
 import org.lizhao.base.model.UserInfo;
+import org.lizhao.base.utils.WebUtils;
 import org.lizhao.base.utils.uniquekey.SnowFlake;
 import org.lizhao.cloud.gateway.json.definition.RouteDefinitionDeserializer;
 import org.lizhao.cloud.gateway.json.userModel.UserInfoSerializer;
@@ -24,8 +25,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.AntPathMatcher;
 
-import java.io.IOException;
+import javax.net.ssl.*;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -294,6 +300,70 @@ public class MyTest {
         System.out.println(groupClass.getPackageName());
         String[] split = Group.class.getName().split("\\.");
         System.out.println(split[split.length - 1]);
+    }
+
+    @Test
+    public void httpsTest() {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(new FileInputStream("D:\\Repository\\WorkSpace\\docker\\cert.pem"), "19960214".toCharArray());
+
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, "19960214".toCharArray());
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
+
+            URL url = new URL("https://106.52.188.209:2375");
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sslContext.getSocketFactory());
+
+            connection.setHostnameVerifier((host, sslSession) -> {
+                System.out.println("远程主机：" + host);
+                return false;
+            });
+
+            InputStream response = connection.getInputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            try {
+                byte[] bs = new byte[1024];
+                while (response.available() > 0) {
+                    response.read(bs);
+                    outputStream.writeBytes(bs);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                response.close();
+                connection.disconnect();
+            }
+
+
+            System.out.println(outputStream.toString("GBK"));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (UnrecoverableKeyException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (CertificateException e) {
+            throw new RuntimeException(e);
+        } catch (KeyStoreException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void domainTst() {
+        System.out.println(WebUtils.paresHost("106.52.188.209:8081"));
     }
 
 }

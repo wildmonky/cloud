@@ -1,6 +1,6 @@
 server:
   shutdown: GRACEFUL
-  port: 8084
+  port: 8083
   servlet:
     context-path: /
   netty:
