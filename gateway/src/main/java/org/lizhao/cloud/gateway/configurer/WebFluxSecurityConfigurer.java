@@ -3,12 +3,13 @@ package org.lizhao.cloud.gateway.configurer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.lizhao.cloud.gateway.handler.ResourceHandler;
+import org.lizhao.cloud.gateway.model.GatewayUser.GatewayUserBuilder;
 import org.lizhao.cloud.gateway.security.XMLHttpRequestRedirectStrategy;
 import org.lizhao.cloud.gateway.security.authentication.ExchangeReactiveAuthorizationManager;
 import org.lizhao.cloud.gateway.security.authentication.OutsideReactiveAuthenticationManager;
 import org.lizhao.cloud.gateway.security.authentication.TokenAuthenticationToken;
-import org.lizhao.cloud.gateway.security.authentication.handler.SwitchAutoRedirectAuthenticationSuccessHandler;
 import org.lizhao.cloud.gateway.security.authentication.handler.LogAndRedirectAuthenticationFailureHandler;
+import org.lizhao.cloud.gateway.security.authentication.handler.SwitchAutoRedirectAuthenticationSuccessHandler;
 import org.lizhao.cloud.gateway.security.context.repository.RedisSecurityContextRepository;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutHandler;
 import org.lizhao.cloud.gateway.security.log.handler.RedisLogoutSuccessHandler;
@@ -32,6 +33,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -49,6 +51,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Description 网关安全配置
@@ -174,6 +177,11 @@ public class WebFluxSecurityConfigurer {
                             // redirect，自动配置了 AuthenticationEntryPoint、AuthenticationWebFilter、entrypoint、failureHandler，failureHandler跳转到 {loginPage}?error
 //                           .loginPage("/gate/login")
                 )
+                .anonymous(anonymousSpec -> {
+                    AnonymousAuthenticationWebFilter anonymousAuthenticationWebFilter =
+                            new AnonymousAuthenticationWebFilter(UUID.randomUUID().toString(), GatewayUserBuilder.anonymous(), AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
+                    anonymousSpec.authenticationFilter(anonymousAuthenticationWebFilter);
+                })
                 .logout(logoutSpec ->
                     logoutSpec
 //                            .logoutUrl("/logout") // 使用 POST 方法

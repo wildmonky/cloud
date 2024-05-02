@@ -113,4 +113,19 @@ public class GatewayUser extends UserInfo implements UserDetails {
         return loginUserInfo;
     }
 
+    public boolean isAnonymous() {
+        return this.getUsername().equals("anonymous");
+    }
+
+    public static class GatewayUserBuilder {
+
+        public static GatewayUser anonymous() {
+            GatewayUser anonymous = new GatewayUser(null, null, null);
+            anonymous.setName("anonymous");
+            anonymous.setStatus(CommonStateEnum.NORMAL.getCode());
+            return anonymous;
+        }
+
+    }
+
 }

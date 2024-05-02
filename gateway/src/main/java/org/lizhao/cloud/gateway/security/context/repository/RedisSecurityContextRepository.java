@@ -95,6 +95,14 @@ public class RedisSecurityContextRepository implements ServerSecurityContextRepo
      */
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
+        if (context == null) {
+            String tokenValue = exchange.getRequest().getHeaders().getFirst(securityProperties.getAuth().getHeaderName());
+            if (StringUtils.isBlank(tokenValue)) {
+                return Mono.empty();
+            }
+            return reactiveTokenRedisTemplate.opsForValue().delete(tokenValue).then();
+        }
+
         String cookieDomain = WebUtils.paresHost(exchange.getRequest().getHeaders().getFirst("Host"));
         Authentication authentication = context.getAuthentication();
         assert authentication != null;

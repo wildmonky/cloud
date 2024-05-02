@@ -49,6 +49,9 @@ public class GatewayServiceImpl implements ApplicationEventPublisherAware {
                 .map(SecurityContext::getAuthentication)
                 .flatMap(authentication -> {
                     GatewayUser gatewayUser = (GatewayUser)authentication.getPrincipal();
+                    if (gatewayUser.isAnonymous()) {
+                        return Mono.just(gatewayUser);
+                    }
                     return webClientUserDetailsServiceImpl.findByUserId(gatewayUser.getId());
                 });
     }

@@ -82,6 +82,10 @@ public class ResourceHandler {
                 .map(this::generateTree);
     }
 
+    public Mono<ServerResource> findMostMatchResource(String path) {
+        return this.resourceRepository.findMostMatchResource(path);
+    }
+
     public Mono<ServerResourceModel> findWithAuthority(@NotBlank(message = "资源路径为空") String path) {
         return this.resourceRepository.findServerResourceByPath(path)
                 .switchIfEmpty(Mono.error(new MessageException("对应的资源不存在")))
@@ -220,7 +224,7 @@ public class ResourceHandler {
     }
 
     public Mono<Boolean> hasAuthority(UserInfo userInfo, String path, String method) {
-        boolean isRootRoleOrAdminRole = userInfo.getRoles().stream().anyMatch(e ->
+        boolean isRootRoleOrAdminRole = Optional.ofNullable(userInfo.getRoles()).orElse(Collections.emptySet()).stream().anyMatch(e ->
                 RoleEnum.ROOT.getCode().equalsIgnoreCase(e.getName())
                         || RoleEnum.ADMIN.getCode().equalsIgnoreCase(e.getName())
         );
@@ -229,28 +233,40 @@ public class ResourceHandler {
             return Mono.just(true);
         }
 
-        boolean hasRootAuthority = userInfo.getOriginAuthorities().stream().anyMatch(e -> AuthorityEnum.ROOT.getCode().equalsIgnoreCase(e.getName()));
+        boolean hasRootAuthority = Optional.ofNullable(userInfo.getOriginAuthorities()).orElse(Collections.emptySet()).stream().anyMatch(e -> AuthorityEnum.ROOT.getCode().equalsIgnoreCase(e.getName()));
         if (hasRootAuthority) {
             return Mono.just(true);
         }
 
         BaseOperationEnum operation = BaseOperationEnum.of(method);
-        return this.findWithAuthority(path)
-                        .handle((resource, sink) -> {
-                            // 判断资源是否需要权限
-                            if (!resource.getNeedAuthority()) {
-                                sink.next(true);
-                                return;
-                            }
+        return this.findMostMatchResource(path)
+                .flatMap(resource -> this.findWithAuthority(resource.getPath()))
+                .<Boolean>handle((resource, sink) -> {
+                    log.info("{}匹配到{}", path, resource.getPath());
+                    // 判断资源是否需要权限
+                    if (!resource.getNeedAuthority()) {
+                        sink.next(true);
+                        return;
+                    }
 
-                            Map<BaseOperationEnum, Authority> needAuthorities = resource.getNeedAuthorities();
-                            Authority authority = needAuthorities.get(operation);
-                            if (authority == null) {
-                                sink.error(new MessageException("当前用户：{}，无权操作", userInfo.getName()));
-                            }
+                    Map<BaseOperationEnum, Authority> needAuthorities = resource.getNeedAuthorities();
+                    if (needAuthorities == null) {
+                        log.info("{}未配置权限", resource.getPath());
+                        sink.next(true);
+                        return;
+                    }
 
-                            sink.next(userInfo.getOriginAuthorities().contains(authority));
-                        });
+                    Authority authority = needAuthorities.get(operation);
+                    if (authority == null) {
+                        sink.error(new MessageException("当前用户：{}，无权操作", userInfo.getName()));
+                        return;
+                    }
+
+                    sink.next(userInfo.getOriginAuthorities().contains(authority));
+                }).switchIfEmpty(Mono.defer(() -> {
+                    log.info("未查询到{}对应资源，如需权限控制请先配置", path);
+                    return Mono.just(true);
+                }));
     }
 
     public List<ServerResourceModel> generateTree(List<ServerResourceModel> list) {

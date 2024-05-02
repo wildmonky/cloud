@@ -19,6 +19,19 @@ public interface ResourceRepository extends R2dbcRepository<ServerResource, Stri
 
 
     /**
+     * 获取最匹配的资源
+     * @param path 路径
+     * @return 与 path 最匹配的资源
+     */
+    @Query(
+            "select * from server_resource" +
+                    " where :path ~ path" +
+                    " order by length(path) desc" +
+                    " limit 1"
+    )
+    Mono<ServerResource> findMostMatchResource(String path);
+
+    /**
      * 检索 type 类型的资源
      * @param type 类型
      * @return type类型的资源

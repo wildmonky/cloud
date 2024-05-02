@@ -32,8 +32,15 @@ public class ExchangeReactiveAuthorizationManager implements ReactiveAuthorizati
                 return Mono.error(new MessageException("当前用户未认证"));
             }
             GatewayUser gatewayUser = (GatewayUser)auth.getPrincipal();
-            return webClientUserDetailsServiceImpl.findByUserId(gatewayUser.getId())
-                    .switchIfEmpty(Mono.error(new MessageException("id{}对应的用户信息异常", gatewayUser.getId())))
+            return Mono.just(gatewayUser.isAnonymous())
+                    .flatMap(isAnonymous -> {
+                        if (isAnonymous) {
+                            return Mono.just(gatewayUser);
+                        }
+
+                        return webClientUserDetailsServiceImpl.findByUserId(gatewayUser.getId())
+                                .switchIfEmpty(Mono.error(new MessageException("id{}对应的用户信息异常", gatewayUser.getId())));
+                    })
                     .flatMap(userInfo ->
                             resourceHandler.hasAuthority(userInfo, context.getExchange().getRequest())
                                     .handle((has, sink) -> {
