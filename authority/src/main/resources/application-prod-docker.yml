@@ -14,14 +14,14 @@ spring:
   r2dbc:
     #    username: gateway
     #    password: 19960214
-    url: r2dbc:postgresql://gateway_dev_01:19960214@host.docker.internal:5432/gateway
+    url: r2dbc:postgresql://authority_dev_01:authority_dev_01_123@host.docker.internal:5432/gateway
     properties:
       currentSchema: gateway_dev # 设置 schema
     pool:
       validation-query: select 1=1 from "user"
       enabled: true
-      initial-size: 10
-      min-idle: 5
+      initial-size: 30
+      max-size: 50
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true

@@ -54,3 +54,37 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - /data/docker/logs:/app/logs
+
+  realtime: # 实时服务 视频
+    build:
+      context: ./realtime
+      dockerfile: Dockerfile
+    working_dir: /app
+    environment:
+      TZ: Asia/Shanghai
+    #    ports:
+    #      - "5105:5105"
+    #      - "8085:8085"
+    networks:
+      - cloud-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /data/docker/logs:/app/logs
+
+#  admin:
+#    build:
+#      context: ./admin
+#      dockerfile: Dockerfile
+#    working_dir: /app
+#    environment:
+#      TZ: Asia/Shanghai
+##    ports:
+##            - "5105:5105"
+##      - "8084:8084"
+#    networks:
+#      - cloud-net
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+##    volumes:
+##      - /data/docker/logs:/app/logs

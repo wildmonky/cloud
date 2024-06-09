@@ -3,6 +3,11 @@ package org.lizhao.base.web.interceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.lizhao.base.exception.MessageException;
 import org.lizhao.base.model.ResponseBodyModel;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
  * Description 全局异常处理
@@ -13,15 +18,16 @@ import org.lizhao.base.model.ResponseBodyModel;
  * @since 0.0.1-SNAPSHOT
  */
 @Slf4j
-//@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-//@ControllerAdvice(annotations = { Controller.class })
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@ControllerAdvice(annotations = { Controller.class })
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(MessageException.class)
-//    @ResponseBody
-    public ResponseBodyModel<String> exceptionHandler(MessageException e) {
+    public GlobalExceptionHandler() {}
+
+    @ExceptionHandler(MessageException.class)
+    public ResponseEntity<ResponseBodyModel<String>> exceptionHandler(MessageException e) {
         log.error("捕获到异常{}, {}", e.getMessage(), e.getStackTrace());
-        return ResponseBodyModel.error(e.getMessage());
+        return ResponseEntity.ok(ResponseBodyModel.error(e.getMessage()));
     }
 
 }

@@ -9,7 +9,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # 应用构建成功后的jar文件被复制到镜像内，名字也改成了app.jar
 ADD target/user-0.0.1-SNAPSHOT-spring-boot.jar ./user.jar
 # 启动容器时的进程
-ENTRYPOINT ["java","-jar","/user.jar"]
+ENTRYPOINT ["java","-Xms128m", "-Xmx512m","-jar","/user.jar"]
 #ENTRYPOINT ["java","-jar","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5105","/user.jar"]
 #ENTRYPOINT ["java","-jar","/user.jar", "--spring.profiles.active=prod"]
 # 暴露8084端口

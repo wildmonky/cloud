@@ -24,12 +24,6 @@ management:
         include: "*"
 
 spring:
-  boot:
-    admin:
-      client:
-        enabled: false
-        url:
-          - http://localhost:8083
   web:
     resources:
       static-locations:

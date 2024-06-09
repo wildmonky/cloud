@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 /**
- * Description 实体通用属性设置：创建人id，创建人，创建时间，更新人id，更新人，更新时间
+ * Description webflux 实体通用属性设置：创建人id，创建人，创建时间，更新人id，更新人，更新时间
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT

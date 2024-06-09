@@ -14,7 +14,7 @@ spring:
   r2dbc:
     #    username: gateway
     #    password: 19960214
-    url: r2dbc:postgresql://gateway_dev_01:19960214@106.52.188.209:5432/gateway
+    url: r2dbc:postgresql://authority_dev_01:authority_dev_01_123@106.52.188.209:5432/gateway
     properties:
       currentSchema: gateway_dev # 设置 schema
     pool:

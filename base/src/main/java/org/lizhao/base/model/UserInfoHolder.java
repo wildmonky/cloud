@@ -1,5 +1,7 @@
 package org.lizhao.base.model;
 
+import java.util.Optional;
+
 /**
  * Description 用户信息持有者
  *
@@ -17,7 +19,7 @@ public class UserInfoHolder {
     }
 
     public static SimpleUserInfo get() {
-        return USER_INFO_THREAD_LOCAL.get();
+        return Optional.ofNullable(USER_INFO_THREAD_LOCAL.get()).orElseThrow(() -> new RuntimeException("用户信息不存在"));
     }
 
     public static void remove() {

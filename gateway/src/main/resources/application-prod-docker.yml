@@ -48,8 +48,9 @@ spring:
     pool:
       validation-query: select 1=1 from "user"
       enabled: true
-      initial-size: 10
-# r2dbc 不支持jpa
+      initial-size: 30
+      max-size: 30
+  # r2dbc 不支持jpa
 #  jpa:
 #    database: PostgreSQL
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect

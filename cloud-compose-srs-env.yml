@@ -1,0 +1,36 @@
+version: "3"
+
+networks:
+  cloud-net:
+
+services:
+  # https://ossrs.net/lts/zh-cn/docs/v5/doc/webrtc#sfu-one-to-one
+  srs-server:
+    build:
+      context: ./docker-env/srs
+      dockerfile: Dockerfile
+    entrypoint: ./objs/srs -c conf/https.docker.conf
+    environment:
+      CANDIDATE: 106.52.188.209 # 重要
+    ports:
+      - "1935:1935"
+      - "1985:1985"
+      - "1990:1990"
+      - "8080:8080"
+      - "8088:8088"
+      - "8000:8000/udp"
+
+  # for webrtc
+  srs-signaling-server:
+    image: registry.cn-hangzhou.aliyuncs.com/ossrs/signaling:1
+    entrypoint: ./bin/signaling
+    ports:
+      - "1989:1989"
+
+  srs-nginx-proxy:
+    build:
+      context: ./docker-env/srs/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"

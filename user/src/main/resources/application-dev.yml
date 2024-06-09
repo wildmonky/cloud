@@ -1,6 +1,6 @@
 spring:
   devtools:
-    add-properties: true
+    add-properties: false
   config:
     activate:
       # 当前配置文件名称
@@ -11,17 +11,24 @@ spring:
     #      hystrix:
     #        enabled: true
     #
+  boot:
+    admin:
+      client:
+        enabled: true
+        url:
+          - http://127.0.0.1:8084
+
   r2dbc:
     #    username: gateway
     #    password: 19960214
-    url: r2dbc:postgresql://gateway_dev_01:19960214@106.52.188.209:5432/gateway
+    url: r2dbc:postgresql://user_dev_01:user_dev_01_789@106.52.188.209:5432/gateway
     properties:
       currentSchema: gateway_dev # 设置 schema
     pool:
       validation-query: select 1=1 from "user"
       enabled: true
       initial-size: 10
-      min-idle: 5
+      max-size: 100
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true

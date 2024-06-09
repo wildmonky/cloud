@@ -1,0 +1,60 @@
+spring:
+  devtools:
+    add-properties: true
+  config:
+    activate:
+      # 当前配置文件名称
+      on-profile:
+        - prod
+    #
+    #    circuitbreaker:
+    #      hystrix:
+    #        enabled: true
+    #
+#  r2dbc:
+#    #    username: gateway
+#    #    password: 19960214
+#    url: r2dbc:postgresql://gateway_dev_01:19960214@127.0.0.1:5432/gateway
+#    properties:
+#      currentSchema: gateway_dev # 设置 schema
+#    pool:
+#      validation-query: select 1=1 from "user"
+#      enabled: true
+#      initial-size: 10
+#      min-idle: 5
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+#    username: dev
+#    password: 19960214
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/gateway
+    username: realtime_dev_01
+    password: realtime_dev_01_456
+
+#  data:
+#    mongodb:
+#      host: 106.52.188.209
+#      port: 27017
+#      database: gateway
+#      username: gateway
+#      password: 19960214
+#    flyway:
+#      user: dev
+#      password: 19960214
+#      url:
+
+#logging:
+#  #日志级别
+#  level:
+#    root: info
+#  #日志输出格式
+#  pattern:
+#    console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+#      file: '%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39}:%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+#    #日志文件
+#    file:
+#      #指定日志文件 绝对路径，比path的权重更高
+#      name: log/cloud-gateway.log
+#      #只可以指定日志文件存放的路径
+#      path: D://appLogs

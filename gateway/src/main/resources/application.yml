@@ -59,7 +59,7 @@ spring:
         enabled: true # org.springframework.cloud.gateway.config.GatewayRedisAutoConfiguration
       httpclient:
         connect-timeout: 30000
-        response-timeout: 10s
+        response-timeout: 50s
   web:
     resources:
       static-locations:
@@ -127,9 +127,9 @@ spring:
       # 自动提交 已消费信息的offset
       enable-auto-commit: false
       # 键的序列化方式
-      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
       # 值的序列化方式（建议使用Json，这种序列化方式可以无需额外配置传输实体类）
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
     listener:
       type: single
       ack-mode: manual

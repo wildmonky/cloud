@@ -1,1 +1,2 @@
 org.lizhao.base.configurer.ReactiveWebConfigurer
+org.lizhao.base.configurer.ServletWebMvcConfigurer

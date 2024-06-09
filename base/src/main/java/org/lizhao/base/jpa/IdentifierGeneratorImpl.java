@@ -33,7 +33,7 @@ public class IdentifierGeneratorImpl implements IdentifierGenerator {
 //        Class<? extends Generator> strategy = genericGenerator.type();
         BeforeExecutionGenerator generator = GENERATORS.get(0);
         if (generator != null) {
-            return generator.generate(session, object, null, null);
+            return String.valueOf(generator.generate(session, object, null, null));
         }
 
         return null;

@@ -14,7 +14,8 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # 应用构建成功后的jar文件被复制到镜像内，名字也改成了app.jar
 COPY target/gateway-0.0.1-SNAPSHOT-spring-boot.jar ./gateway.jar
 # 启动容器时的进程
-ENTRYPOINT ["java","-jar","/gateway.jar"]
+#ENTRYPOINT ["java","-jar","/gateway.jar"]
+ENTRYPOINT ["java","-Xms256m", "-Xmx1024m","-jar","/gateway.jar"]
 # 远程调试
 #ENTRYPOINT ["java","-jar","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5105","/gateway.jar"]
 #ENTRYPOINT ["java","-jar","/gateway.jar", "--spring.profiles.active=prod"]

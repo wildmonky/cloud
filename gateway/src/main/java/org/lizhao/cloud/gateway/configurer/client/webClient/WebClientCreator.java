@@ -22,22 +22,19 @@ import java.time.Duration;
  */
 public class WebClientCreator {
 
-    //    private final ConnectionProvider provider = ConnectionProvider.create("global-webclient-connect", 80000);
-    private static final ConnectionProvider PROVIDER = ConnectionProvider.create("global-webclient-connect");
+    private static final ConnectionProvider PROVIDER = ConnectionProvider.builder("global-webclient-connect")
+            .maxConnections(10000)
+            .pendingAcquireMaxCount(1000)
+            .pendingAcquireTimeout(Duration.ofSeconds(50))
+            .build();
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(1000L);
-    private static final int MAX_IN_MEM_BUFFER_SIZE = 1048576;
+    private static final int MAX_IN_MEM_BUFFER_SIZE = 1024 * 1024;
 
     public WebClientCreator() {}
 
     public static WebClient createDefaultWebClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
-        HttpClient client = HttpClient.create(PROVIDER).responseTimeout(REQUEST_TIMEOUT);
-        return webClientBuilder.clientConnector(new ReactorClientHttpConnector(client)).exchangeStrategies(ExchangeStrategies.builder().codecs((configurer) -> {
-            ClientCodecConfigurer.ClientDefaultCodecs defaultCodecs = configurer.defaultCodecs();
-            defaultCodecs.jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
-            defaultCodecs.jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-            defaultCodecs.maxInMemorySize(1048576);
-        }).build()).build();
+        return createWebClient(webClientBuilder, objectMapper, REQUEST_TIMEOUT, MAX_IN_MEM_BUFFER_SIZE);
     }
 
     public static WebClient createWebClient(WebClient.Builder webClientBuilder, ObjectMapper objectMapper, Duration requestTimeout, int maxInMemBufferSize) {

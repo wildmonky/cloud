@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -343,6 +344,18 @@ public class BaseUtils {
         for (TreeNode<T> next : foundChildren) {
             treeChildren(next, collection, equalsFunc);
         }
+    }
+
+    public static Object[] toArray(Object obj) {
+        if (obj.getClass().isArray()) {
+            int length = Array.getLength(obj);
+            Object[] os = new Object[length];
+            for (int i = 0; i < os.length; i++) {
+                os[i] = Array.get(obj, i);
+            }
+            return os;
+        }
+        throw new RuntimeException("obj 不是数组");
     }
 
 

@@ -102,6 +102,11 @@ public class SnowFlake implements BeforeExecutionGenerator {
             sequence = (sequence + 1) & maxSequence;
             if (sequence == 0) {
                 // sequence超过最大值，按位‘与’后为0，当前时间戳序列已满，下一个时间戳
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 currentTimestamp = currentTimestamp(lastTimestamp);
             }
         }else {
@@ -118,7 +123,7 @@ public class SnowFlake implements BeforeExecutionGenerator {
 
     private long currentTimestamp(long lastTimestamp) {
         long timestamp = System.currentTimeMillis();
-        if (timestamp <= lastTimestamp) {
+        if (timestamp < lastTimestamp) {
             throw new RuntimeException("新的时间戳在旧时间戳之前");
         }
         return timestamp;

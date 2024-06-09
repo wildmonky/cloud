@@ -11,17 +11,25 @@ spring:
     #      hystrix:
     #        enabled: true
     #
+  boot:
+    admin:
+      client:
+        enabled: true
+        url:
+          - http://admin:8084
+
   r2dbc:
     #    username: gateway
     #    password: 19960214
-    url: r2dbc:postgresql://gateway_dev_01:19960214@host.docker.internal:5432/gateway
+    url: r2dbc:postgresql://user_dev_01:user_dev_01_789@host.docker.internal:5432/gateway
     properties:
       currentSchema: gateway_dev # 设置 schema
     pool:
       validation-query: select 1=1 from "user"
       enabled: true
-      initial-size: 10
-      min-idle: 5
+      initial-size: 90
+      max-size: 90
+#      min-idle: 5
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://106.52.188.209:3306/dev?useAffectedRows=true&characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8&allowMultiQueries=true

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1.}.%M(%L)}{cyan}: %msg%n</Property>
+        <Property name="APP_NAME">@project.name@</Property>
+        <Property name="APP_LOG_ROOT">@log.root@</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+
+        <RollingFile name="appSystemLog"
+                     fileName="${APP_LOG_ROOT}/${APP_NAME}/system.log"
+                     filePattern="${APP_LOG_ROOT}/${APP_NAME}/system-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
+
+        <RollingFile name="appServiceLog"
+                     fileName="${APP_LOG_ROOT}/${APP_NAME}/app.log"
+                     filePattern="${APP_LOG_ROOT}/${APP_NAME}/app-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
+
+        <RollingFile name="appCompleteLog"
+                     fileName="${APP_LOG_ROOT}/${APP_NAME}/complete.log"
+                     filePattern="${APP_LOG_ROOT}/${APP_NAME}/complete-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+        </Root>
+
+        <Logger name="SERVICE" additivity="false" level="info">
+            <AppenderRef ref="appServiceLog" />
+            <AppenderRef ref="appCompleteLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="SYSTEM" additivity="false" level="info">
+            <AppenderRef ref="appSystemLog" />
+            <AppenderRef ref="appCompleteLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+    </Loggers>
+</Configuration>
