@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Description 用户服务 查找、下线
@@ -38,6 +39,10 @@ public class UserService implements ApplicationEventPublisherAware {
 
     public Flux<User> searchAll() {
         return userRepository.findAll();
+    }
+
+    public Flux<User> searchUsers(Set<String> userIds) {
+        return userRepository.findAllById(userIds);
     }
 
     public Mono<User> searchByName(String username) {

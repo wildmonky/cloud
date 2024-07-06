@@ -1,6 +1,7 @@
 package org.lizhao.base.enums;
 
 import io.micrometer.common.util.StringUtils;
+import lombok.Getter;
 import org.lizhao.base.model.EnumModel;
 
 /**
@@ -11,6 +12,7 @@ import org.lizhao.base.model.EnumModel;
  * @date 2024-04-24 16:59
  * @since jdk-1.8.0
  */
+@Getter
 public enum ResourceTypeEnum {
 
     /*
@@ -24,7 +26,8 @@ public enum ResourceTypeEnum {
     /*
     文件
      */
-    FILE(2,  "file","文件");
+    FILE(2,  "file","文件"),
+    STREAM(3, "stream", "视频流");
 
 
     private final Integer code;
@@ -67,18 +70,6 @@ public enum ResourceTypeEnum {
      */
     public boolean check(int code) {
         return this.code == code;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public EnumModel<Integer> model() {

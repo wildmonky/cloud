@@ -46,6 +46,12 @@ public class MessageException extends RuntimeException{
 
     public MessageException(String message, Object... args) {
         super(String.format(message.replace("{}", "%s"), args));
+
+//        int matches = StringUtils.countMatches(message, "{}");
+//        int argsLength = args == null ? 0 : args.length;
+//        if (matches != argsLength) {
+//            throw new RuntimeException("需要" + matches + "个参数，只提供了" + argsLength + "个值");
+//        }
     }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
+
 /**
  * Description 用户 Controller
  *
@@ -29,6 +31,12 @@ public class UserController {
     @GetMapping("/all")
     public Flux<User> searchAll() {
         return userService.searchAll();
+    }
+
+    @Operation(summary = "根据用户id查询")
+    @PostMapping("/ids")
+    public Flux<User> searchUsers(@RequestBody Set<String> ids) {
+        return userService.searchUsers(ids);
     }
 
     @Operation(summary = "根据用户名查询")

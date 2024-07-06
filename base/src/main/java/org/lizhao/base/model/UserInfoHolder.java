@@ -12,13 +12,13 @@ import java.util.Optional;
  */
 public class UserInfoHolder {
 
-    private static final ThreadLocal<SimpleUserInfo> USER_INFO_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<UserInfo> USER_INFO_THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void set(SimpleUserInfo userInfo) {
+    public static void set(UserInfo userInfo) {
         USER_INFO_THREAD_LOCAL.set(userInfo);
     }
 
-    public static SimpleUserInfo get() {
+    public static UserInfo get() {
         return Optional.ofNullable(USER_INFO_THREAD_LOCAL.get()).orElseThrow(() -> new RuntimeException("用户信息不存在"));
     }
 

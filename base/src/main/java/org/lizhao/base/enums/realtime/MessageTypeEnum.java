@@ -13,14 +13,14 @@ import lombok.Getter;
 @Getter
 public enum MessageTypeEnum {
 
-    USER_MESSAGE("user_message"),
-    CALL("call"),
-    ROOM_INVITE("room_invite");
+    USER_MESSAGE(0),
+    CALL(1),
+    ROOM_INVITE(2);
 
-    private final String name;
+    private final Integer code;
 
-    MessageTypeEnum(String name) {
-        this.name = name;
+    MessageTypeEnum(int code) {
+        this.code = code;
     }
 
 }

@@ -34,14 +34,38 @@ public class RoomModel {
 
     private Integer used;
 
+    private RoomMember self;
+
     private Collection<RoomMemberModel> members;
 
-    public RoomModel(Room room, RoomMember... members) {
+    public RoomModel() {}
+
+    public RoomModel(Room room, RoomMember self, RoomMember... members) {
         this.id = room.getId();
         this.name = room.getName();
         this.ownerId = room.getOwnerId();
         this.capacity = room.getCapacity();
         this.used = room.getUsed();
+
+        this.self = self;
+
+        if (ObjectUtils.isNotEmpty(members)) {
+            Collection<RoomMemberModel> memberModels = new ArrayList<>();
+            for (RoomMember member : members) {
+                memberModels.add(new RoomMemberModel(member));
+            }
+            this.members = memberModels;
+        }
+    }
+
+    public RoomModel(Room room, RoomMember self, Collection<RoomMember> members) {
+        this.id = room.getId();
+        this.name = room.getName();
+        this.ownerId = room.getOwnerId();
+        this.capacity = room.getCapacity();
+        this.used = room.getUsed();
+
+        this.self = self;
 
         if (ObjectUtils.isNotEmpty(members)) {
             Collection<RoomMemberModel> memberModels = new ArrayList<>();

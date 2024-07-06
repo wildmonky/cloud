@@ -3,7 +3,7 @@ package org.lizhao.base.model.realtime;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.lizhao.base.entity.realtime.InviteRecord;
+import org.lizhao.base.entity.Invite;
 import org.lizhao.base.entity.realtime.Room;
 import org.lizhao.base.model.amqp.UserThing;
 
@@ -29,16 +29,19 @@ public class RoomInviteThing extends UserThing {
     /**
      * 邀请谁 userId
      */
-    private String sendTo;
+    private String receiverId;
 
-    private InviteRecord inviteRecord;
+    private String receiverName;
 
-    public RoomInviteThing(String type, String message, Boolean handled, String roomId, String roomName, String sender, String sendTo, InviteRecord inviteRecord) {
-        super(sender, type, message, handled);
+    private Invite invite;
+
+    public RoomInviteThing(String senderId, String senderName, String receiverId, String receiverName, String type, String message, Boolean handled, String roomId, String roomName, Invite invite) {
+        super(senderId, senderName, type, message, handled);
         this.roomId = roomId;
         this.roomName = roomName;
-        this.sendTo = sendTo;
-        this.inviteRecord = inviteRecord;
+        this.receiverId = receiverId;
+        this.receiverName = receiverName;
+        this.invite = invite;
     }
 
 }

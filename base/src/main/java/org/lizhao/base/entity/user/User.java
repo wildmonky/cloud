@@ -1,13 +1,14 @@
 package org.lizhao.base.entity.user;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
-import org.springframework.data.annotation.Id;
+import org.lizhao.base.jpa.IdentifierGeneratorImpl;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
-import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * Description 用户实体类
@@ -19,18 +20,25 @@ import org.springframework.data.relational.core.mapping.Table;
  * @since 0.0.1-SNAPSHOT
  */
 
+@ToString
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "user")
+@org.springframework.data.relational.core.mapping.Table(name = "user")
 public class User extends CommonAttribute {
 
     /**
      * 用户账号主键，系统内唯一标识码
      */
+
     @Id
+    @org.springframework.data.annotation.Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "custom-snowflake")
+    @GenericGenerator(name = "custom-snowflake", type= IdentifierGeneratorImpl.class)
     private String id;
 
     /**

@@ -1,17 +1,29 @@
 version: "3"
 
-networks:
-  cloud-net:
+#networks:
+#  cloud-net:
+#    driver: bridge
+#    ipam:
+#      config:
+#        #        gateway:
+#        #        ip_range:
+#        subnet: 172.16.0.0/24
 
 services:
   # https://ossrs.net/lts/zh-cn/docs/v5/doc/webrtc#sfu-one-to-one
   srs-server:
+    depends_on:
+      - realtime
     build:
       context: ./docker-env/srs
       dockerfile: Dockerfile
     entrypoint: ./objs/srs -c conf/https.docker.conf
     environment:
       CANDIDATE: 106.52.188.209 # 重要
+    networks:
+      cloud-net:
+        aliases:
+          - srs-server
     ports:
       - "1935:1935"
       - "1985:1985"
@@ -24,13 +36,21 @@ services:
   srs-signaling-server:
     image: registry.cn-hangzhou.aliyuncs.com/ossrs/signaling:1
     entrypoint: ./bin/signaling
+    networks:
+      cloud-net:
+        aliases:
+          - srs-signaling-server
     ports:
       - "1989:1989"
 
-  srs-nginx-proxy:
-    build:
-      context: ./docker-env/srs/nginx
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
+#  srs-nginx-proxy:
+#    build:
+#      context: ./docker-env/srs/nginx
+#      dockerfile: Dockerfile
+#    networks:
+#      cloud-net:
+#        aliases:
+#          - srs-nginx-proxy
+#    ports:
+#      - "80:80"
+#      - "443:443"

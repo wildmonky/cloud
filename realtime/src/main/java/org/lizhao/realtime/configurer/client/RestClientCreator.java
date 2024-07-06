@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Description WebClient创建器 spring boot 3.2
+ * Description RestClient创建器 spring boot 3.2
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -82,7 +82,7 @@ public class RestClientCreator {
 //    }
 //
     @Slf4j
-    static class CustomClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
+    public static class CustomClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
         @Override
         @NonNull
         public ClientHttpResponse intercept(HttpRequest request, @NonNull byte[] bytes, @NonNull ClientHttpRequestExecution execution) throws IOException {
@@ -102,8 +102,7 @@ public class RestClientCreator {
         }
     }
 
-    static class BufferingClientHttpResponseWrapper implements ClientHttpResponse {
-
+    public static class BufferingClientHttpResponseWrapper implements ClientHttpResponse {
         private final ClientHttpResponse response;
         private byte[] body;
 

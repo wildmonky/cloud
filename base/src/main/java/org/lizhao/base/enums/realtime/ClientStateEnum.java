@@ -13,8 +13,8 @@ import lombok.Getter;
 @Getter
 public enum ClientStateEnum {
 
-    ON(0,"on"),
-    OFF(1,"off");
+    ON(0,"online"),
+    OFF(1,"offline");
 
     private final int code;
     private final String status;

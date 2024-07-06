@@ -8,6 +8,8 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # https://ossrs.net/lts/zh-cn/docs/v5/doc/webrtc#config-candidate
 ENV CANDIDATE=106.52.188.209
 
+# 使用外部配置文件
+COPY ./https.docker.conf conf/https.docker.conf
 # 注意替换为自己的服务器证书
 COPY ./server-cert.pem conf/server.crt
 COPY ./server-privkey.pem conf/server.key

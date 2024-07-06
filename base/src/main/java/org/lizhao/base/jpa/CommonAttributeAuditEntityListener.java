@@ -2,9 +2,10 @@ package org.lizhao.base.jpa;
 
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import org.apache.commons.lang3.StringUtils;
 import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.exception.CustomException;
-import org.lizhao.base.model.SimpleUserInfo;
+import org.lizhao.base.model.UserInfo;
 import org.lizhao.base.model.UserInfoHolder;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,14 @@ public class CommonAttributeAuditEntityListener {
     public void prePersist(Object entity) throws CustomException {
 
         if (entity instanceof CommonAttribute commonAttribute) {
-            SimpleUserInfo currentUser = Optional.ofNullable(UserInfoHolder.get()).orElseThrow(() -> CustomException.NOT_LOGIN);
+
+            if (StringUtils.isNotBlank(commonAttribute.getCreateUseId())
+                    && StringUtils.isNotBlank(commonAttribute.getCreateUseName())
+                    && commonAttribute.getCreateTime() != null) {
+                return;
+            }
+
+            UserInfo currentUser = Optional.ofNullable(UserInfoHolder.get()).orElseThrow(() -> CustomException.NOT_LOGIN);
 
             commonAttribute.setCreateUseId(currentUser.getId());
             commonAttribute.setCreateUseName(currentUser.getName());
@@ -37,7 +45,14 @@ public class CommonAttributeAuditEntityListener {
     public void postUpdate(Object entity) throws CustomException {
 
         if (entity instanceof CommonAttribute commonAttribute) {
-            SimpleUserInfo currentUser = Optional.ofNullable(UserInfoHolder.get()).orElseThrow(() -> CustomException.NOT_LOGIN);
+
+            if (StringUtils.isNotBlank(commonAttribute.getUpdateUseId())
+                    && StringUtils.isNotBlank(commonAttribute.getUpdateUseName())
+                    && commonAttribute.getUpdateTime() != null) {
+                return;
+            }
+
+            UserInfo currentUser = Optional.ofNullable(UserInfoHolder.get()).orElseThrow(() -> CustomException.NOT_LOGIN);
 
             commonAttribute.setUpdateUseId(currentUser.getId());
             commonAttribute.setUpdateUseName(currentUser.getName());

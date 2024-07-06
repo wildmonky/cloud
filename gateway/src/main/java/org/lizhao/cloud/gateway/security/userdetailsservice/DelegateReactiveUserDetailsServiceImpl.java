@@ -30,7 +30,7 @@ public class DelegateReactiveUserDetailsServiceImpl implements ReactiveUserDetai
     public DelegateReactiveUserDetailsServiceImpl(ReactiveUserDetailsService... reactiveUserDetailsServices) {
 
         List<ReactiveUserDetailsService> userDetailsServices = Arrays.stream(reactiveUserDetailsServices).filter(Objects::nonNull).toList();
-        if (userDetailsServices.size() == 0) {
+        if (userDetailsServices.isEmpty()) {
             throw new CustomException("无可用的用户信息服务");
         }
         for (ReactiveUserDetailsService userDetailsService : userDetailsServices) {

@@ -1,9 +1,10 @@
 package org.lizhao.realtime.configurer;
 
 import org.lizhao.realtime.configurer.properties.SrsProperties;
-import org.lizhao.realtime.repository.RoomMemberClientRepository;
 import org.lizhao.realtime.srs.SrsCallbackHandler;
 import org.lizhao.realtime.srs.SrsHandler;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -25,25 +26,26 @@ import static org.springframework.web.servlet.function.RouterFunctions.route;
 @Configuration
 public class RealtimeConfigurer {
 
-//    @Bean
-//    public SrsHandler srsHandler(RestClient srsRestClient, SrsProperties srsProperties) {
-//        return new SrsHandler(srsRestClient, srsProperties);
-//    }
-
     @Bean
     public SrsHandler srsHandler(RestTemplate srsRestTemplate, SrsProperties srsProperties) {
         return new SrsHandler(srsRestTemplate, srsProperties);
     }
     /**
      * srs callback endpoint
-     * @param roomMemberClientRepository repository
      * @return RouterFunction<ServerResponse>
      */
     @Bean
-    public RouterFunction<ServerResponse> serverResponseRouterFunction(RoomMemberClientRepository roomMemberClientRepository) {
-        SrsCallbackHandler srsCallbackHandler = new SrsCallbackHandler(roomMemberClientRepository);
+    public RouterFunction<ServerResponse> serverResponseRouterFunction(SrsCallbackHandler srsCallbackHandler) {
         return route()
-                .POST("/realtime/callback", accept(MediaType.APPLICATION_JSON), srsCallbackHandler::handleRequest)
+                .POST("/srs/callback/streams", accept(MediaType.APPLICATION_JSON), srsCallbackHandler::handleRequest)
+                .build();
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate userRestTemplate(RestTemplateBuilder builder) {
+        return builder
+                .rootUri("http://user-service")
                 .build();
     }
 

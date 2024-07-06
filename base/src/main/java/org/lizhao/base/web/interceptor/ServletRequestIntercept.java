@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.lizhao.base.constant.SecurityConstant;
 import org.lizhao.base.exception.MessageException;
-import org.lizhao.base.model.SimpleUserInfo;
+import org.lizhao.base.model.UserInfo;
 import org.lizhao.base.model.UserInfoHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -45,10 +45,10 @@ public class ServletRequestIntercept implements HandlerInterceptor  {
 
         // 解析 请求头获取用户信息（网关封装）
         String userInfoStr = request.getHeader(SecurityConstant.USER_IN_HEADER);
-        SimpleUserInfo userInfo = null;
+        UserInfo userInfo = null;
         if (StringUtils.isNotBlank(userInfoStr)) {
             try {
-                userInfo = objectMapper.readValue(userInfoStr, SimpleUserInfo.class);
+                userInfo = objectMapper.readValue(userInfoStr, UserInfo.class);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

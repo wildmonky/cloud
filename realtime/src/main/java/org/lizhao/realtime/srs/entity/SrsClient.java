@@ -1,9 +1,15 @@
-package org.lizhao.base.entity.realtime;
+package org.lizhao.realtime.srs.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.lizhao.base.entity.CommonAttribute;
+import org.lizhao.base.entity.realtime.RoomMember;
+import org.lizhao.base.entity.realtime.RoomResource;
 import org.lizhao.base.jpa.IdentifierGeneratorImpl;
 
 /**
@@ -17,8 +23,8 @@ import org.lizhao.base.jpa.IdentifierGeneratorImpl;
 @Getter
 @Setter
 @Entity
-@Table(name = "room_member_client")
-public class RoomMemberClient {
+//@Table(name = "srs_client")
+public class SrsClient extends CommonAttribute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "custom-snowflake")
@@ -29,6 +35,11 @@ public class RoomMemberClient {
      * {@link RoomMember#getId()}
      */
     private String roomMemberId;
+
+    /**
+     * {@link RoomResource#getId()}
+     */
+    private String  roomResourceId;
 
     /**
      * realtime (播放/推流)客户端id，可用于踢出
@@ -58,7 +69,7 @@ public class RoomMemberClient {
     private String publishPageUrl;
 
     /**
-     * {@link org.lizhao.base.enums.realtime.RoomMemberStateEnum}
+     * {@link org.lizhao.base.enums.ResourceStateEnum}
      */
     private Integer status ;
 

@@ -1,16 +1,19 @@
-package org.lizhao.base.entity.realtime;
+package org.lizhao.base.entity;
+
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.lizhao.base.entity.CommonAttribute;
+import org.lizhao.base.entity.realtime.Room;
+import org.lizhao.base.entity.user.User;
+import org.lizhao.base.enums.ResourceUsageEnum;
 import org.lizhao.base.jpa.IdentifierGeneratorImpl;
 
 import java.time.LocalDateTime;
 
 /**
- * Description 邀请记录
+ * Description 邀请
  *
  * @author lizhao
  * @version 0.0.1-SNAPSHOT
@@ -20,8 +23,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "invite_record")
-public class InviteRecord extends CommonAttribute {
+@Table(name = "invite")
+public class Invite extends CommonAttribute {
 
     /**
      * 邀请记录id
@@ -37,15 +40,26 @@ public class InviteRecord extends CommonAttribute {
      */
     private String resourceId;
 
+    private String resourceName;
+
     /**
      * 资源类型
      */
     private Integer resourceType;
 
     /**
-     * 发出者id
+     * 用途 {@link ResourceUsageEnum}
      */
-    private String senderId;
+    private Integer usage;
+
+    /**
+     * 发出者id {@link User#getId()}
+     */
+//    private String senderId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     /**
      * 发送时间
@@ -53,9 +67,13 @@ public class InviteRecord extends CommonAttribute {
     private LocalDateTime sendTime;
 
     /**
-     * 接收者Id
+     * 接收者Id {@link User#getId()}
      */
-    private String receiverId;
+//    private String receiverId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
     /**
      * 接收时间
@@ -63,14 +81,9 @@ public class InviteRecord extends CommonAttribute {
     private LocalDateTime receiveTime;
 
     /**
-     * 邀请状态
+     * 邀请状态 {@link org.lizhao.base.enums.realtime.InviteStateEnum}
      */
     private Integer status;
-
-    /**
-     * 邀请结果 {@link org.lizhao.base.enums.realtime.InviteResultStateEnum}
-     */
-    private Integer result;
 
     /**
      * 邀请信息，更多描述

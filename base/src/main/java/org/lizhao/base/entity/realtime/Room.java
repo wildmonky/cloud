@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
+import org.lizhao.base.entity.user.User;
+import org.lizhao.base.enums.ResourceUsageEnum;
 import org.lizhao.base.jpa.IdentifierGeneratorImpl;
 
 /**
@@ -29,7 +31,12 @@ public class Room extends CommonAttribute {
     private String name;
 
     /**
-     * 房主id
+     * 用途 {@link ResourceUsageEnum}
+     */
+    private Integer usage;
+
+    /**
+     * 房主id {@link User#getId()}
      */
     private String ownerId;
 

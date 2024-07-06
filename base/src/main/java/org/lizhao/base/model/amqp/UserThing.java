@@ -2,6 +2,7 @@ package org.lizhao.base.model.amqp;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Description TODO
@@ -11,20 +12,19 @@ import lombok.Setter;
  * @date 2024-05-13 14:13
  * @since 0.0.1-SNAPSHOT
  */
+@ToString(callSuper = true)
 @Getter
 @Setter
 public class UserThing extends Thing {
 
-    private String sender;
+    private String senderId;
 
-    public UserThing(String sender, String type, String message, Boolean handled) {
+    private String senderName;
+
+    public UserThing(String senderId, String senderName, String type, String message, Boolean handled) {
         super(type, message, handled);
-        this.sender = sender;
-    }
-
-    @Override
-    public String toString() {
-        return "{ userId: " + this.sender + ", type: " + super.getType() + ", message: " + super.getMessage() + ", handled: " + super.getHandled() + " }";
+        this.senderId = senderId;
+        this.senderName = senderName;
     }
 
 }

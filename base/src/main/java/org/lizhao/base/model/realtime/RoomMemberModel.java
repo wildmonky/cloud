@@ -3,7 +3,7 @@ package org.lizhao.base.model.realtime;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.lizhao.base.entity.realtime.InviteRecord;
+import org.lizhao.base.entity.Invite;
 import org.lizhao.base.entity.realtime.RoomMember;
 
 /**
@@ -25,7 +25,7 @@ public class RoomMemberModel {
     private String userId;
 
     /**
-     * 通过{@link InviteRecord#getId()}邀请加入房间
+     * 通过{@link Invite#getId()}邀请加入房间
      */
     private String inviteRecordId;
 

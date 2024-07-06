@@ -14,9 +14,13 @@ import lombok.Getter;
 @Getter
 public enum RoomMemberStateEnum {
 
-    IN(0, "已进入"),
+    INVITED(0, "被邀请"),
 
-    KICKOFF(1, "被踢出");
+    IN(1, "已进入"),
+
+    OUT(2, "已离开"),
+
+    KICKOFF(3, "被踢出");
 
     private final int code;
 

@@ -5,7 +5,7 @@ server:
     context-path: /
   netty:
     max-keep-alive-requests: 10000
-    connection-timeout: 30s
+    connection-timeout: 300s
 
 # actuator 配置
 management:

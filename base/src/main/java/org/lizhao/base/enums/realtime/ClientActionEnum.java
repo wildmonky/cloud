@@ -13,8 +13,10 @@ import lombok.Getter;
 @Getter
 public enum ClientActionEnum {
 
-    PLAY(0,"play"),
-    PUBLISH(1,"publish");
+    PUBLISH(0,"publish"),
+    PLAY(1,"play"),
+    STOP(2, "stop"),
+    UNPUBLISH(3, "unpublish");
 
     private final int code;
     private final String action;
