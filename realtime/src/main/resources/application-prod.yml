@@ -32,6 +32,11 @@ spring:
     username: realtime_dev_01
     password: realtime_dev_01_456
 
+  jpa:
+    properties:
+      hibernate:
+        default_schema: gateway_dev
+
 #  data:
 #    mongodb:
 #      host: 106.52.188.209

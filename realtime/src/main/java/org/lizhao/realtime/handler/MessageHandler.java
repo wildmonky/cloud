@@ -214,9 +214,10 @@ public class MessageHandler {
             mesStr = objectMapper.writeValueAsString(t);
         }
         record.setMessage(mesStr);
+        record.setType(message.getType());
         record.setAck(0);
         record = messageRecordRepository.save(record);
-        log.info("接收到{}发送给{}的消息", message.getSenderId(), message.getReceiverId());
+        log.info("接收到{}发送给{}的消息：{}", message.getSenderId(), message.getReceiverId(), record);
         return record;
     }
 
@@ -235,7 +236,7 @@ public class MessageHandler {
         if (receiver == null) {
             throw new RuntimeException("id为{}的 MessageRecord 无接收人");
         }
-        return Message.buildMessage(sender.getId(), sender.getName(), receiver.getId(), receiver.getName(), messageRecord.getMessage());
+        return Message.buildMessage(sender.getId(), sender.getName(), receiver.getId(), receiver.getName(), messageRecord.getType(), messageRecord.getMessage());
     }
 
     @ToString

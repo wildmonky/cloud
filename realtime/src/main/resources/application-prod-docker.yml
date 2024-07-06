@@ -21,6 +21,17 @@ spring:
     url: jdbc:postgresql://host.docker.internal:5432/gateway
     username: realtime_dev_01
     password: realtime_dev_01_456
+    hikari:
+      connection-timeout: 60000
+      max-lifetime: 3000
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: gateway_dev
+
+
+
 
 #  r2dbc:
 #    #    username: gateway

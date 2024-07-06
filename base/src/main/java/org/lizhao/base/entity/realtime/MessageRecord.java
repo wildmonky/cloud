@@ -3,6 +3,7 @@ package org.lizhao.base.entity.realtime;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.lizhao.base.entity.CommonAttribute;
 import org.lizhao.base.entity.user.User;
@@ -18,6 +19,7 @@ import org.lizhao.base.jpa.IdentifierGeneratorImpl;
  */
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "message_record")
 public class MessageRecord extends CommonAttribute {
@@ -40,6 +42,8 @@ public class MessageRecord extends CommonAttribute {
     private User receiver;
 
     private String message;
+
+    private String type;
 
     /**
      * 0-消息发送者已发送；1-消息接收者已接收

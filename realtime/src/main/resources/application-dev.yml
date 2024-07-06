@@ -23,8 +23,14 @@ spring:
     username: realtime_dev_01
     password: realtime_dev_01_456
     hikari:
+      schema: gateway_dev
       connection-timeout: 60000
-      max-lifetime: 30000
+      max-lifetime: 3000
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: gateway_dev
 
 #  r2dbc:
 #    #    username: gateway
