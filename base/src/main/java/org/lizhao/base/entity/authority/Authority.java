@@ -20,6 +20,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Table(name = "authority")
+@jakarta.persistence.Table
 public class Authority extends CommonAttribute {
 
     /**
